@@ -11,6 +11,5 @@ result = a + b;
 fprintf('The result of %d + %d is: %d\n', a, b, result);
 
 fprintf('update ie dit naar jullie');
-
-
+%berg
 
