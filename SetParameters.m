@@ -9,27 +9,54 @@ area_roof = width * length; % Roof area
 initial_temperature = 20; % Celsius
 
 % Define solar radiation input
-solar_radiation = ... % Define a function to calculate solar radiation based on time of day and weather conditions
+solar_radiation = 0.03 % Define a function to calculate solar radiation based on time of day and weather conditions
 
 % Define heat transfer coefficients for walls, roof, etc.
 % These coefficients depend on the materials used and environmental conditions
-U_wall = ...; % Wall heat transfer coefficient
-U_roof = ...; % Roof heat transfer coefficient
-...
+U_wall = 0.7; % Wall heat transfer coefficient
+U_roof = 0.6; % Roof heat transfer coefficient
+
 
 % Initialize simulation parameters
-time_span = ...; % Define the time span of the simulation (in hours)
-time_step = ...; % Define the time step size (in hours)
+time_span = 24; % hours
+time_step = 0.5; % hour
+num_steps = time_span / time_step; % Number of time steps
 controller_interval = 1; % Controller update interval (in hours)
 
 % Initialize temperature matrices
 temperature = initial_temperature * ones(length, width); % Assuming uniform initial temperature
 temperature_roof = initial_temperature; % Assuming uniform initial temperature for the roof
 
+% Define a temperature_ground
+temperature_ground = 15; % Celsius
+
+% Define outside temperature
+outside_temperature = 12; % Celsius
+
+function [new_temperature, new_temperature_roof] = manual_temperature_controller(current_temperature, current_temperature_roof)
+    disp('Current temperature values received for manual update:');
+    fprintf('Average Air Temperature: %.2f °C\n', mean(current_temperature, 'all'));
+    fprintf('Roof Temperature: %.2f °C\n', current_temperature_roof);
+
+    % Prompt for new average air temperature
+    new_temp_input = input('Enter new average air temperature (°C) or press Enter to keep current: ', 's');
+    if isempty(new_temp_input)
+        new_temperature = current_temperature;
+    else
+        new_temperature = str2double(new_temp_input) * ones(size(current_temperature));
+    end
+
+    % Prompt for new roof temperature
+    new_roof_temp_input = input('Enter new roof temperature (°C) or press Enter to keep current: ', 's');
+    if isempty(new_roof_temp_input)
+        new_temperature_roof = current_temperature_roof;
+    else
+        new_temperature_roof = str2double(new_roof_temp_input);
+    end
+end
 
 % Main simulation loop
-current_time = 0;
-for t = time_span
+for t = 0:time_step:time_span
     % Calculate energy balance for each cell in the greenhouse
     % Consider heat transfer through walls, roof, solar radiation, etc.
     % Update temperature matrix accordingly
@@ -56,20 +83,21 @@ for t = time_span
             q_roof = U_roof * (temperature_roof - temperature(i, j));
             next_temperature_roof = temperature_roof - (q_roof * time_step) / area_roof;
             
-            % Update temperature matrices
-            temperature = next_temperature;
-            temperature_roof = next_temperature_roof;
+            
         end
     end
 
+    % Update temperature matrices
+    temperature = next_temperature;
+    temperature_roof = next_temperature_roof;
+
     % Check if it's time to update the controller
-    if mod(current_time, controller_interval) == 0
-        % Call the controller function to update the temperature
-        [temperature, temperature_roof] = controller_function(temperature, temperature_roof);
+    if mod(t, controller_interval) == 0
+        fprintf('\nTime: %.1f hours\n', t);
+        [temperature, temperature_roof] = manual_temperature_controller(temperature, temperature_roof);
     end
     
-    % Increment current time
-    current_time = current_time + time_step;
+
 end
 
 % Visualize results
@@ -82,7 +110,7 @@ for hour = 1:num_hours
 end
 
 figure;  % Create a new figure window
-plot(1:num_hours, average_temperature, '-o', 'LineWidth', 2);
+plot(0:time_step:time_span, average_temperature, '-o', 'LineWidth', 2);
 title('Average Temperature Change Over 24 Hours');
 xlabel('Time (hours)');
 ylabel('Average Temperature (°C)');
