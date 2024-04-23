@@ -22,7 +22,7 @@ Qmax = 50000 ;  %Maximal heating capacity
 
 %define environment
 %T_amb = zeros(l) + 10 ; %degrees Celcius, outside temperature
-T_amb = 15 + 3*sin(2*pi * t/(24*60)) ;
+T_amb = (15 + 3*sin(2*pi * t/(24*60))).* (0.95 + 0.1 .* rand(1,length(t))) ;
 
 %define reference and control parameters
 Tref = 25  ; %degrees Celsius
@@ -62,9 +62,9 @@ end
 figure;
 hold on
 plot(t/60, T, "g-", LineWidth=3)
-plot(t/60, T_amb, "b--")
+plot(t/60, T_amb, "b-")
 plot([0, 24], [Tref, Tref])
-plot(t/60, Tref-T, "r")
+plot(t/60, Tref-T, "r--")
 legend("T Greenhouse", "T outside", "T reference", "Error")
 ylabel("Temperature") ; xlabel("Time")
 
