@@ -2,9 +2,15 @@
 t = 0:1:24; % tijd in uren
 T_wanted = 25; %disired temperaturen in degrees
 T_predict = 6 * sin(2 * pi * t/ 24) + 14 ;%temperature prediction
+
+T_amb = T_predict .* (0.95 + 0.1 .* rand(1,length(t))); % real outside temperature
+T_kas = zeros(1,length(t)); % zeros array for tempetauture in greenhouse
+T_kas(1) = 15; %initial temperature in greenhouse
+
 T_amb = T_predict .* (0.95 + 0.1 * rand(1,length (t))); % real outside temperature
 T_kas1(1) = 15; %initial temperature in greenhouse
 T_kas2(1) = 15;
+
 h_buiten = 100;
 h_binnen = 100;
 k_wall = 5.7;
