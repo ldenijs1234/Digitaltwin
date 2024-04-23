@@ -45,4 +45,3 @@ figure;
 hold on
 plot(t(1:end-1), Q_heater, "r")
 plot(t(1:end-1), Q_conv, "b")
-plot(t(1:end-1), Q_needed, "g")
