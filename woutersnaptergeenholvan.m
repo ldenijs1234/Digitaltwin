@@ -8,8 +8,8 @@ T_amb = T_predict .* (0.99 + 0.01 * rand(1,length (t))); % "real" outside temper
 T_kas = zeros(1,length(t)); % zeros array for temperature in greenhouse
 T_kas(1) = 15; %initial temperature in greenhouse
 
-hour = 3600 %1 hour in seconds
-minute = 60 %1 minute in seconds
+hour = 3600 ;%1 hour in seconds
+minute = 60 ;%1 minute in seconds
 h_buiten = 100;  %W
 h_binnen = 100;  %W
 k_wall = 5.7;
@@ -22,7 +22,7 @@ d_wall = 5 * 10-3;
 R_wall = 1/h_buiten + d_wall/k_wall + 1/h_binnen;
 h = 1/(R_wall) * A ;
 
-Heatermax =    cp*m*0.06 %max heating of 0.06 deg 
+Heatermax =    cp*m*0.06 ;%max heating of 0.06 deg 
 
 for i = 1:(length(t)-1)
     Q_conv(i) = (T_amb(i) - T_kas(i)) * h * minute;
