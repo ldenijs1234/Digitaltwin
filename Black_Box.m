@@ -36,7 +36,6 @@ end
     
 plot(t/3600,T_room)
 hold on
-plot(t/3600,T_out,'--')
+plot(t/3600,15 + 5*sin(2*pi*t/(24*3600)),'--')
 xlabel('time in hours')
 ylabel('Temperature in degrees celcius')
-
