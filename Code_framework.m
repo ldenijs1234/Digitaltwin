@@ -23,12 +23,19 @@ rho = 1.29 ; % Air density (Kg/m^3)
 % Simulation parameters
 dt = 60 ; % Time interval of one minute
 simulation_time = 5*60 ;% Simulation time in minutes
-t = 1:dt:simulation_time*dt ;   % 1 hour of simulation time
+Number_variables = 3 ; % Number of state variables
+State_setting = [true true false] ; % Decide which variables/outputs to include [Temperature Humidity CO2]
+
+
+t = 1:dt:simulation_time*dt ;   % simulation time space
+GH_state_space = zeros(Number_variables+1, length(t)) ;
+GH_state_space(1, :) = t ;
+
 
 % User input
 Q_heat = 0 ; % Heating (W)
-GH_T_air(1) = 25 ; % Air temperature inside greenhouse (C)
-GH_humidity(1) = 0.80 ; % Relative humidity inside greenhouse (set to 80%)
+GH_state_space(2,1) = 25 ; % Air temperature inside greenhouse (C)
+GH_state_space(3,1) = 0.80 ; % Relative humidity inside greenhouse (set to 80%)
 
 
 % System characteristics
@@ -36,24 +43,26 @@ C  = cp * rho * GH_Volume ; % Specific heat greenhouse air (stirred tank)
 
 
 % Dummy Dynamics // Random functions to test
-function Q_conv = convection(T_in, T_out, h)
+function Q_conv = convection(statespace, T_out, h, i)
+T_in = statespace(2, i) ;
 Q_conv = h*(T_out - T_in) ;
 end
 
-function [Q_plant, humidity] = plant(T_in, humid)
+function [Q_plant, humidity] = plant(statespace, i)
+humid = statespace(3, i) ;
 Q_plant = -50000 * humid ;
 humidity = max(humid + Q_plant * 0.05, 0) ;
 end
 
 % System Dynamics // Euler integration of heat to air
 for i = 1: length(t)-1
-    Q_conv(i) = convection(GH_T_air(i), T_out, h) ;
-    [Q_plant, GH_humidity(i+1)] = plant(GH_T_air(i), GH_humidity(i)) ;
+    Q_conv(i) = convection(GH_state_space, T_out, h, i) ;
+    [Q_plant, GH_state_space(3, i+1)] = plant(GH_state_space, i) ;
     Q_total = Q_heat + Q_conv(i) + Q_plant ;
-    GH_T_air(i+1) = GH_T_air(i) + Q_total/C ;
+    GH_state_space(2, i+1) = GH_state_space(2, i) + Q_total/C ;
 end
 
 figure;
-plot(t/dt, GH_T_air)
+plot(t/dt, GH_state_space(2,:))
 figure;
 plot( (t(1 : end-1))/dt, Q_conv)
