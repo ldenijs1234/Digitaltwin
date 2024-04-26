@@ -22,20 +22,21 @@ GH.p.           d_wall = 5 * 10-3;
 
 GH.p.h_InOut = 1/(1/GH.p.h_AirGlass + GH.p.d_wall/GH.p.k_wall + 1/GH.p.h_AirGlass) * GH.p.GreenhouseArea ; %overall heat transfer coefficient
 
-Heating = 2000 ;
+Heating = 20 ;
 GH.u.Heating = Heating ;
 
 
 %   An array as field
 dt = 60 ;                                  % Time interval of one minute
+GH.d.dt = dt ;
 simulation_time = 5   *60 ;                % Simulation time in minutes   (set to 5 hours) 
 start_time = 0 ;                           % Start of simulation
 
 t = start_time:dt:simulation_time*dt ;     % simulation time space
 OutsideTemperature = 15 + 5*sin(2*pi * t/(24*60*dt)) ;
 
-GH.d.Time = t ;                            % Time as a field of GH.d
-GH.d.OutsideTemperature = OutsideTemperature ;% Outside temperature as a field of GH.d
+GH.d.Time = t ;                                 % Time as a field of GH.d
+GH.d.OutsideTemperature = OutsideTemperature ;  % Outside temperature as a field of GH.d
 
 GH.x.            AirTemperature(1) = 25 ;  % Starting condition
 
@@ -43,7 +44,8 @@ GH.x.            AirTemperature(1) = 25 ;  % Starting condition
 %   Set an ODE
 function AirTemperatureDot = ODE_AirTemperature(GH, i)
     C_system = GH.p.GreenhouseVolume*GH.p.rho_air*GH.p.cp_air ;
-    AirTemperatureDot = GH.p.h_InOut/C_system * (GH.d.OutsideTemperature(i) - GH.x.AirTemperature(i)) ;
+    Q = GH.p.h_InOut * (GH.d.OutsideTemperature(i) - GH.x.AirTemperature(i)) + GH.u.Heating ;  % Q in Watt
+    AirTemperatureDot = Q/C_system  ;    %
 end
 
 %   Integration
