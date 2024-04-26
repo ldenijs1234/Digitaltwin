@@ -1,7 +1,7 @@
 % Function standard form // concept
 
 NumberofParameters = 4 ;
-VectorParameters = zeros(2, 4) ;
+VectorParameters = zeros(1, NumberofParameters) ;
 VectorParameters(1) = 4 ;                  % parameter a
 VectorParameters(2) = 3 ;                  % parameter b
 VectorParameters(3) = 1 ;                  % parameter c
