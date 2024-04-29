@@ -16,4 +16,6 @@ GH.d.OutsideTemperature = OutsideTemperature ;  % Outside temperature as a field
 GH.p.           cp_air = 718 ;
 GH.p.           rho_air = 1.29 ;
 
-GH.p.           paramater1 = 1
+GH.p.           parameter1 = 1 ;
+
+%faka
