@@ -1,5 +1,5 @@
 %   dx/dt = function(GH, i)
-
+GH =GH ;
 
 function AirTemperatureDot = ODE_AirTemperature(GH, i)
     C_AirVolumeGH = GH.p.GHVolume * GH.p.rho_air * GH.p.cp_air ;
@@ -11,4 +11,14 @@ function AirTemperatureDot = ODE_AirTemperature(GH, i)
 
 end
 
-ODE_AirTemperature(GH, 1)
+function WallTemperatureDot = ODE_WallTemperature(GH, i)
+    C_WallsGH = GH.p.GHTotalArea * GH.p.WallThickness * GH.p.rho_glass * GH.p.cp_glass ;
+
+    Q_RoofConvIn = -GH.p.h_WallInside *(GH.x.WallTemperature(i) - GH.x.AirTemperature(i)) ;
+    Q_RoofConvOut = -GH.p.h_WallOutside *(GH.x.WallTemperature(i) - GH.d.OutsideTemperature(i)) ;
+
+    Q = Q_RoofConvIn + Q_RoofConvOut  ;% + Q_floor + Q_sky  + Q_lamp + Q_soil + Q_vent + Q_plant 
+    WallTemperatureDot = Q/C_WallsGH ;
+
+end
+

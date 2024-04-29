@@ -14,7 +14,9 @@ GH.d.OutsideTemperature = OutsideTemperature ;  % Outside temperature as a field
 
 % General parameters
 GH.p.           cp_air = 1003.5 ;
+GH.p.           cp_glass = 840 ;
 GH.p.           rho_air = 1.2 ;
+GH.p.           rho_glass = 2500 ;
 GH.p.           GasConstantR = 8.314 ; % J/mol K
 GH.p.           StefBolzConst = 5.670374419 * 10^(-8) ; 
 
@@ -24,7 +26,10 @@ GH.p.           GHLength = 10 ;
 GH.p.           GHHeight = 3 ;
 GH.p.           GHVolume = GH.p.GHLength*GH.p.GHWidth*GH.p.GHHeight ;
 GH.p.           GHGroundArea = GH.p.GHLength * GH.p.GHWidth ;
-GH.p.           GHTotalArea = GH.p.GHGroundArea + 2* GH.p.GHLength * GH.p.GHHeight + 2* GH.p.GHWidth * GH.p.GHHeight ;
+GH.p.           GHSideArea1 = GH.p.GHLength * GH.p.GHHeight ;
+GH.p.           GHSideArea2 = GH.p.GHWidth * GH.p.GHHeight ;
+GH.p.           GHTotalArea = GH.p.GHGroundArea + 2* GH.p.GHSideArea1 + 2* GH.p.GHSideArea2 ;
+GH.p.           WallThickness = 5 * 10^(-2) ;
 
 % Temperature equations parameters
 GH.p.           h_WallOutside = 100 ; %DUMMY
