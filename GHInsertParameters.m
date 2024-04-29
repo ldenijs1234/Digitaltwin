@@ -16,12 +16,15 @@ GH.d.OutsideTemperature = OutsideTemperature ;  % Outside temperature as a field
 GH.p.           cp_air = 718 ;
 GH.p.           rho_air = 1.29 ;
 GH.p.           GasConstantR = 8.314 ; % J/mol K
+GH.p.           StefBolzConst = 5.670374419 * 10**(-8) ; 
 
 % ... parameters
 GH.p.           parameter1 = 1 ;
 
 % Temperature equations parameters
-
+GH.p.           h_WallOutside = 100 ; %DUMMY
+GH.p.           h_WallInside = 50 ; %DUMMY
+GH.p.           Alfa = 4 ; %DUMMY
 % Humidity equations parameters
 
 % CO2 equations parameters
