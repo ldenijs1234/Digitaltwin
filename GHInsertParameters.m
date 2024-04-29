@@ -3,7 +3,7 @@
 
 dt = 60 ;                                  % Time interval of one minute
 GH.d.dt = dt ;
-simulation_time = 5   *60*60 ;                % Simulation time in minutes   (set to 5 hours) 
+simulation_time = 24   *60*60 ;            % Simulation time in hours 
 start_time = 0 ;                           % Start of simulation
 
 t = start_time:dt:simulation_time ;     % simulation time space
@@ -29,7 +29,7 @@ GH.p.           GHGroundArea = GH.p.GHLength * GH.p.GHWidth ;
 GH.p.           GHSideArea1 = GH.p.GHLength * GH.p.GHHeight ;
 GH.p.           GHSideArea2 = GH.p.GHWidth * GH.p.GHHeight ;
 GH.p.           GHTotalArea = GH.p.GHGroundArea + 2* GH.p.GHSideArea1 + 2* GH.p.GHSideArea2 ;
-GH.p.           WallThickness = 5 * 10^(-2) ;
+GH.p.           WallThickness = 1 * 10^(-2) ;
 
 % Temperature equations parameters
 GH.p.           h_WallOutside = 100 ; %DUMMY
