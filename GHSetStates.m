@@ -1,6 +1,6 @@
 %% Set those states homie
 
-GH.x.            AirTemperature(1) = 17 ;  % ALL DUMMY VALUES!!!
+GH.x.            AirTemperature(1) = 25 ;  % ALL DUMMY VALUES!!!
 GH.x.            WallTemperature(1) = 25 ;
 GH.x.            FloorTemperature(1) = 20 ;
 GH.x.            PlantTemperature(1) = 30 ;
