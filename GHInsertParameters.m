@@ -3,10 +3,10 @@
 
 dt = 60 ;                                  % Time interval of one minute
 GH.d.dt = dt ;
-simulation_time = 5   *60 ;                % Simulation time in minutes   (set to 5 hours) 
+simulation_time = 5   *60*60 ;                % Simulation time in minutes   (set to 5 hours) 
 start_time = 0 ;                           % Start of simulation
 
-t = start_time:dt:simulation_time*dt ;     % simulation time space
+t = start_time:dt:simulation_time ;     % simulation time space
 OutsideTemperature = 15 + 5*sin(2*pi * t/(24*60*dt)) ;  % Sinus outside temperature
 
 GH.d.Time = t ;                                 % Time as a field of GH.d
