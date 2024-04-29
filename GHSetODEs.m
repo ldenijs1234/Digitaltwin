@@ -1,5 +1,6 @@
 %   dx/dt = function(GH, i)
 
+
 function AirTemperatureDot = ODE_AirTemperature(GH, i)
     C_AirVolumeGH = GH.p.GHVolume * GH.p.rho_air * GH.p.cp_air ;
 
@@ -9,3 +10,5 @@ function AirTemperatureDot = ODE_AirTemperature(GH, i)
     AirTemperatureDot = Q/C_AirVolumeGH ;
 
 end
+
+ODE_AirTemperature(GH, 1)
