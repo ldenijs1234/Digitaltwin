@@ -7,7 +7,7 @@ simulation_time = 5   *60*60 ;                % Simulation time in minutes   (se
 start_time = 0 ;                           % Start of simulation
 
 t = start_time:dt:simulation_time ;     % simulation time space
-OutsideTemperature = 15 + 5*sin(2*pi * t/(24*60*dt)) ;  % Sinus outside temperature
+OutsideTemperature = 15 + 5*sin(2*pi * t/(24*60*60)) ;  % Sinus outside temperature
 
 GH.d.Time = t ;                                 % Time as a field of GH.d
 GH.d.OutsideTemperature = OutsideTemperature ;  % Outside temperature as a field of GH.d
@@ -16,7 +16,7 @@ GH.d.OutsideTemperature = OutsideTemperature ;  % Outside temperature as a field
 GH.p.           cp_air = 1003.5 ;
 GH.p.           rho_air = 1.2 ;
 GH.p.           GasConstantR = 8.314 ; % J/mol K
-GH.p.           StefBolzConst = 5.670374419 * 10**(-8) ; 
+GH.p.           StefBolzConst = 5.670374419 * 10^(-8) ; 
 
 % ... parameters
 GH.p.           parameter1 = 1 ;
