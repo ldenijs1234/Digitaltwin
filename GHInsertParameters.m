@@ -12,10 +12,17 @@ OutsideTemperature = 15 + 5*sin(2*pi * t/(24*60*dt)) ;
 GH.d.Time = t ;                                 % Time as a field of GH.d
 GH.d.OutsideTemperature = OutsideTemperature ;  % Outside temperature as a field of GH.d
 
-
+% General parameters
 GH.p.           cp_air = 718 ;
 GH.p.           rho_air = 1.29 ;
+GH.p.           GasConstantR = 8.314 ; % J/mol K
 
+% ... parameters
 GH.p.           parameter1 = 1 ;
 
-%faka
+% Temperature equations parameters
+
+% Humidity equations parameters
+
+% CO2 equations parameters
+
