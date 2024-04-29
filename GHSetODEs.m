@@ -17,9 +17,10 @@ function WallTemperatureDot = ODE_WallTemperature(GH, i)
 
     Q_RoofConvIn = -GH.p.h_WallInside *(GH.x.WallTemperature(i) - GH.x.AirTemperature(i)) ;
     Q_RoofConvOut = -GH.p.h_WallOutside *(GH.x.WallTemperature(i) - GH.d.OutsideTemperature(i)) ;
-    Q_rad = GH.p.AlfaGlass* GH.p.GHGroundArea*GH.d.SolarIntensity(i) ;
+    Q_solar = GH.p.AlfaGlass* GH.p.GHGroundArea*GH.d.SolarIntensity(i) ;  %!!!!!!
+    Q_rad = - GH.p.EmittanceGlass * GH.p.StefBolzConst *GH.p.GHTotalArea*(GH.x.WallTemperature(i)^4 - GH.d.SkyTemperature(i)^4) ;
 
-    Q = Q_RoofConvIn + Q_RoofConvOut + Q_rad ;% + Q_floor + Q_sky  + Q_lamp + Q_soil + Q_vent + Q_plant 
+    Q = Q_RoofConvIn + Q_RoofConvOut + Q_solar + Q_rad ;% + Q_floor + Q_sky  + Q_lamp + Q_soil + Q_vent + Q_plant 
     WallTemperatureDot = Q/C_WallsGH ;
 
 end

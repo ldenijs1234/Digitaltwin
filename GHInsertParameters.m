@@ -11,7 +11,7 @@ OutsideTemperature = 15 + 5*sin(2*pi * t/(24*60*60)) ;  % Sinus outside temperat
 
 GH.d.Time = t ;                                 % Time as a field of GH.d
 GH.d.OutsideTemperature = OutsideTemperature ;  % Outside temperature as a field of GH.d
-GH.d.SkyTemperature = GH.d.OutsideTemperature ; %!!!!
+GH.d.SkyTemperature = 0.05 * GH.d.OutsideTemperature ; %!!!!
 GH.d.SolarIntensity = 500 + 500*sin(2*pi * t/(24*60*60)) ; %!!!!
 
 % General parameters
@@ -37,7 +37,7 @@ GH.p.           WallThickness = 3 * 10^(-3) ;
 GH.p.           h_WallOutside = 100 ; %DUMMY
 GH.p.           h_WallInside = 50 ; %DUMMY
 GH.p.           AlfaGlass = 0.04 ; %DUMMY
-GH.p.           EmittanceGlass = 0.6 ; %DUMMY
+GH.p.           EmittanceGlass = 0.8 ; %DUMMY
 
 
 
