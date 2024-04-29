@@ -23,6 +23,8 @@ GH.p.           GHWidth = 10 ;
 GH.p.           GHLength = 10 ;
 GH.p.           GHHeight = 3 ;
 GH.p.           GHVolume = GH.p.GHLength*GH.p.GHWidth*GH.p.GHHeight ;
+GH.p.           GHGroundArea = GH.p.GHLength * GH.p.GHWidth ;
+GH.p.           GHTotalArea = GH.p.GHGroundArea + 2* GH.p.GHLength * GH.p.GHHeight + 2* GH.p.GHWidth * GH.p.GHHeight ;
 
 % Temperature equations parameters
 GH.p.           h_WallOutside = 100 ; %DUMMY
