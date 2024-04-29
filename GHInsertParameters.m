@@ -12,7 +12,7 @@ OutsideTemperature = 15 + 5*sin(2*pi * t/(24*60*60)) ;  % Sinus outside temperat
 GH.d.Time = t ;                                 % Time as a field of GH.d
 GH.d.OutsideTemperature = OutsideTemperature ;  % Outside temperature as a field of GH.d
 GH.d.SkyTemperature = GH.d.OutsideTemperature ; %!!!!
-GH.d.SolarIntensity = 1300 + 500*sin(2*pi * t/(24*60*60)) ; %!!!!
+GH.d.SolarIntensity = 500 + 500*sin(2*pi * t/(24*60*60)) ; %!!!!
 
 % General parameters
 GH.p.           cp_air = 1003.5 ;
