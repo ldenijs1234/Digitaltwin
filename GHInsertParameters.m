@@ -13,8 +13,8 @@ GH.d.Time = t ;                                 % Time as a field of GH.d
 GH.d.OutsideTemperature = OutsideTemperature ;  % Outside temperature as a field of GH.d
 
 % General parameters
-GH.p.           cp_air = 718 ;
-GH.p.           rho_air = 1.29 ;
+GH.p.           cp_air = 1003.5 ;
+GH.p.           rho_air = 1.2 ;
 GH.p.           GasConstantR = 8.314 ; % J/mol K
 GH.p.           StefBolzConst = 5.670374419 * 10**(-8) ; 
 
