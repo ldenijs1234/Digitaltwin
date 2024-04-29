@@ -7,7 +7,7 @@ simulation_time = 5   *60 ;                % Simulation time in minutes   (set t
 start_time = 0 ;                           % Start of simulation
 
 t = start_time:dt:simulation_time*dt ;     % simulation time space
-OutsideTemperature = 15 + 5*sin(2*pi * t/(24*60*dt)) ;
+OutsideTemperature = 15 + 5*sin(2*pi * t/(24*60*dt)) ;  % Sinus outside temperature
 
 GH.d.Time = t ;                                 % Time as a field of GH.d
 GH.d.OutsideTemperature = OutsideTemperature ;  % Outside temperature as a field of GH.d
@@ -24,7 +24,8 @@ GH.p.           parameter1 = 1 ;
 % Temperature equations parameters
 GH.p.           h_WallOutside = 100 ; %DUMMY
 GH.p.           h_WallInside = 50 ; %DUMMY
-GH.p.           Alfa = 4 ; %DUMMY
+GH.p.           AlfaGlass = 4 ; %DUMMY
+GH.p.           EmittanceGlass = 0.6 ; %DUMMY
 
 
 
