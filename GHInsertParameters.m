@@ -25,7 +25,12 @@ GH.p.           parameter1 = 1 ;
 GH.p.           h_WallOutside = 100 ; %DUMMY
 GH.p.           h_WallInside = 50 ; %DUMMY
 GH.p.           Alfa = 4 ; %DUMMY
+
+
+
 % Humidity equations parameters
+
+
 
 % CO2 equations parameters
 
