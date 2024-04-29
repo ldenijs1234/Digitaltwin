@@ -18,8 +18,11 @@ GH.p.           rho_air = 1.2 ;
 GH.p.           GasConstantR = 8.314 ; % J/mol K
 GH.p.           StefBolzConst = 5.670374419 * 10^(-8) ; 
 
-% ... parameters
-GH.p.           parameter1 = 1 ;
+% Greenhouse parameters
+GH.p.           GHWidth = 10 ;
+GH.p.           GHLength = 10 ;
+GH.p.           GHHeight = 3 ;
+GH.p.           GHVolume = GH.p.GHLength*GH.p.GHWidth*GH.p.GHHeight ;
 
 % Temperature equations parameters
 GH.p.           h_WallOutside = 100 ; %DUMMY
