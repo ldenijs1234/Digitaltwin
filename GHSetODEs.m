@@ -36,7 +36,7 @@ function FloorTemperatureDot = ODE_FloorTemperature(GH, i)
     Q_ConvFloorAir = GH.p.h_Floor * GH.p.GHFloorArea * (GH.x.FloorTemperature(i) - GH.x.AirTemperature(i)) ; %W
     Q_RadFloorSky = GH.p.TauGlass * GH.p.GHFloorArea * GH.p.EmittanceFloor * GH.p.StefBolzConst ... 
     * (GH.x.FloorTemperature(i)^4 - GH.d.SkyTemperature(i)^4) ; %W
-    Q_CondFloorGround = GH.p.GHFloorArea * GH.p.AlfaGround * (GH.x.floor)
+    Q_CondFloorGround = GH.p.GHFloorArea * GH.p.AlfaGround * (GH.x.GroundTemperature - GH.x.FloorTemperature) /  ;
 
     Q = Q_SolarFloor - Q_ConvFloorAir - Q_RadFloorSky ;
     FloorTemperatureDot = Q/C_FloorGH ;
@@ -59,21 +59,32 @@ end
 function HumidityDot = ODE_Humiditybalance(GH, i)
     CAP_Water = GH.p.GHVolume / GH.p.GHFloorArea; %m
     
-    G_c = max[0, 1.8e-3 * (GH.x.AirTemperature(i) - GH.x.WallTemperature(i))^(1/3)] ; %m/s
+    G_c = max(0, (1.8e-3 * (GH.x.AirTemperature(i) - GH.x.WallTemperature(i))^(1/3))) ; %m/s
 
     W_Trans = (1 - exp(-GH.p.C_pl,d * GH.x.DryMassPlant(i)) * GH.p.C_v,pl.ai * ...
-    (GH.p.C_v,1 / (GH.p.GasConstantR * *(GH.x.AirTemperature(i) + 273.15))) ...
-    * exp(GH.p.C_v,2 * GH.x.AirTemperature(i) / (GH.x.AirTemperature(i) + GH.p.C_v,3)) ...
+    (GH.p.C_v1 / (GH.p.GasConstantR * *(GH.x.AirTemperature(i) + 273.15))) ...
+    * exp(GH.p.C_v,2 * GH.x.AirTemperature(i) / (GH.x.AirTemperature(i) + GH.p.C_v3)) ...
     - GH.x.AirHumidity(i)) ; %kg m^-2 s^-1
     W_cond = G_c * (0.2522 * exp(0.0485 * GH.x.AirTemperature(i)) * (GH.x.AirTemperature(i) ... 
     - GH.d.OutsideTemperature) - ((5.5638 * exp(0.0572 * GH.x.AirTemperature(i))) - GH.x.AirHumidity(i))); %kg m^-2 s^-1
     W_vent = VentilationRate(GH, i) * (GH.x.AirHumidity(i) - GH.d.OutsideHumidity) ; %kg m^-2 s^-1
    
     W = W_Trans - W_cond - W_vent ;
-    HumidityDot = W/CAP_Water ; %kg m^-3 s^-1
+    HumidityDot = W / CAP_Water ; %kg m^-3 s^-1
 
 end
 
+function CO2Dot = ODE_CO2balance(GH, i)
+    CAP_CO2 = GH.p.GHVolume / GH.p.GHFloorArea; %m
+    
+    W_Trans = (1 - exp(-GH.p.C_pld * GH.x.DryMassPlant(i))) * ((GH.p.C_RadPhoto * GH.d.SolarIntensity(i) * ... 
+    ()())/(()()))
+    C_vent = VentilationRate(GH, i) * (GH.x.CO2Air(i) - GH.d.OutsideCO2) ; %kg m^-2 s^-1
+
+    C = - C_Trans - C_vent
+    CO2Dot = C / CAP_CO2 ; %kg m^-3 s^-1
+
+end
 
 % Euler Integration
 for i = 1: (length(GH.d.Time)-1)

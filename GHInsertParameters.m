@@ -15,6 +15,7 @@ GH.d.SolarIntensity = 500 + 500*sin(2*pi * t/(24*60*60)) ; %!!!!
 GH.d.WindSpeed = 4.5 * ones(1, length(t)) ; %DUMMY !!!
 GH.d.GHPlantArea = 0.5 * GH.p.GHFloorArea ; %!!!!
 GH.d.OutsideHumidity = 0.05 ; %!!!!
+GH.d.OutsideCO2 = 0.0400 ; %!!!!
 
 % General parameters
 GH.p.           cp_air = 1003.5 ;
@@ -46,7 +47,8 @@ GH.p.           GHVolume = GH.p.GHLength*GH.p.GHWidth*GH.p.GHHeight ;
 GH.p.           GHFloorArea = GH.p.GHLength * GH.p.GHWidth ;
 GH.p.           GHSideArea1 = GH.p.GHLength * GH.p.GHHeight ;
 GH.p.           GHSideArea2 = GH.p.GHWidth * GH.p.GHHeight ;
-GH.p.           GHTotalArea = GH.p.GHFloorArea + 2* GH.p.GHSideArea1 + 2* GH.p.GHSideArea2 ;
+GH.p.           GHTotalArea = GH.p.GHFloorArea + 2* GH.p.GHSideArea1 + 2* GH.p.GHSideArea2
+ ;
 
 % Temperature equations parameters
 GH.p.           h_WallOutside = 100 ; %DUMMY
@@ -59,11 +61,12 @@ GH.p.           h_Floor = 100 ; %DUMMY
 GH.p.           AlfaGround = 10 ; %DUMMY
 
 % Humidity equations parameters
-
-
+GH.p.           C_pld = 53 ; %m^2 kg^-1 (effective canopy surface)
+GH.p.           C_vplai = 3.6e-3 ; %m s^-1 (canopy transpiration mass transfer coeffiecient)
+GH.p.           C_v1 = 9348 ; %J m^-3 (parameter defining )
 
 % CO2 equations parameters
-
+GH.p.           C_RadPhoto = 3.55e10-9 ; %kg J^-1 (light use efficiency)
 
 % Ventilation parameters
 GH.p.           C_f = 0.6 ; % Discharge of energy by friction
