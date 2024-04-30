@@ -1,4 +1,5 @@
 %% Set those states homie
+%ewa gijs
 
 GH.x.            AirTemperature(1) = 25 ;  % ALL DUMMY VALUES!!!
 GH.x.            WallTemperature(1) = 25 ;
