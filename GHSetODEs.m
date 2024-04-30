@@ -38,9 +38,11 @@ plot(GH.d.Time/dt, GH.x.AirTemperature)
 hold on
 plot(GH.d.Time/dt, GH.x.WallTemperature, "y")
 plot(GH.d.Time/dt, GH.d.OutsideTemperature, "b--")
+legend("Air Temperature", "Wall Temperature", "Outside Temperature")
 
 hold off
 figure;
 hold on
 plot(GH.d.Time/dt, GH.u.Heating, "r-")
 plot(GH.d.Time/dt, GH.d.SolarIntensity, "y-")
+legend("Heating", "Solar Intensity")
