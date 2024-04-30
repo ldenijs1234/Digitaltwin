@@ -11,11 +11,11 @@ OutsideTemperature = 15 + 5*sin(2*pi * t/(24*60*60)) ;  % Sinus outside temperat
 GH.d.Time = t ;                                 % Time as a field of GH.d
 GH.d.           OutsideTemperature = OutsideTemperature ;  % Outside temperature as a field of GH.d
 GH.d.           SkyTemperature = 0.05 * GH.d.OutsideTemperature ; %!!!!
-GH.d.           SolarIntensity = 500 + 500*sin(2*pi * t/(24*60*60)) ; %!!!!
+GH.d.           SolarIntensity = max(0, 300 + 500*sin(2*pi * t/(24*60*60))) ; %!!!!
 GH.d.           WindSpeed = 4.5 * ones(1, length(t)) ; %DUMMY !!!
-GH.d.           OutsideHumidity = 0.05 ; %!!!!
-GH.d.           OutsideCO2 = 0.0400 ; %!!!!
-GH.d.           GroundTemperature = 283 ; % Kelvin, DUMMY!!!!!!!!!!!         
+GH.d.           OutsideHumidity = 0.05 * ones(1, length(t)) ; %!!!!
+GH.d.           OutsideCO2 = 0.0400 * ones(1, length(t)) ; %!!!!
+GH.d.           GroundTemperature = 10 * ones(1, length(t)) ; % Kelvin, DUMMY!!!!!!!!!!!         
 
 % General parameters
 GH.p.           cp_air = 1003.5 ;

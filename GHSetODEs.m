@@ -45,7 +45,7 @@ function FloorTemperatureDot = ODE_FloorTemperature(GH, i)
     Q_ConvFloorAir = GH.p.h_Floor * GH.p.GHFloorArea * (GH.x.FloorTemperature(i) - GH.x.AirTemperature(i)) ; %W
     Q_RadFloorSky = GH.p.TauGlass * GH.p.GHFloorArea * GH.p.EmittanceFloor * GH.p.StefBolzConst ... 
     * (GH.x.FloorTemperature(i)^4 - GH.d.SkyTemperature(i)^4) ; %W
-    Q_CondFloorGround = GH.p.GHFloorArea * GH.p.AlfaGround * (GH.d.GroundTemperature - GH.x.FloorTemperature(i)) / GH.p.LFloorGround ;
+    Q_CondFloorGround = GH.p.GHFloorArea * GH.p.AlfaGround * (GH.d.GroundTemperature(i) - GH.x.FloorTemperature(i)) / GH.p.LFloorGround ;
 
     Q = Q_SolarFloor - Q_ConvFloorAir - Q_RadFloorSky -  Q_CondFloorGround ;
     FloorTemperatureDot = Q/C_FloorGH ;
@@ -76,7 +76,7 @@ function HumidityDot = ODE_Humiditybalance(GH, i)
     - GH.x.AirHumidity(i)) ; %kg m^-2 s^-1
     W_cond = G_c * (0.2522 * exp(0.0485 * GH.x.AirTemperature(i)) * (GH.x.AirTemperature(i) ... 
     - GH.d.OutsideTemperature(i)) - ((5.5638 * exp(0.0572 * GH.x.AirTemperature(i))) - GH.x.AirHumidity(i))); %kg m^-2 s^-1
-    W_vent = VentilationRate(GH, i) * (GH.x.AirHumidity(i) - GH.d.OutsideHumidity) ; %kg m^-2 s^-1
+    W_vent = VentilationRate(GH, i) * (GH.x.AirHumidity(i) - GH.d.OutsideHumidity(i)) ; %kg m^-2 s^-1
    
     W = W_Trans - W_cond - W_vent ;
     HumidityDot = W / CAP_Water ; %kg m^-3 s^-1
@@ -90,7 +90,7 @@ function CO2Dot = ODE_CO2balance(GH, i)
     (-GH.p.C_CO21 * GH.x.AirTemperature(i)^2 + GH.p.C_CO22 * GH.x.AirTemperature(i) - GH.p.C_CO23) * (GH.x.CO2Air(i) * GH.p.C_R)) / ... 
     (GH.p.C_RadPhoto * GH.d.SolarIntensity(i) + (-GH.p.C_CO21 * GH.x.AirTemperature(i)^2 + GH.p.C_CO22 * GH.x.AirTemperature(i) - ... 
     GH.p.C_CO23) * (GH.x.CO2Air(i) * GH.p.C_R))) ;
-    C_vent = VentilationRate(GH, i) * (GH.x.CO2Air(i) - GH.d.OutsideCO2) ; %kg m^-2 s^-1
+    C_vent = VentilationRate(GH, i) * (GH.x.CO2Air(i) - GH.d.OutsideCO2(i)) ; %kg m^-2 s^-1
 
     C = - C_Trans - C_vent ;
     CO2Dot = C / CAP_CO2 ; %kg m^-3 s^-1
@@ -108,7 +108,7 @@ for i = 1: (length(GH.d.Time)-1)
     GH.x.FloorTemperature(i+1) = GH.x.FloorTemperature(i) + ODE_FloorTemperature(GH, i)*dt ;
     GH.x.PlantTemperature(i+1) = GH.x.PlantTemperature(i) + ODE_PlantTemperature(GH, i)*dt ;
     GH.x.AirHumidity(i+1) = GH.x.AirHumidity(i) + ODE_Humiditybalance(GH, i)*dt ;
-    GH.x.CO2Air(i+1) = GH.x.CO2Air(i) + ODE_CO2balance(GH, i)*dt
+    GH.x.CO2Air(i+1) = GH.x.CO2Air(i) + ODE_CO2balance(GH, i)*dt ;
 end
 
 
