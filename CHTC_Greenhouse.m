@@ -9,17 +9,18 @@ T_wall = 17; % temperature of the outside wall
 T = 20; % air temperature in celsius
 p = 1000; % air pressure in hpa
 V = 0.01; % wind speed in m/s
+h = 0; % relative humidity of the outside air
 
 %% calculted inputs for the funtion
 dT = T-T_wall; % temperature difference
-mu = AirProperties(T,p,[],'mu'); % dynamic viscosity of the air
-rho = AirProperties(T,p,[],'rho'); % density of the air
-k = AirProperties(T,p,[],'k'); % thermal conductivity 
+mu = AirProperties(T,p,h,'mu'); % dynamic viscosity of the air
+rho = AirProperties(T,p,h,'rho'); % density of the air
+k = AirProperties(T,p,h,'k'); % thermal conductivity 
 
 % beta is the derivative of the volume to temperature change and then
 % devided by the volume
 T2 = T + 0.001; % small temperature change
-rho_2 = AirProperties(T2,p,[],'rho'); % density for this slightly different temperature
+rho_2 = AirProperties(T2,p,h,'rho'); % density for this slightly different temperature
 v_1 = (1/rho)*1000; % volume for 1kg of air with the normal density
 v_2 = (1/rho_2)*1000; % volume for 1kg of air with the alterd density
 beta = ((v_2-v_1)/(T2-T))/v_1; % volumetric coefficient of expansion
