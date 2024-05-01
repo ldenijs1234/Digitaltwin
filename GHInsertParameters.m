@@ -5,13 +5,13 @@ simulation_time = 24   *60*60 ;            % Simulation time in hours
 start_time = 0 ;                           % Start of simulation
 
 t = start_time:dt:simulation_time ;     % simulation time space
-OutsideTemperature = 15 + 5*sin(2*pi * t/(24*60*60)) ;  % Sinus outside temperature
+OutsideTemperature = 15*ones(1, length(t)) ;%+ 5*sin(2*pi * t/(24*60*60)) ;  % Sinus outside temperature
 
 GH.d.Time = t ;                                 % Time as a field of GH.d
 GH.d.           OutsideTemperature = OutsideTemperature ;  % Outside temperature as a field of GH.d
 GH.d.           SkyTemperature = 1 * GH.d.OutsideTemperature ; %!!!!
-GH.d.           SolarIntensity = max(0, 200 + 300*sin(2*pi * t/(24*60*60))) ; %!!!!
-GH.d.           WindSpeed = 0 * ones(1, length(t)) ; %DUMMY !!! (4.5)
+GH.d.           SolarIntensity = 00* ones(1, length(t)) ;%max(0, 50 + 30*sin(2*pi * t/(24*60*60))) ; %!!!!
+GH.d.           WindSpeed = 2 * ones(1, length(t)) ; %DUMMY !!! (4.5)
 GH.d.           OutsideHumidity = 0.05 * ones(1, length(t)) ; %!!!!
 GH.d.           OutsideCO2 = 0.0400 * ones(1, length(t)) ; %!!!!
 GH.d.           GroundTemperature = 10 * ones(1, length(t)) ; % Kelvin, DUMMY!!!!!!!!!!!         
@@ -37,8 +37,8 @@ GH.p.           GHWallThickness = 3e-3 ; %m
 GH.p.           GHFloorThickness = 1e-2 ;	%m
 
 GH.p.           NumberOfWindows = 10 ; 
-GH.p.           WindowLength = 1 ;
-GH.p.           WindowHeight = 2 ;
+GH.p.           WindowLength = 0.2 ;
+GH.p.           WindowHeight = 0.1 ;
 GH.p.           RoofAngle = 10 ; % degrees
 
 GH.p.           WindowArea = GH.p.WindowHeight*GH.p.WindowLength ;
@@ -50,18 +50,19 @@ GH.p.           GHTotalArea = GH.p.GHFloorArea + 2* GH.p.GHSideArea1 + 2* GH.p.G
 GH.p.           GHPlantArea = 0.5 * GH.p.GHFloorArea ; %DUMMY
 
 % Temperature equations parameters
-GH.p.           h_WallOutside = 100 ; %DUMMY
-GH.p.           h_WallInside = 50 ; %DUMMY
+GH.p.           h_WallOutside = 1 ; %DUMMY
+GH.p.           h_WallInside = 5 ; %DUMMY
 GH.p.           AlfaGlass = 0.04 ; %DUMMY
 GH.p.           EmittanceGlass = 0.8 ; %DUMMY
 GH.p.           TauGlass = 0.91 ;
 GH.p.           EmittanceFloor = 0.9 ; %DUMMY
 GH.p.           h_Floor = 100 ; %DUMMY
-GH.p.           AlfaGround = 10 ; %DUMMY
+GH.p.           AlfaGround = 0.3 ; %accurate enough for prototype
 GH.p.           LFloorGround = 19e-2 ; % meter
+GH.p.           EmittanceGlassSky = GH.p.EmittanceGlass ; %DUMMY
 
 % Plant parameters
-GH.p.           h_Plant = 100 ; %DUMMY
+GH.p.           h_Plant = 1 ; %DUMMY
 GH.p.           cp_lettuce = 4020 ;
 GH.p.           EmittancePlant = 0.95 ; %DUMMY
 GH.p.           YieldFactor = 0.544 ; %- (effective CO2 use efficiency)
