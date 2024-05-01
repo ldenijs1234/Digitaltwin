@@ -1,14 +1,14 @@
 
 %%inputs from outside this code block
 W_angle = 0; % angle of the wind in degrees
-W = 4; % width of the building in meters
-L = 4; % length of the building in meters
-H = 3; % height of the building in meters
+W = GH.p.GHWidth; % width of the building in meters
+L = GH.p.GHLength; % length of the building in meters
+H = GH.p.GHHeight; % height of the building in meters
 g = 9.81; % gravitational constant
-T_wall = 17; % temperature of the outside wall
-T = 20; % air temperature in celsius
+T_wall = GH.x.WallTemperature; % temperature of the outside wall
+T = GH.d.OutsideTemperature; % air temperature in celsius
 p = 1000; % air pressure in hpa
-V = 0.01; % wind speed in m/s
+V = GH.d.WindSpeed; % wind speed in m/s
 
 %% calculted inputs for the funtion
 dT = T-T_wall; % temperature difference
