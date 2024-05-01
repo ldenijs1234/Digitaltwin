@@ -1,6 +1,6 @@
 % Bro gun parameters
 
-dt = 5 ;                                  % Time interval in seconds
+dt = 5 ;                                  % Time interval of 5 seconds
 simulation_time = 4   *60*60 ;            % Simulation time in hours 
 start_time = 0 ;                           % Start of simulation
 
@@ -50,21 +50,21 @@ GH.p.           GHTotalArea = GH.p.GHFloorArea + 2* GH.p.GHSideArea1 + 2* GH.p.G
 GH.p.           GHPlantArea = 0.3 * GH.p.GHFloorArea ; %DUMMY
 
 % Temperature equations parameters
-GH.p.           h_WallOutside = 50 ; %DUMMY
+GH.p.           h_WallOutside = 10 ; %DUMMY
 GH.p.           h_WallInside = 10 ; %DUMMY
 GH.p.           AlfaGlass = 0.04 ; %DUMMY
 GH.p.           EmittanceGlass = 0.8 ; %DUMMY
 GH.p.           TauGlass = 0.91 ;
-GH.p.           EmittanceFloor = 0.95 ; %DUMMY
-GH.p.           h_Floor = 10 ; %DUMMY
+GH.p.           EmittanceFloor = 0.9 ; %DUMMY
+GH.p.           h_Floor = 20 ; %DUMMY
 GH.p.           AlfaGround = 0.3 ; %accurate enough for prototype
 GH.p.           LFloorGround = 19e-2 ; % meter
 GH.p.           EmittanceGlassSky = GH.p.EmittanceGlass ; %DUMMY
 
 % Plant parameters
-GH.p.           h_Plant = 50 ; %DUMMY
+GH.p.           h_Plant = 5 ; %DUMMY
 GH.p.           cp_lettuce = 4020 ;
-GH.p.           EmittancePlant = 0.95 ; %DUMMY
+GH.p.           EmittancePlant = 0.90 ; %DUMMY
 GH.p.           YieldFactor = 0.544 ; %- (effective CO2 use efficiency)
 GH.p.           C_resp = 2.65e-7 ; %s^-1 (respiration rate in terms of respired dry matter)
 
