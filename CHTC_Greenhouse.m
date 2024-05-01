@@ -1,9 +1,9 @@
 
 %%inputs from outside this code block
 W_angle = 0; % angle of the wind in degrees
-W = 4; % width of the building in meters
-L = 4; % length of the building in meters
-H = 3; % height of the building in meters
+W = GH.p.GHWidth; % width of the building in meters
+L = GH.p.GHLength; % length of the building in meters
+H = GH.p.GHHeight; % height of the building in meters
 g = 9.81; % gravitational constant
 T_wall = 17; % temperature of the outside wall
 T = 20; % air temperature in celsius
@@ -122,7 +122,7 @@ h_wall_4 = exp(wall_4)*k/CL;
 h_top = exp(top)*k/CL;
 
 A = 2*L*H+2*W*H;% total area of the walls
-h_wall = (A_13*h_wall_1+A_24*h_wall_2+A_13*h_wall_3+A_24*h_wall_4)/A; % average convective heat transfer coefficient of the walls
+h_wall = (A_13*h_wall_1+A_24*h_wall_2+A_13*h_wall_3+A_24*h_wall_4)/A % average convective heat transfer coefficient of the walls
 end
 
 if V == 0 
