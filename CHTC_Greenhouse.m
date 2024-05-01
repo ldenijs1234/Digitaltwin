@@ -6,11 +6,16 @@ L = GH.p.GHLength; % length of the building in meters
 H = GH.p.GHHeight; % height of the building in meters
 g = 9.81; % gravitational constant
 T_wall = GH.x.WallTemperature; % temperature of the outside wall
-T = GH.d.OutsideTemperature; % air temperature in celsius
-p = 1000; % air pressure in hpa
-V = 0.01; % wind speed in m/s
+T = 25;%GH.d.OutsideTemperature; % air temperature in celsius
+p = 1084; % air pressure in hpa
+V = GH.d.WindSpeed; % wind speed in m/s
+h_abs = 58.1%GH.d.OutsideHumidity*1000; % absolute humidity of the outside air in g/m^3
+C = 2.16679; % constant in gK/J
 
 %% calculted inputs for the funtion
+P_w = h_abs.*(T+273.15)/C; % water vapour pressure
+P_ws = 6.116441*10^(7.591386*(T)/(T+240.7263));  % saturation vapour pressure
+h = P_w/P_ws % relative humidity for range -20 to +50 celsius
 dT = T-T_wall; % temperature difference
 mu = AirProperties(T,p,h,'mu'); % dynamic viscosity of the air
 rho = AirProperties(T,p,h,'rho'); % density of the air
