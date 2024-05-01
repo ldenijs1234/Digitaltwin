@@ -7,7 +7,6 @@ GH.x.            FloorTemperature(1) = 20 ;
 GH.x.            PlantTemperature(1) = 20 ;
 
 GH.x.            AirHumidity(1) = 0.012 ; % kg/m^3 air
-GH.x.            VentilationSpeed(1) = 0 ; % DUMMY
 
 GH.x.            CO2Air(1) = 0.0464 ; % kg/m^3 air
 GH.x.            DryMassPlant = 10 * ones(1, length(t)) ; % Dry Mass plant (CO2)
