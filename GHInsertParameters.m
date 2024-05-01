@@ -14,7 +14,7 @@ GH.p.           Kelvin = 273.15 ;
 
 % Defined constants (can also be input),  need to get a different location
 dt = 5 ;                                  % Time interval of 5 seconds
-simulation_time = 4   *60*60 ;            % Simulation time in hours 
+simulation_time = 24   *60*60 ;            % Simulation time in hours 
 start_time = 0 ;                           % Start of simulation
 
 t = start_time:dt:simulation_time ;     % simulation time space
@@ -31,8 +31,9 @@ LdCloud = epsCloud.*GH.p.StefBolzConst.*(OutsideTemperature+GH.p.Kelvin).^4;    
 
 GH.d.           SkyTemperature = (LdCloud/GH.p.StefBolzConst).^(0.25)-GH.p.Kelvin ; % Katzin
 
-GH.d.           SolarIntensity = 100* ones(1, length(t)) ;%max(0, 50 + 30*sin(2*pi * t/(24*60*60))) ; %!!!!
-GH.d.           WindSpeed = 2 * ones(1, length(t)) ; %DUMMY !!! (4.5)
+GH.d.           SolarIntensity = 1000* ones(1, length(t)) ;%max(0, 50 + 30*sin(2*pi * t/(24*60*60))) ; %!!!!
+GH.d.SolarIntensity(round(length(t)/2) : end) = 0 ;
+GH.d.           WindSpeed = 5 * ones(1, length(t)) ; %DUMMY !!! (4.5)
 GH.d.           OutsideHumidity = 0.05 * ones(1, length(t)) ; %!!!!
 GH.d.           OutsideCO2 = 0.0400 * ones(1, length(t)) ; %!!!!
 GH.d.           GroundTemperature = 10 * ones(1, length(t)) ; % DUMMY!!!!!!!!!!!         
