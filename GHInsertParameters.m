@@ -1,21 +1,4 @@
 % Bro gun parameters
-
-dt = 5 ;                                  % Time interval of 5 seconds
-simulation_time = 4   *60*60 ;            % Simulation time in hours 
-start_time = 0 ;                           % Start of simulation
-
-t = start_time:dt:simulation_time ;     % simulation time space
-OutsideTemperature = 15*ones(1, length(t)) ;%+ 5*sin(2*pi * t/(24*60*60)) ;  % Sinus outside temperature
-
-GH.d.Time = t ;                                 % Time as a field of GH.d
-GH.d.           OutsideTemperature = OutsideTemperature ;  % Outside temperature as a field of GH.d
-GH.d.           SkyTemperature = 0.05 * GH.d.OutsideTemperature ; %!!!!
-GH.d.           SolarIntensity = 500* ones(1, length(t)) ;%max(0, 50 + 30*sin(2*pi * t/(24*60*60))) ; %!!!!
-GH.d.           WindSpeed = 2 * ones(1, length(t)) ; %DUMMY !!! (4.5)
-GH.d.           OutsideHumidity = 0.05 * ones(1, length(t)) ; %!!!!
-GH.d.           OutsideCO2 = 0.0400 * ones(1, length(t)) ; %!!!!
-GH.d.           GroundTemperature = 10 * ones(1, length(t)) ; % DUMMY!!!!!!!!!!!         
-
 % General parameters
 GH.p.           cp_air = 1003.5 ; %J kg^-1 K^-1
 GH.p.           cp_glass = 840 ; %J kg^-1 K^-1
@@ -28,6 +11,33 @@ GH.p.           GasConstantR = 8.314 ; % J/mol K
 GH.p.           StefBolzConst = 5.670374419e-8 ; % W/m^2 K^4 
 GH.p.           Gravity = 9.81 ; % m/s^2 ;
 GH.p.           Kelvin = 273.15 ;
+
+% Defined constants (can also be input),  need to get a different location
+dt = 5 ;                                  % Time interval of 5 seconds
+simulation_time = 4   *60*60 ;            % Simulation time in hours 
+start_time = 0 ;                           % Start of simulation
+
+t = start_time:dt:simulation_time ;     % simulation time space
+OutsideTemperature = 15*ones(1, length(t)) ;%+ 5*sin(2*pi * t/(24*60*60)) ;  % Sinus outside temperature
+
+GH.d.Time = t ;                                 % Time as a field of GH.d
+GH.d.           OutsideTemperature = OutsideTemperature ;  % Outside temperature as a field of GH.d
+GH.d.cloud = 1 ; % 0-1
+
+LdClear = 213+5.5*OutsideTemperature;                      % Equation 5.26
+epsClear = LdClear./(GH.p.StefBolzConst*(OutsideTemperature+GH.p.Kelvin).^4);   % Equation 5.22
+epsCloud = (1-0.84*GH.d.cloud).*epsClear+0.84*GH.d.cloud; % Equation 5.32
+LdCloud = epsCloud.*GH.p.StefBolzConst.*(OutsideTemperature+GH.p.Kelvin).^4;    % Equation 5.22
+
+GH.d.           SkyTemperature = (LdCloud/GH.p.StefBolzConst).^(0.25)-GH.p.Kelvin ; % Katzin
+
+GH.d.           SolarIntensity = 100* ones(1, length(t)) ;%max(0, 50 + 30*sin(2*pi * t/(24*60*60))) ; %!!!!
+GH.d.           WindSpeed = 2 * ones(1, length(t)) ; %DUMMY !!! (4.5)
+GH.d.           OutsideHumidity = 0.05 * ones(1, length(t)) ; %!!!!
+GH.d.           OutsideCO2 = 0.0400 * ones(1, length(t)) ; %!!!!
+GH.d.           GroundTemperature = 10 * ones(1, length(t)) ; % DUMMY!!!!!!!!!!!         
+
+
 
 % Greenhouse parameters                 ALL DUMMY!!!!!!!!!!!!!
 GH.p.           GHWidth = 10 ; %m 
@@ -50,19 +60,19 @@ GH.p.           GHTotalArea = GH.p.GHFloorArea + 2* GH.p.GHSideArea1 + 2* GH.p.G
 GH.p.           GHPlantArea = 0.3 * GH.p.GHFloorArea ; %DUMMY
 
 % Temperature equations parameters
-GH.p.           h_WallOutside = 10 ; %DUMMY
-GH.p.           h_WallInside = 10 ; %DUMMY
+GH.p.           h_WallOutside = 5 ; %DUMMY
+GH.p.           h_WallInside = 1 ; %DUMMY
 GH.p.           AlfaGlass = 0.04 ; %DUMMY
 GH.p.           EmittanceGlass = 0.8 ; %DUMMY
-GH.p.           TauGlass = 0.91 ;
+GH.p.           TauGlass = 0.80 ;
 GH.p.           EmittanceFloor = 0.9 ; %DUMMY
-GH.p.           h_Floor = 20 ; %DUMMY
+GH.p.           h_Floor = 3 ; %DUMMY
 GH.p.           AlfaGround = 0.3 ; %accurate enough for prototype
 GH.p.           LFloorGround = 19e-2 ; % meter
 GH.p.           EmittanceGlassSky = GH.p.EmittanceGlass ; %DUMMY
 
 % Plant parameters
-GH.p.           h_Plant = 5 ; %DUMMY
+GH.p.           h_Plant = 1 ; %DUMMY
 GH.p.           cp_lettuce = 4020 ;
 GH.p.           EmittancePlant = 0.90 ; %DUMMY
 GH.p.           YieldFactor = 0.544 ; %- (effective CO2 use efficiency)
