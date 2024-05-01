@@ -1,3 +1,6 @@
+%Still need to include the license and copyright of this code
+%
+%
 function varargout = AirProperties(t, p, h, varargin)
 % AirProperties calculates a variety of air thermodynamic properties from 
 % measured values of temperature, pressure and humidity. 

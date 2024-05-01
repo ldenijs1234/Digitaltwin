@@ -8,18 +8,18 @@ g = 9.81; % gravitational constant
 T_wall = GH.x.WallTemperature; % temperature of the outside wall
 T = GH.d.OutsideTemperature; % air temperature in celsius
 p = 1000; % air pressure in hpa
-V = GH.d.WindSpeed; % wind speed in m/s
+V = 0.01; % wind speed in m/s
 
 %% calculted inputs for the funtion
 dT = T-T_wall; % temperature difference
-mu = AirProperties(T,p,[],'mu'); % dynamic viscosity of the air
-rho = AirProperties(T,p,[],'rho'); % density of the air
-k = AirProperties(T,p,[],'k'); % thermal conductivity 
+mu = AirProperties(T,p,h,'mu'); % dynamic viscosity of the air
+rho = AirProperties(T,p,h,'rho'); % density of the air
+k = AirProperties(T,p,h,'k'); % thermal conductivity 
 
 % beta is the derivative of the volume to temperature change and then
 % devided by the volume
 T2 = T + 0.001; % small temperature change
-rho_2 = AirProperties(T2,p,[],'rho'); % density for this slightly different temperature
+rho_2 = AirProperties(T2,p,h,'rho'); % density for this slightly different temperature
 v_1 = (1/rho)*1000; % volume for 1kg of air with the normal density
 v_2 = (1/rho_2)*1000; % volume for 1kg of air with the alterd density
 beta = ((v_2-v_1)/(T2-T))/v_1; % volumetric coefficient of expansion
@@ -121,7 +121,7 @@ h_wall_4 = exp(wall_4)*k/CL;
 h_top = exp(top)*k/CL;
 
 A = 2*L*H+2*W*H;% total area of the walls
-h_wall = (A_13*h_wall_1+A_24*h_wall_2+A_13*h_wall_3+A_24*h_wall_4)/A; % average convective heat transfer coefficient of the walls
+h_wall = (A_13*h_wall_1+A_24*h_wall_2+A_13*h_wall_3+A_24*h_wall_4)/A % average convective heat transfer coefficient of the walls
 end
 
 if V == 0 
