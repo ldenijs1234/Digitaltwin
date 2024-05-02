@@ -34,7 +34,7 @@ GH.d.           SkyTemperature = (LdCloud/GH.p.StefBolzConst).^(0.25)-GH.p.Kelvi
 GH.d.           SolarIntensity = 1000* ones(1, length(t)) ;%max(0, 50 + 30*sin(2*pi * t/(24*60*60))) ; %!!!!
 GH.d.SolarIntensity(round(length(t)/2) : end) = 0 ;
 GH.d.           WindSpeed = 5 * ones(1, length(t)) ; %DUMMY !!! (4.5)
-GH.d.           OutsideHumidity = 0.05 * ones(1, length(t)) ; %!!!!
+GH.d.           OutsideHumidity = 0.01 * ones(1, length(t)) ; %!!!!
 GH.d.           OutsideCO2 = 0.0400 * ones(1, length(t)) ; %!!!!
 GH.d.           GroundTemperature = 10 * ones(1, length(t)) ; % DUMMY!!!!!!!!!!!         
 
