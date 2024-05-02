@@ -73,8 +73,8 @@ end
 
 CL = W*L*H/(2*W*H+2*W*L+2*L*H); % caracteristic length in meters
 Re = V.*CL.*rho./mu; %reynolds number for the building
-Gr = beta.*dT.*g.*CL^3 / (mu/rho).^2; %grashoff number for the building
-x_tr = (10.^9 .* (mu./rho).^2 ./ (beta.*dT.*g)).^(1/3); % transition point from laminar to turbulent flow
+Gr = beta.*abs(dT).*g.*CL^3 / (mu/rho).^2; %grashoff number for the building
+x_tr = (10.^9 .* (mu./rho).^2 ./ (beta.*abs(dT).*g)).^(1/3); % transition point from laminar to turbulent flow
 if V ~= 0
 switch true
 
