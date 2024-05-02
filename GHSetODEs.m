@@ -17,7 +17,7 @@ function [GH, AirTemperatureDot] = ODE_AirTemperature(GH, i)
 
     Q_Heating = GH.u.Heating(i) ; %W
     Q_RoofConv = GH.p.h_WallInside * GH.p.GHTotalArea * (GH.x.WallTemperature(i) - GH.x.AirTemperature(i)) ; %W
-    Q_ConvFloorAir = GH.p.h_Floor * GH.p.GHFloorArea * (GH.x.FloorTemperature(i) - GH.x.AirTemperature(i)) ; %W
+    Q_ConvFloorAir = GH.p.h_Floor * GH.p.GHFloorArea * (GH.x.FloorLayer(i,1) - GH.x.AirTemperature(i)) ; %W
     Q_ConvPlantAir = GH.p.h_Plant * GH.p.GHPlantArea * (GH.x.PlantTemperature(i) - GH.x.AirTemperature(i)) ; %W
     VRate = VentilationRate(GH, i) ;
     Q_vent = - GH.p.WindowArea * VRate * (GH.x.AirTemperature(i) - GH.d.OutsideTemperature(i)) * GH.p.cp_air * GH.p.rho_air ;
@@ -41,7 +41,7 @@ function [GH, WallTemperatureDot] = ODE_WallTemperature(GH, i)
     Q_radWallSky = - GH.p.EmittanceGlass * GH.p.StefBolzConst * GH.p.GHTotalArea * ... 
     ((GH.x.WallTemperature(i) + GH.p.Kelvin)^4 - (GH.d.SkyTemperature(i)+ GH.p.Kelvin)^4) ; %W
     Q_RadFloorWall = (1-GH.p.TauGlass) * GH.p.GHFloorArea * GH.p.EmittanceFloor * GH.p.StefBolzConst ... 
-    * ((GH.x.FloorTemperature(i) + GH.p.Kelvin)^4 - (GH.x.WallTemperature(i) + GH.p.Kelvin)^4) ; %W
+    * ((GH.x.FloorLayer(i,1) + GH.p.Kelvin)^4 - (GH.x.WallTemperature(i) + GH.p.Kelvin)^4) ; %W
     Q_RadPlantWall = (1-GH.p.TauGlass) * GH.p.GHPlantArea * GH.p.EmittancePlant * GH.p.StefBolzConst * ... 
     ((GH.x.PlantTemperature(i) + GH.p.Kelvin)^4 - (GH.x.WallTemperature(i) + GH.p.Kelvin)^4) ; %W
  
@@ -83,9 +83,9 @@ function FloorLayerDot = ODE_FloorLayer(GH, i)
     
     %Equations for top layer:
     Q_SolarFloor = GH.p.TauGlass * GH.p.GHFloorArea * GH.d.SolarIntensity(i) ; %W  
-    Q_ConvFloorAir = - GH.p.h_Floor * GH.p.GHFloorArea * (GH.x.FloorTemperature(i) - GH.x.AirTemperature(i)) ; %W
+    Q_ConvFloorAir = - GH.p.h_Floor * GH.p.GHFloorArea * (GH.x.FloorLayer(i,1) - GH.x.AirTemperature(i)) ; %W
     Q_RadFloorWall = - GH.p.TauGlass * GH.p.GHFloorArea * GH.p.EmittanceFloor * GH.p.StefBolzConst ... 
-    * ((GH.x.FloorTemperature(i) + GH.p.Kelvin)^4 - (GH.x.WallTemperature(i) + GH.p.Kelvin)^4) ; %W
+    * ((GH.x.FloorLayer(i,1) + GH.p.Kelvin)^4 - (GH.x.WallTemperature(i) + GH.p.Kelvin)^4) ; %W
     Q_Floor2_1 = (GH.x.FloorLayer(i,2)-GH.x.FloorLayer(i,1)) * GH.p.GHFloorThickness / GH.p.KFloor ;
     
     Q = Q_Floor2_1 + Q_SolarFloor + Q_ConvFloorAir + Q_RadFloorWall ;
@@ -148,7 +148,7 @@ function DryWeightDot = ODE_DryWeight(GH, i)
     DryWeightDot = GH.p.YieldFactor*C_Trans - GH.p.C_resp*GH.x.DryMassPlant(i) * 2^(0.1*GH.x.AirTemperature(i)- 2.5) ;
 end
 
-
+"""
 % Euler Integration
 for i = 1: (length(GH.d.Time)-1)
     GH.x.VentilationRate(i) = VentilationRate(GH, i) ;
@@ -168,6 +168,7 @@ for i = 1: (length(GH.d.Time)-1)
     % GH.x.DryMassPlant(i+1) = GH.x.DryMassPlant(i) + ODE_DryWeight(GH, i)*dt ;
     % GH.x.MassPlant(i+1) = GH.x.DryMassPlant(i+1) / 0.05 ;
 end
+"""
 
 
 % Plotting
@@ -175,7 +176,7 @@ figure;
 hold on
 plot(GH.d.Time/3600, GH.x.AirTemperature)
 plot(GH.d.Time/3600, GH.x.WallTemperature, "r-")
-plot(GH.d.Time/3600, GH.x.FloorTemperature, "c-")
+plot(GH.d.Time/3600, GH.x.FloorLayer(:,1), "c-")
 plot(GH.d.Time/3600, GH.x.PlantTemperature, "g-")
 plot(GH.d.Time/3600, GH.d.OutsideTemperature, "b--")
 legend('Air Temperature', 'Wall Temperature', 'Floor Temperature', 'Plant Temperature' ,'Outside Temperature')

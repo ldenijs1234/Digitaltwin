@@ -61,7 +61,7 @@ GH.p.           GHTotalArea = GH.p.GHFloorArea + 2* GH.p.GHSideArea1 + 2* GH.p.G
 GH.p.           GHPlantArea = 0.3 * GH.p.GHFloorArea ; %DUMMY
 
 % Temperature equations parameters
-%GH.p.           h_WallOutside = 5 ; %DUMMY
+GH.p.           h_WallOutside = 5 ; %DUMMY
 GH.p.           h_WallInside = 1 ; %DUMMY
 GH.p.           AlfaGlass = 0.04 ; %DUMMY
 GH.p.           EmittanceGlass = 0.8 ; %DUMMY
