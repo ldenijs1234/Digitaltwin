@@ -20,9 +20,9 @@ start_time = 0 ;                           % Start of simulation
 t = start_time:dt:simulation_time ;     % simulation time space
 OutsideTemperature = 15*ones(1, length(t)) ;%+ 5*sin(2*pi * t/(24*60*60)) ;  % Sinus outside temperature
 
-GH.d.Time = t ;                                 % Time as a field of GH.d
+GH.d.           Time = t ;                                 % Time as a field of GH.d
 GH.d.           OutsideTemperature = OutsideTemperature ;  % Outside temperature as a field of GH.d
-GH.d.cloud = 1 ; % 0-1
+GH.d.           cloud = 1 ; % 0-1
 
 LdClear = 213+5.5*OutsideTemperature;                      % Equation 5.26
 epsClear = LdClear./(GH.p.StefBolzConst*(OutsideTemperature+GH.p.Kelvin).^4);   % Equation 5.22
@@ -32,7 +32,7 @@ LdCloud = epsCloud.*GH.p.StefBolzConst.*(OutsideTemperature+GH.p.Kelvin).^4;    
 GH.d.           SkyTemperature = (LdCloud/GH.p.StefBolzConst).^(0.25)-GH.p.Kelvin ; % Katzin
 
 GH.d.           SolarIntensity = 1000* ones(1, length(t)) ;%max(0, 50 + 30*sin(2*pi * t/(24*60*60))) ; %!!!!
-GH.d.SolarIntensity(round(length(t)/2) : end) = 0 ;
+GH.d.           SolarIntensity(round(length(t)/2) : end) = 0 ;
 GH.d.           WindSpeed = 5 * ones(1, length(t)) ; %DUMMY !!! (4.5)
 GH.d.           OutsideHumidity = 0.01 * ones(1, length(t)) ; %!!!!
 GH.d.           OutsideCO2 = 0.0400 * ones(1, length(t)) ; %!!!!
@@ -68,7 +68,7 @@ GH.p.           EmittanceGlass = 0.8 ; %DUMMY
 GH.p.           TauGlass = 0.80 ;
 GH.p.           EmittanceFloor = 0.9 ; %DUMMY
 GH.p.           h_Floor = 3 ; %DUMMY
-GH.p.           AlfaGround = 0.3 ; %accurate enough for prototype
+GH.p.           KFloor = 0.3 ; %accurate enough for prototype
 GH.p.           LFloorGround = 19e-2 ; % meter
 GH.p.           EmittanceGlassSky = GH.p.EmittanceGlass ; %DUMMY
 

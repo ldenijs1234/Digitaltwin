@@ -68,6 +68,32 @@ function FloorTemperatureDot = ODE_FloorTemperature(GH, i)
 
 end
 
+
+function FloorLayerDot = ODE_FloorLayer(GH, i)
+    C_FloorLayer = GH.p.GHFloorArea * GH.p.GHFloorThickness * GH.p.rho_floor * GH.p.cp_floor ; %calculate heat capacity of a single floorlayer
+    FloorLayerDot = zeros(1, width(GH.x.FloorLayer)) ;
+
+    %Equations for middle layers:
+    %Because 1st and last entry are top and ground layer with their own temperature determination, only take 2nd to 1st to last entries in loop.
+    for j = 2: width(GH.x.FloorLayer)-1 
+        Q_Floorup = (GH.x.FloorLayer(i, j-1) - GH.x.FloorLayer(i, j)) * GH.p.GHFloorThickness / GH.p.KFloor ; 
+        Q_Floordown = (GH.x.FloorLayer(i, j+1) - GH.x.FloorLayer(i, j)) * GH.p.GHFloorThickness / GH.p.KFloor ;
+        FloorLayerDot(j) = (Q_Floordown + Q_Floorup) / C_FloorLayer ;
+    end
+    
+    %Equations for top layer:
+    Q_SolarFloor = GH.p.TauGlass * GH.p.GHFloorArea * GH.d.SolarIntensity(i) ; %W  
+    Q_ConvFloorAir = - GH.p.h_Floor * GH.p.GHFloorArea * (GH.x.FloorTemperature(i) - GH.x.AirTemperature(i)) ; %W
+    Q_RadFloorWall = - GH.p.TauGlass * GH.p.GHFloorArea * GH.p.EmittanceFloor * GH.p.StefBolzConst ... 
+    * ((GH.x.FloorTemperature(i) + GH.p.Kelvin)^4 - (GH.x.WallTemperature(i) + GH.p.Kelvin)^4) ; %W
+    Q_Floor2_1 = (GH.x.FloorLayer(i,2)-GH.x.FloorLayer(i,1)) * GH.p.GHFloorThickness / GH.p.KFloor ;
+    
+    Q = Q_Floor2_1 + Q_SolarFloor + Q_ConvFloorAir + Q_RadFloorWall ;
+
+    FloorLayerDot(1) = Q/C_FloorLayer ;
+end
+
+
 function PlantTemperatureDot = ODE_PlantTemperature(GH, i)
     C_Plant = GH.x.MassPlant(i) * GH.p.cp_lettuce;  
 
@@ -130,7 +156,12 @@ for i = 1: (length(GH.d.Time)-1)
     GH.x.AirTemperature(i+1) = GH.x.AirTemperature(i) + AirTemperatureDot*dt ;
     [GH, WallTemperatureDot] = ODE_WallTemperature(GH, i) ;
     GH.x.WallTemperature(i+1) = GH.x.WallTemperature(i) + WallTemperatureDot*dt ;
-    GH.x.FloorTemperature(i+1) = GH.x.FloorTemperature(i) + ODE_FloorTemperature(GH, i)*dt ;
+    FloorLayerDot = ODE_FloorLayer(GH, i) ;
+    for j= 1: width(GH.x.FloorLayer) - 1
+        GH.x.FloorLayer = [GH.x.FloorLayer;zeros(1, width(GH.x.FloorLayer))] ; %append row of zeros
+        GH.x.FloorLayer(i+1, j) = GH.x.FloorLayer(i,j) + FloorLayerDot(j)*dt ;
+    end
+    
     GH.x.PlantTemperature(i+1) = GH.x.PlantTemperature(i) + ODE_PlantTemperature(GH, i)*dt ;
     GH.x.AirHumidity(i+1) = max(0, (GH.x.AirHumidity(i) + ODE_Humiditybalance(GH, i)*dt)) ;
     GH.x.CO2Air(i+1) = max(0, (GH.x.CO2Air(i) + ODE_CO2balance(GH, i)*dt)) ;
