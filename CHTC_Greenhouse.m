@@ -11,20 +11,25 @@ p = 1084; % air pressure in hpa
 V = GH.d.WindSpeed; % wind speed in m/s
 h_abs = GH.d.OutsideHumidity*1000; % absolute humidity of the outside air in g/m^3
 C = 2.16679; % constant in gK/J
+CO2 = GH.d.OutsideCO2*1000; % CO2 in the outside air in g/m^3
+mol_air = (p.*100./((T+273.15).*GH.p.GasConstantR)); % using the ideal gas law to find the amount of mol in air
+mol_co2 = CO2/44.01;
+co2 = mol_co2/mol_air
+
 
 %% calculted inputs for the funtion
 P_w = h_abs.*(T+273.15)/C; % water vapour pressure
 P_ws = 6.116441*10^(7.591386*(T)/(T+240.7263));  % saturation vapour pressure
 h = P_w/P_ws; % relative humidity for range -20 to +50 celsius
 dT = T-T_wall; % temperature difference
-mu = AirProperties(T,p,h,'mu'); % dynamic viscosity of the air
-rho = AirProperties(T,p,h,'rho'); % density of the air
-k = AirProperties(T,p,h,'k'); % thermal conductivity 
+mu = AirProperties(T,p,h,'xCO2',co2,'mu'); % dynamic viscosity of the air
+rho = AirProperties(T,p,h,'xCO2',co2,'rho'); % density of the air
+k = AirProperties(T,p,h,'xCO2',co2,'k'); % thermal conductivity 
 
 % beta is the derivative of the volume to temperature change and then
 % devided by the volume
 T2 = T + 0.001; % small temperature change
-rho_2 = AirProperties(T2,p,h,'rho'); % density for this slightly different temperature
+rho_2 = AirProperties(T2,p,h,'xCO2',co2,'rho'); % density for this slightly different temperature
 v_1 = (1./rho).*1000; % volume for 1kg of air with the normal density
 v_2 = (1./rho_2).*1000; % volume for 1kg of air with the alterd density
 beta = ((v_2-v_1)./(T2-T))./v_1; % volumetric coefficient of expansion
