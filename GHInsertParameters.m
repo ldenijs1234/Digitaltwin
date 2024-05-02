@@ -13,7 +13,7 @@ GH.p.           Gravity = 9.81 ; % m/s^2 ;
 GH.p.           Kelvin = 273.15 ;
 
 % Defined constants (can also be input),  need to get a different location
-dt = 5 ;                                  % Time interval of 5 seconds
+dt = 30 ;                                  % Time interval of 5 seconds
 simulation_time = 24   *60*60 ;            % Simulation time in hours 
 start_time = 0 ;                           % Start of simulation
 

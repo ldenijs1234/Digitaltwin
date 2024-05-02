@@ -14,5 +14,8 @@ GH.x.            MassPlant = GH.x.DryMassPlant / 0.05 ; % Assume plant = ~95% wa
    
 
 %Floor states: FloorLayer(1, :) is top layer. FloorLayer(10, :) is layer adjacent to groundtemp, Floorlayer (11, -) is groundtemp which is an externally defined parameter.
-GH.x.            FloorLayer = [GH.x.AirTemperature(1), GH.x.AirTemperature(1), GH.x.AirTemperature(1), GH.x.AirTemperature(1), GH.x.AirTemperature(1), ...
-                 GH.x.AirTemperature(1), GH.x.AirTemperature(1), GH.x.AirTemperature(1), GH.x.AirTemperature(1), GH.x.AirTemperature(1), GH.d.GroundTemperature(1)] ;
+GH.x.            FloorLayer = [GH.x.AirTemperature(1), GH.x.AirTemperature(1), GH.x.AirTemperature(1), GH.x.AirTemperature(1), GH.x.AirTemperature(1), GH.d.GroundTemperature(1)] ;
+
+
+% GH.x.            FloorLayer = [GH.x.AirTemperature(1), GH.x.AirTemperature(1), GH.x.AirTemperature(1), GH.x.AirTemperature(1), GH.x.AirTemperature(1), ...
+%                  GH.x.AirTemperature(1), GH.x.AirTemperature(1), GH.x.AirTemperature(1), GH.x.AirTemperature(1), GH.x.AirTemperature(1), GH.d.GroundTemperature(1)] ;

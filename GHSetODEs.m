@@ -157,8 +157,8 @@ for i = 1: (length(GH.d.Time)-1)
     [GH, WallTemperatureDot] = ODE_WallTemperature(GH, i) ;
     GH.x.WallTemperature(i+1) = GH.x.WallTemperature(i) + WallTemperatureDot*dt ;
     FloorLayerDot = ODE_FloorLayer(GH, i) ;
+    GH.x.FloorLayer = [GH.x.FloorLayer;zeros(1, width(GH.x.FloorLayer))] ; %append row of zeros
     for j= 1: width(GH.x.FloorLayer) - 1
-        GH.x.FloorLayer = [GH.x.FloorLayer;zeros(1, width(GH.x.FloorLayer))] ; %append row of zeros
         GH.x.FloorLayer(i+1, j) = GH.x.FloorLayer(i,j) + FloorLayerDot(j)*dt ;
     end
     
