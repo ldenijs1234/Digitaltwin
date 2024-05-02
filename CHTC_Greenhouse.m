@@ -14,7 +14,7 @@ C = 2.16679; % constant in gK/J
 CO2 = GH.d.OutsideCO2*1000; % CO2 in the outside air in g/m^3
 mol_air = (p.*100./((T+273.15).*GH.p.GasConstantR)); % using the ideal gas law to find the amount of mol in air
 mol_co2 = CO2/44.01;
-co2 = mol_co2/mol_air
+co2 = mol_co2/mol_air;
 
 
 %% calculted inputs for the funtion
@@ -144,3 +144,5 @@ if V == 0
         h_top = 0;
     end
 end
+GH.p.h_WallOutside = h_wall;
+GH.p.h_RoofOutside = h_top;

@@ -35,7 +35,7 @@ GH.d.           SolarIntensity = 1000* ones(1, length(t)) ;%max(0, 50 + 30*sin(2
 GH.d.           SolarIntensity(round(length(t)/2) : end) = 0 ;
 GH.d.           WindSpeed = 5 * ones(1, length(t)) ; %DUMMY !!! (4.5)
 GH.d.           OutsideHumidity = 0.01 * ones(1, length(t)) ; %!!!!
-GH.d.           OutsideCO2 = 0.0400 * ones(1, length(t)) ; %!!!!
+GH.d.           OutsideCO2 = 0.0012 * ones(1, length(t)) ; %!!!!
 GH.d.           GroundTemperature = 10 * ones(1, length(t)) ; % DUMMY!!!!!!!!!!!         
 
 
@@ -61,7 +61,7 @@ GH.p.           GHTotalArea = GH.p.GHFloorArea + 2* GH.p.GHSideArea1 + 2* GH.p.G
 GH.p.           GHPlantArea = 0.3 * GH.p.GHFloorArea ; %DUMMY
 
 % Temperature equations parameters
-GH.p.           h_WallOutside = 5 ; %DUMMY
+%GH.p.           h_WallOutside = 5 ; %DUMMY
 GH.p.           h_WallInside = 1 ; %DUMMY
 GH.p.           AlfaGlass = 0.04 ; %DUMMY
 GH.p.           EmittanceGlass = 0.8 ; %DUMMY
