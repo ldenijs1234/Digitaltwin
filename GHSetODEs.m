@@ -148,7 +148,7 @@ function DryWeightDot = ODE_DryWeight(GH, i)
     DryWeightDot = GH.p.YieldFactor*C_Trans - GH.p.C_resp*GH.x.DryMassPlant(i) * 2^(0.1*GH.x.AirTemperature(i)- 2.5) ;
 end
 
-"""
+
 % Euler Integration
 for i = 1: (length(GH.d.Time)-1)
     GH.x.VentilationRate(i) = VentilationRate(GH, i) ;
@@ -168,7 +168,7 @@ for i = 1: (length(GH.d.Time)-1)
     % GH.x.DryMassPlant(i+1) = GH.x.DryMassPlant(i) + ODE_DryWeight(GH, i)*dt ;
     % GH.x.MassPlant(i+1) = GH.x.DryMassPlant(i+1) / 0.05 ;
 end
-"""
+
 
 
 % Plotting
