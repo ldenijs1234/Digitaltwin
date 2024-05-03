@@ -27,3 +27,4 @@ function VentilationRate = VentilationRate(GH, T_air, WindSpeed, T_out)
 
     VentilationRate = 0.5 * (p.NumberOfWindows/p.GHFloorArea) * (v_wind^2 + v_temp^2)^(0.5) ;
 end
+
