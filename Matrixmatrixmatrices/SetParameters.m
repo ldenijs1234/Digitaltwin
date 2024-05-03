@@ -1,7 +1,6 @@
 % Set variables for matrices
 
 A_plant= 86; A_cover= 2*1100; A_floor= 300;
-cap = [3000*1.293*1000; 100*4020; A_cover*0.003*840*2500; 830*A_floor*0.2*1600];
 
 % Radiation variables
 epsilon_plant=0.8; epsilon_cover=0.7; epsilon_floor=0.77;
@@ -28,16 +27,4 @@ View = [0, 0, 0, 0;
     0, F_cp, 0, F_cf;
     0, F_fp, F_fc, 0];
 
-% Convection radiation
-h_ap = 5;  % Convection between air and plant
-h_ac = 2;  % Convection between air and cover
-h_af = 3;  % Convection between air and floor
-h_out = 10;  % Convection between outside air and greenhouse
 
-
-ConvectionCoefficientsIn = [0; h_ap; h_ac; h_af] ;
-h_matrix = ConvectionCoefficientsIn .* [ 0,0,0,0; 
-                                        1,-1,0,0 ; 
-                                        1,0,-1,0 ;
-                                        1,0,0,-1] ;
-ConvectionCoefficientsOut = [h_out] ;
