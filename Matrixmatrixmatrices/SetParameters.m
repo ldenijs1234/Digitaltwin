@@ -1,4 +1,4 @@
-% Set variables (for matrices)
+% Set variables (for matrices), parameters saved in general field 'GH' under field 'p'
 
 % Greenhouse parameters                 ALL DUMMY!!!!!!!!!!!!!
 GH.p.           GHWidth = 10 ; %m 
@@ -52,7 +52,6 @@ TauGlass = 0.80 ;
 EmittanceFloor = 0.9 ; %DUMMY
 KFloor = 0.3 ; %accurate enough for prototype
 LFloorGround = 19e-2 ; % meter
-EmittanceGlassSky = GH.p.EmittanceGlass ; %DUMMY
 
 
 
@@ -78,7 +77,7 @@ I_sun = 1300;
 emissivity = [0; epsilon_plant; epsilon_cover; epsilon_floor];
 alfa = [0; alfa_plant; alfa_cover; alfa_floor];
 rho = [0; rho_plant; rho_cover; rho_floor];
-Area = [0; A_plant; A_cover; A_floor];
+Area = [0; A_cover; A_plant; A_floor];
 Area_sun = [1; A_plant_sun; A_cover_sun; A_floor_sun];
 
 View = [0, 0, 0, 0;
