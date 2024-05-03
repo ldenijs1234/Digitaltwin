@@ -10,10 +10,12 @@ h_af = 3;  % Convection between air and floor
 h_out = 10;  % Convection between outside air and greenhouse
 
 ConvectionCoefficientsIn = [0; h_ap; h_ac; h_af] ;
-h_matrix = ConvectionCoefficientsIn .* [ 0,0,0,0;          % Convection matrix for easy calculation using temperature vector
-                                        1,-1,0,0 ; 
-                                        1,0,-1,0 ;
-                                        1,0,0,-1] ;
+
+Convection_matrix =  [ 0, 0,0,0   ;          % Convection matrix for easy calculation using temperature vector
+                       1,-1,0,0  ; 
+                       1,0,-1,0  ;
+                       1,0,0,-1] ;
+
 ConvectionCoefficientsOut = [h_out] ;
 
 
