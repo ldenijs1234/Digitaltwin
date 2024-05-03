@@ -1,7 +1,7 @@
 for i = 1:length(t) - 1
-    %Variable parameter functies
+    %Variable parameter functies (+ convection rate, ventilation rate...)
 
-    %Q function
+    %Q functions (+ convection conduction...)
     q_rad_out(:,i) = Fq_rad_out();
     Q_rad_in(:,i) = FQ_rad_in();
     Q_solar(:,1) = FQ_solar();
