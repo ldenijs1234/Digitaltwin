@@ -10,7 +10,7 @@ Temperatures(:,1) = [AirTemperature; CoverTemperature; PlantTemperature; FloorTe
 
 Humidity = 0.012 ; % kg/m^3 air
 
-CO2Air = 0.0464 ; % kg/m^3 air
+CO2Air = 0.000464 ; % kg/m^3 air
 DryMassPlant = 10  ; % Dry Mass plant (CO2)
 MassPlant = DryMassPlant / 0.05 ; % Assume plant = ~95% water, (5% Dry Mass)
 

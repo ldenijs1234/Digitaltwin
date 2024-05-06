@@ -13,4 +13,4 @@ function VentilationRate = VentilationRate(GH, i)
     VentilationRate = 0.5 * (GH.p.NumberOfWindows/GH.p.GHFloorArea) * (v_wind^2 + v_temp^2)^(0.5) ;
 end
  
-VR = VentilationRate(GH, 1)
+VentilationRate = VentilationRate(GH, 1)

@@ -144,5 +144,6 @@ if V == 0
         h_top = 0;
     end
 end
+
 GH.p.h_WallOutside = h_wall;
 GH.p.h_RoofOutside = h_top;
