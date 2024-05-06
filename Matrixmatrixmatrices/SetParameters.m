@@ -121,5 +121,5 @@ ViewArray = [0, 0, 0, 0;
                     0, F_fc, 0, F_fp;
                     0, F_pc, F_pf, 0];
 
-CAPArray = [GH.p.cp_air * GH.p.rho_air * GH.p.GHVolume; GH.p.cp_glass * GH.p.rho_glass * GH.p.GHWallThickness * GH.p.GHPtotalArea;
+CAPArray = [GH.p.cp_air * GH.p.rho_air * GH.p.GHVolume; GH.p.cp_glass * GH.p.rho_glass * GH.p.GHWallThickness * GH.p.GHTotalArea;
                             GH.p.cp_floor * GH.p.rho_floor * GH.p.GHFloorArea * 0.02; GH.p.cp_lettuce * 10]
