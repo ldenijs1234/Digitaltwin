@@ -16,10 +16,9 @@ end
 
 
 function Q = convection(hin, hout, T, T_out, Area)   % Convective heat flow array from with coefficient h with dt-matrix
-    Convection_matrix =  [ 0, 0,0,0   ;              % Convection matrix for easy calculation using temperature vector
-                           1,-1,0,0  ; 
-                           1,0,-1,0  ;
-                           1,0,0,-1] ;
+    Convection_matrix = - eye(length(T));
+    Convection_matrix(:, 1) = 1;
+    Convection_matrix(1,1) = 0;
     dT = Convection_matrix * T ;
     Q  = Area .* hin .* dT ;
     Q(1) = -sum(Q) ;                                % Convective heat flow to air
