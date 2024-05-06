@@ -1,7 +1,7 @@
 % Dynamic parameter functions
 
 % Heat capacities, can be dynamic
-cap = [3000*1.293*1000; A_cover*0.003*840*2500; 100*4020; 830*A_floor*0.2*1600];
+%cap = [3000*1.293*1000; A_cover*0.003*840*2500; 100*4020; 830*A_floor*0.2*1600];
 
 % Convection coefficients, can de dynamic
 h_ap = 5;  % Convection between air and plant
