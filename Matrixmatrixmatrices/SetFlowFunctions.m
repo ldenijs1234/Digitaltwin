@@ -8,7 +8,7 @@ function Q = convection(hin, hout, T, T_out, Area)   % Convective heat flow arra
     dT = Convection_matrix * T ;
     Q  = Area .* hin .* dT ;
     Q(1) = -sum(Q) ;                                % Convective heat flow to air
-    Q(2) = Q(2) + Area(2) * hout * (T_out - T(2)) ; 
+    Q(2) = Q(2) + Area(2) * hout * (T_out - T(2)) ; % Convective exchange with outside
 end
 
 function Q = LatentHeat(mv)    % Latent heat of evaporation of water mass flow mv
