@@ -2,10 +2,12 @@
 
 AirTemperature = 15 ;  % ALL DUMMY VALUES!!!
 CoverTemperature = 10 ;
-FloorTemperature = 20 ;
+FloorTemperature = [AirTemperature, AirTemperature, AirTemperature, AirTemperature, AirTemperature, AirTemperature, AirTemperature, AirTemperature, AirTemperature, AirTemperature, GH.d.GroundTemperature] ;
 PlantTemperature = 25 ;
 
 Temperatures(:,1) = [AirTemperature; CoverTemperature; PlantTemperature; FloorTemperature] ;
+
+
 
 
 Humidity = 0.012 ; % kg/m^3 air
