@@ -1,4 +1,4 @@
-function q = Fq_rad_out(emissivity, T)                          %imput: n, emissivity array and T(:,i)
+function q = Fq_rad_out(emissivity, T)                          %imput: emissivity array and T(:,i)
     q = 5.670374419*10^-8 * emissivity .* ((T + 273.15).^4);    %emittance of components
 end                                                             %q(:,i) = F
 
