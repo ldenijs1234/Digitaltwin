@@ -12,8 +12,8 @@ GH.u.OpenWindowAngle = 30 ;
 % Defined conditions
 
 
-OutsideTemperature = 15 ;  % Outside temperature as a field of GH.d
-cloud = 1 ; % 0-1
+OutsideTemperature = OutsideTemperature ;  % Outside temperature as a field of GH.d
+cloud = CloudCover./100 ; % 0-1 cloud cover
 
 LdClear = 213+5.5*OutsideTemperature;                      % Equation 5.26
 epsClear = LdClear./(sigma*(OutsideTemperature+273.15).^4);   % Equation 5.22

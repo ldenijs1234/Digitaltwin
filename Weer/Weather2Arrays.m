@@ -1,6 +1,6 @@
 filename = 'WeerDelft2-5.csv'; % File name of the weather data CSV file
 
-function [time_vec, OutsideTemperature, OutsideRelhumidity, SolarRadiation, Windspeed, Winddirection, Sealevelpressure] = interpolate_weather_data(filename, dt)
+function [time_vec, OutsideTemperature, OutsideRelhumidity, SolarRadiation, Windspeed, Winddirection, Sealevelpressure, CloudCover] = interpolate_weather_data(filename, dt)
     % Read the data using readtable
     tbl = readtable(filename);
     
@@ -10,6 +10,7 @@ function [time_vec, OutsideTemperature, OutsideRelhumidity, SolarRadiation, Wind
     wind_speed = table2array(tbl(:,13));
     wind_dir = table2array(tbl(:,14));  
     sealevel_pressure = table2array(tbl(:,15));
+    cloud_cover = table2array(tbl(:,17));
     solar_rad = table2array(tbl(:,18)); 
 
     % Generate a time vector for data points (modify as per actual data timing)
@@ -24,6 +25,7 @@ function [time_vec, OutsideTemperature, OutsideRelhumidity, SolarRadiation, Wind
     wind_speed_interp = interp1(time_hours, wind_speed, new_time_hours, 'linear', 'extrap');
     wind_dir_interp = interp1(time_hours, wind_dir, new_time_hours, 'linear', 'extrap');
     sealevel_pressure_interp = interp1(time_hours, sealevel_pressure, new_time_hours, 'linear', 'extrap');
+    cloud_cover_interp = interp1(time_hours, cloud_cover, new_time_hours, 'linear', 'extrap');
     solar_interp = interp1(time_hours, solar_rad, new_time_hours, 'linear', 'extrap');
 
     OutsideTemperature = temp_interp;
@@ -32,11 +34,12 @@ function [time_vec, OutsideTemperature, OutsideRelhumidity, SolarRadiation, Wind
     Windspeed = wind_speed_interp;
     Winddirection = wind_dir_interp;
     Sealevelpressure = sealevel_pressure_interp;
+    CloudCover = cloud_cover_interp;
 
     % Assign outputs
     time_vec = new_time_hours;
 end
 
-[time_vec, OutsideTemperature, OutsideRelhumidity, SolarRadiation, Windspeed, Winddirection, Sealevelpressure] = interpolate_weather_data(filename, dt);
+[time_vec, OutsideTemperature, OutsideRelhumidity, SolarRadiation, Windspeed, Winddirection, Sealevelpressure, CloudCover] = interpolate_weather_data(filename, dt);
 
 disp(OutsideTemperature(274));
