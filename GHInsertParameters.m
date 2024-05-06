@@ -80,7 +80,7 @@ GH.p.           YieldFactor = 0.544 ; %- (effective CO2 use efficiency)
 GH.p.           C_resp = 2.65e-7 ; %s^-1 (respiration rate in terms of respired dry matter)
 
 % Humidity equations parameters
-GH.p.           C_pld = 5 ; %m^2 kg^-1 (effective canopy surface)
+GH.p.           C_pld = 53 ; %m^2 kg^-1 (effective canopy surface)
 GH.p.           C_vplai = 3.6e-3 ; %m s^-1 (canopy transpiration mass transfer coefficient)
 GH.p.           C_v1 = 9348 ; %J m^-3 (parameter defining saturation water vapor pressure)
 GH.p.           C_v2 = 17.4 ; %K (parameter defining saturation water vapor pressure)    

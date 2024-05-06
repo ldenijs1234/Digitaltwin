@@ -22,8 +22,8 @@ LdCloud = epsCloud.*sigma.*(OutsideTemperature+273.15).^4;    % Equation 5.22
 
 GH.d.           SkyTemperature = (LdCloud/sigma).^(0.25)-273.15 ; % Katzin
 
-SolarIntensity =  SolarRadiation ;%max(0, 50 + 30*sin(2*pi * t/(24*60*60))) ; %!!!!
-WindSpeed = WindSpeed ;%* ones(1, length(t)) ; %DUMMY !!! (4.5)
+SolarIntensity =  cloud. * SolarRadiation ;%max(0, 50 + 30*sin(2*pi * t/(24*60*60))) ; %!!!!
+WindSpeed = 4.5 %WindSpeed ;%* ones(1, length(t)) ; %DUMMY !!! (4.5)
 GH.d.           OutsideHumidity = rh2vaporDens(OutsideTemperature, OutsideRelhumidity) ; %!!!!
 GH.d.           OutsideCO2 = 0.0012 * ones(1, length(t)) ; %!!!!
 GH.d.           GroundTemperature = 10 * ones(1, length(t)) ; % DUMMY!!!!!!!!!!!    
