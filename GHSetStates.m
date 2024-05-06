@@ -3,6 +3,8 @@
 
 GH.x.            AirTemperature(1) = 20 ;  % ALL DUMMY VALUES!!!
 GH.x.            WallTemperature(1) = 20 ;
+
+
 GH.x.            FloorTemperature(1) = 20 ;
 GH.x.            PlantTemperature(1) = 20 ;
 
