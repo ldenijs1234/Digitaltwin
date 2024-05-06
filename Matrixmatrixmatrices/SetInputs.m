@@ -25,6 +25,9 @@ GH.d.           SkyTemperature = (LdCloud/sigma).^(0.25)-273.15 ; % Katzin
 
 SolarIntensity =  (1-cloud) * SolarRadiation ;%max(0, 50 + 30*sin(2*pi * t/(24*60*60))) ; %!!!!
 WindSpeed = 4.5 ;%WindSpeed ;%* ones(1, length(t)) ; %DUMMY !!! (4.5)
-GH.d.           OutsideHumidity = 0.01 ;%rh2vaporDens(OutsideTemperature, OutsideRelhumidity) ; %!!!!
-GH.d.           OutsideCO2 = 0.0012 ;%* ones(1, length(t)) ; %!!!!
+OutsideHumidity = 0.01 ;%rh2vaporDens(OutsideTemperature, OutsideRelhumidity) ; %!!!!
+OutsideCO2 = 0.0012 ;%* ones(1, length(t)) ; %!!!!
 GH.d.           GroundTemperature = 10  ; % DUMMY!!!!!!!!!!!    
+
+
+VentilationRate = 5; 

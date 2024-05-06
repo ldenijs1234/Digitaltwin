@@ -35,6 +35,30 @@ function Q = FloorConduction(GH, i)
     end
 end
 
+function [W_trans, W_cond, W_vent] = vaporflows(GH, T_air, T_wall, T_out, H_air, H_out, DryMassPlant, VentilationRate)
+    
+    G_c = max(0, (1.8e-3 * (T_air - T_wall)^(1/3))) ; %m/s
+
+    W_trans = (1 - exp(-GH.p.C_pld * DryMassPlant)) * GH.p.C_vplai * ...
+    ((GH.p.C_v1 / (GH.p.GasConstantR * 1e3 * (T_air + 273.15))) ...
+    * exp(GH.p.C_v2 * T_air / (T_air + GH.p.C_v3)) ...
+    - H_air)  ;%kg m^-2 s^-1
+    W_cond = (G_c * (0.2522 * exp(0.0485 * T_air) * (T_air ... 
+    - T_out) - ((5.5638 * exp(0.0572 * T_air))*1000 - H_air*1000)))/1000 ; %kg m^-2 s^-1
+    W_vent = VentilationRate * (H_air - H_out) ; %kg m^-2 s^-1
+   
+
+end
+
+
+function HumidityDot = HumidityBalance(GH, W_trans, W_cond, W_vent)
+    CAP_Water = GH.p.GHVolume / GH.p.GHFloorArea; %m
+
+    W = - W_vent - W_cond + W_trans; %kg m^-2 s^-1 
+    HumidityDot = W / CAP_Water ; %kg m^-3 s^-1
+end
+
+
 
 for i = 1:length(t) - 1
     %Variable parameter functies (+ convection rate, ventilation rate...)
@@ -42,13 +66,19 @@ for i = 1:length(t) - 1
     %Q functions (+ convection conduction...)
     q_rad_out(:,i) = Fq_rad_out(EmmitanceArray, T(:,i));
     Q_rad_in(:,i) = FQ_rad_in(AbsorbanceArray, DiffuseArray, AreaArray, ViewArray, q_rad_out(:,i));
-    Q_solar(:,i) = FQ_solar(TauGlass, DiffuseArray, AbsorbanceArray, AreaSunArray,700);
+    Q_solar(:,i) = FQ_solar(TauGlass, DiffuseArray, AbsorbanceArray, AreaSunArray,200);
     Q_conv(:,i) = convection(ConvectionCoefficientsIn, ConvectionCoefficientsOut, T(:,i), OutsideTemperature, AreaArray);
     %Totale heat transfer
     Q_tot(:,i) = Q_rad_in(:,i) + Q_solar(:,i) - AreaArray .* q_rad_out(:,i) + Q_conv(:,i);
 
     %Temperatuur verandering
     T(:,i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
+
+    % Vapor flows and balance
+    [W_trans, W_cond, W_vent] = vaporflows(GH, T(1, i), T(2, i), OutsideTemperature, AddStates(1, i), OutsideHumidity, DryMassPlant, VentilationRate);
+    HumidityDot = HumidityBalance(GH, W_trans, W_cond, W_vent);
+    AddStates(1, i+1) = AddStates(1, i) + HumidityDot*dt ;
+    
 end
 
 plot(t,T)
