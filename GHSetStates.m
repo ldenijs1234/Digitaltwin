@@ -3,6 +3,8 @@
 
 GH.x.            AirTemperature(1) = 20 ;  % ALL DUMMY VALUES!!!
 GH.x.            WallTemperature(1) = 20 ;
+
+
 GH.x.            FloorTemperature(1) = 20 ;
 GH.x.            PlantTemperature(1) = 20 ;
 
@@ -19,3 +21,4 @@ GH.x.            FloorLayer = [GH.x.AirTemperature(1), GH.x.AirTemperature(1), G
 
 % GH.x.            FloorLayer = [GH.x.AirTemperature(1), GH.x.AirTemperature(1), GH.x.AirTemperature(1), GH.x.AirTemperature(1), GH.x.AirTemperature(1), ...
 %                  GH.x.AirTemperature(1), GH.x.AirTemperature(1), GH.x.AirTemperature(1), GH.x.AirTemperature(1), GH.x.AirTemperature(1), GH.d.GroundTemperature(1)] ;
+
