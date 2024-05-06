@@ -6,7 +6,7 @@ FloorTemperature = [AirTemperature; AirTemperature; AirTemperature; AirTemperatu
  AirTemperature; AirTemperature; AirTemperature; AirTemperature; GH.d.GroundTemperature] ;
 PlantTemperature = 25 ;
 
-Temperatures(:,1) = [AirTemperature; CoverTemperature; PlantTemperature; FloorTemperature] ;
+Temperatures = [AirTemperature; CoverTemperature; PlantTemperature; FloorTemperature] ;
 
 
 

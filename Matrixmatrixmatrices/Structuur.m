@@ -11,7 +11,7 @@ end
 
 function Q = FQ_solar(transmission, diffuse, absorbance, Areasun, Isun)     %input: transmission of the cover, parameter arrays and I_sun(i)
     Q = [0; transmission; 1; transmission] .* absorbance .* Areasun * Isun; %absorbed sun radiation by each object
-    Q(1,:) = sum(diffuse(3:end,:) .* Areasun(3:end,:) * Isun)               %inside air recieves diffused sun radiation of everything except cover
+    Q(1,:) = sum(diffuse(3:end,:) .* Areasun(3:end,:) * Isun)     ;          %inside air recieves diffused sun radiation of everything except cover
 end
 
 
@@ -23,7 +23,8 @@ function Q = convection(hin, hout, T, T_out, Area)   % Convective heat flow arra
     dT = Convection_matrix * T ;
     Q  = Area .* hin .* dT ;
     Q(1) = -sum(Q) ;                                % Convective heat flow to air
-    Q(2,:) = Q(2,:) + Area(2) * hout * (T_out - T(2,:)) ; 
+    Q_out = Area(2) * hout * (T_out - T(2)) ;       % Convection with outside air
+    Q(2) = Q(2) + Q_out; 
 end
 
 
@@ -33,13 +34,13 @@ for i = 1:length(t) - 1
     %Q functions (+ convection conduction...)
     q_rad_out(:,i) = Fq_rad_out(EmmitanceArray, T(:,i));
     Q_rad_in(:,i) = FQ_rad_in(AbsorbanceArray, DiffuseArray, AreaArray, ViewArray, q_rad_out(:,i));
-    Q_solar(:,1) = FQ_solar(TauGlass, DiffuseArray, AbsorbanceArray, AreaSunArray,700);
+    Q_solar(:,i) = FQ_solar(TauGlass, DiffuseArray, AbsorbanceArray, AreaSunArray,700);
     Q_conv(:,i) = convection(ConvectionCoefficientsIn, ConvectionCoefficientsOut, T(:,i), OutsideTemperature, AreaArray);
     %Totale heat transfer
-    Q_tot(:,i) = Q_rad_in(:,i) + Q_solar(:,i) - Area .* q_rad_out(:,i) + Q_conv(:,i);
+    Q_tot(:,i) = Q_rad_in(:,i) + Q_solar(:,i) - AreaArray .* q_rad_out(:,i) + Q_conv(:,i);
 
     %Temperatuur verandering
-    T(:,i + 1) = T(:,i) + Q_tot(:,i) ./ Cap * dt;
+    T(:,i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
 end
 
 plot(t,T)
