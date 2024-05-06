@@ -27,6 +27,14 @@ function Q = convection(hin, hout, T, T_out, Area)   % Convective heat flow arra
     Q(2) = Q(2) + Q_out; 
 end
 
+function Q = FloorConduction(GH, i)
+    for j = 5:13 %Top layer has more complex heat balance, bottom layer is ground layer so take 5-13
+        Qup = (Temperatures(j-1, i) - Temperatures(j,i)) / GH.p.GHFloorThickness * GH.p.KFloor %Heat flow from upper layer to j-th layer
+        Qdown = (Temperatures(j+1,i) - Temperatures(j,i)) / GH.p.GHFloorThickness * GH.p.KFloor %Heat flow from lower layer to j-th layer
+        Q(j, i) = Qup + Qdown %heat balance in j-th layer
+    end
+end
+
 
 for i = 1:length(t) - 1
     %Variable parameter functies (+ convection rate, ventilation rate...)
