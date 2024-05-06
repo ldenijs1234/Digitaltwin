@@ -1,4 +1,4 @@
-run("SetModel")
+run("SetInputs")
 % SetParameters
 % SetDynParameters
 % SetInputs
