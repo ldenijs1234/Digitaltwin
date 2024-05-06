@@ -63,6 +63,7 @@ GH.p.           GHPlantArea = 0.3 * GH.p.GHFloorArea ; %DUMMY
 GH.p.           cp_lettuce = 4020 ;
 GH.p.           EmittancePlant = 0.90 ; %DUMMY
 GH.p.           AbsorbancePlant = 0.90 ; %DUMMY
+GH.p.           DiffusePlant = 1 - GH.p.AbsorbancePlant;
 GH.p.           YieldFactor = 0.544 ; %- (effective CO2 use efficiency)
 GH.p.           C_resp = 2.65e-7 ; %s^-1 (respiration rate in terms of respired dry matter)
 
@@ -107,7 +108,7 @@ GH.p.           BetaAir = 1/283 ; % Thermal expansion coefficient
 EmmitanceArray = [0; GH.p.EmittanceGlass; GH.p.EmittanceFloor; GH.p.EmittancePlant];
 AbsorbanceArray = [0; GH.p.AbsorbanceGlass; GH.p.AbsorbanceFloor; GH.p.AbsorbancePlant];
 DiffuseArray = [0; GH.p.DiffuseGlass; GH.p.DiffuseFloor; GH.p.DiffusePlant];
-AreaArray = [0; GH.p.GHPtotalArea; GH.p.GHFloorArea; GH.p.GHPlantArea];
+AreaArray = [0; GH.p.GHTotalArea; GH.p.GHFloorArea; GH.p.GHPlantArea];
 AreaSunArray = [0; GH.p.GHFloorArea; (0.7*GH.p.GHFloorArea); GH.p.GHPlantArea];
 
 % Viewing vectors and Areas
@@ -120,5 +121,5 @@ ViewArray = [0, 0, 0, 0;
                     0, F_fc, 0, F_fp;
                     0, F_pc, F_pf, 0];
 
-CAPArray = [GH.p.cp_air * GH.p.rho_air * GH.p.GHVolume; GH.p.cp_glass * GH.p.rho_glass * GHWallThickness * GH.p.GHPtotalArea;
+CAPArray = [GH.p.cp_air * GH.p.rho_air * GH.p.GHVolume; GH.p.cp_glass * GH.p.rho_glass * GH.p.GHWallThickness * GH.p.GHPtotalArea;
                             GH.p.cp_floor * GH.p.rho_floor * GH.p.GHFloorArea * 0.02; GH.p.cp_lettuce * 10]
