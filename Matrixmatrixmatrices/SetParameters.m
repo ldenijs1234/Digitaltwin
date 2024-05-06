@@ -9,34 +9,10 @@ GH.p.           rho_glass = 2500 ; %kg m^-3
 GH.p.           rho_floor = 2000 ; %DUMMY
 GH.p.           GasConstantR = 8.314 ; % J/mol K
 GH.p.           StefBolzConst = 5.670374419e-8 ; % W/m^2 K^4 
+sigma = 5.670374419e-8 ;
 GH.p.           Gravity = 9.81 ; % m/s^2 ;
 GH.p.           Kelvin = 273.15 ;
 
-% Defined constants (can also be input),  need to get a different location
-dt = 30 ;                                  % Time interval of 5 seconds
-simulation_time = 24   *60*60 ;            % Simulation time in hours 
-start_time = 0 ;                           % Start of simulation
-
-t = start_time:dt:simulation_time ;     % simulation time space
-OutsideTemperature = 15*ones(1, length(t)) ;%+ 5*sin(2*pi * t/(24*60*60)) ;  % Sinus outside temperature
-
-GH.d.           Time = t ;                                 % Time as a field of GH.d
-GH.d.           OutsideTemperature = OutsideTemperature ;  % Outside temperature as a field of GH.d
-GH.d.           cloud = 1 ; % 0-1
-
-LdClear = 213+5.5*OutsideTemperature;                      % Equation 5.26
-epsClear = LdClear./(GH.p.StefBolzConst*(OutsideTemperature+GH.p.Kelvin).^4);   % Equation 5.22
-epsCloud = (1-0.84*GH.d.cloud).*epsClear+0.84*GH.d.cloud; % Equation 5.32
-LdCloud = epsCloud.*GH.p.StefBolzConst.*(OutsideTemperature+GH.p.Kelvin).^4;    % Equation 5.22
-
-GH.d.           SkyTemperature = (LdCloud/GH.p.StefBolzConst).^(0.25)-GH.p.Kelvin ; % Katzin
-
-GH.d.           SolarIntensity = 1000* ones(1, length(t)) ;%max(0, 50 + 30*sin(2*pi * t/(24*60*60))) ; %!!!!
-GH.d.           SolarIntensity(round(length(t)/2) : end) = 0 ;
-GH.d.           WindSpeed = 5 * ones(1, length(t)) ; %DUMMY !!! (4.5)
-GH.d.           OutsideHumidity = 0.01 * ones(1, length(t)) ; %!!!!
-GH.d.           OutsideCO2 = 0.0012 * ones(1, length(t)) ; %!!!!
-GH.d.           GroundTemperature = 10 * ones(1, length(t)) ; % DUMMY!!!!!!!!!!!      
 % Set variables (for matrices), parameters saved in general field 'GH' under field 'p'
 
 % Greenhouse parameters                 ALL DUMMY!!!!!!!!!!!!!
@@ -122,5 +98,5 @@ ViewArray = [0, 0, 0, 0;
                     0, F_pc, F_pf, 0];
 
 CAPArray = [GH.p.cp_air * GH.p.rho_air * GH.p.GHVolume; GH.p.cp_glass * GH.p.rho_glass * GH.p.GHWallThickness * GH.p.GHTotalArea;
-            GH.p.cp_floor * GH.p.rho_floor * GH.p.GHFloorArea * 0.02; GH.p.cp_lettuce * 10]
+            GH.p.cp_floor * GH.p.rho_floor * GH.p.GHFloorArea * 0.02; GH.p.cp_lettuce * 10] ;
               
