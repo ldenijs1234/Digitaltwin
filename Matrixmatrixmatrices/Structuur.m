@@ -111,7 +111,7 @@ for i = 1:length(t) - 1
     T(:,i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
 
     % Vapor flows and balance
-    [W_trans(i), W_cond(i), W_vent(i)] = vaporflows(GH, T(1, i), T(2, i), OutsideTemperature, AddStates(1, i), OutsideHumidity, DryMassPlant, VentilationRate);
+    [W_trans(i), W_cond(i), W_vent(i)] = vaporflows(GH, T(1, i), T(3, i), OutsideTemperature, AddStates(1, i), OutsideHumidity, DryMassPlant, VentilationRate);
     HumidityDot = HumidityBalance(GH, W_trans(i), W_cond(i), W_vent(i));
     AddStates(1, i+1) = AddStates(1, i) + HumidityDot*dt ;
     
