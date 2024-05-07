@@ -33,6 +33,7 @@ end
 
 function [Q, QFloor] = FGroundConduction(GH, i, FloorTemperature, T)
     Q = zeros(height(T), 1) ;
+    FloorTemperature(1, i) = T(3) ;
     for j = 2:10 %Top layer has more complex heat balance, bottom layer is ground layer so take 5-13
         Qup = (FloorTemperature(j-1, i) - FloorTemperature(j,i)) / GH.p.GHFloorThickness * GH.p.KFloor ;%Heat flow from upper layer to j-th layer
         Qdown = (FloorTemperature(j+1,i) - FloorTemperature(j,i)) / GH.p.GHFloorThickness * GH.p.KFloor ;%Heat flow from lower layer to j-th layer
@@ -76,7 +77,7 @@ end
 for i = 1:length(t) - 1
     %Variable parameter functions (+ convection rate, ventilation rate...)
 
-    [Q_ground(:, i), QFloor(:, i)] = FGroundConduction(GH, i, FloorTemperature, T) ;
+    [Q_ground(:, i), QFloor(:, i)] = FGroundConduction(GH, i, FloorTemperature(: i), T(:, i)) ;
     for j = 2:10
         FloorTemperature(j,i+1) = FloorTemperature(j,i) + QFloor(j) / (CAPArray(3) / GH.p.GHFloorArea) * dt ;
     end
@@ -91,7 +92,7 @@ for i = 1:length(t) - 1
     
 
     %Total heat transfer
-    Q_tot(:,i) = Q_vent(:, i) + Q_rad_in(:,i) + Q_solar(:,i) - AreaArray .* q_rad_out(:,i) + Q_conv(:,i);
+    Q_tot(:,i) = Q_vent(:, i) + Q_rad_in(:,i) + Q_solar(:,i) - AreaArray .* q_rad_out(:,i) + Q_conv(:,i) + Q_ground(:, i);
 
     % Temperature Change
     T(:,i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
@@ -109,4 +110,4 @@ legend('T air', 'T cover', 'T floor', 'T plant')
 hold off
 
 figure;
-plot(t(1:end-1), W_vent)
+plot(t, FloorTemperature)
