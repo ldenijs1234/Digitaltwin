@@ -38,24 +38,34 @@ GH.p.           GHPlantArea = 0.3 * GH.p.GHFloorArea ; %DUMMY
 % Plant parameters
 GH.p.           cp_lettuce = 4020 ;
 GH.p.           EmittancePlant = 0.90 ; %DUMMY
-GH.p.           AbsorbancePlant = 0.90 ; %DUMMY
-GH.p.           DiffusePlant = 1 - GH.p.AbsorbancePlant;
+GH.p.           SOLARAbsorbancePlant = 0.65 ; %DUMMY
+GH.p.           FIRAbsorbancePlant = 0.78 ; %DUMMY
+GH.p.           SOLARDiffusePlant = 1 - GH.p.SOLARAbsorbancePlant;
+GH.p.           FIRDiffusePlant = 1 - GH.p.FIRAbsorbancePlant
 GH.p.           YieldFactor = 0.544 ; %- (effective CO2 use efficiency)
 GH.p.           C_resp = 2.65e-7 ; %s^-1 (respiration rate in terms of respired dry matter)
 
 % Glass parameters
-GH.p.           AbsorbanceGlass = 0.04 ; %DUMMY
+GH.p.           SOLARAbsorbanceGlass = 0.04 ; %DUMMY
+GH.p.           FIRAbsorbanceGLass = 0.85; %DUMMY
 GH.p.           EmittanceGlass = 0.8 ; %DUMMY
-GH.p.           TauGlass = 0.80 ; %DUMMY
-                TauGlass = 0.80;
-GH.p.           DiffuseGlass = 1 - GH.p.AbsorbanceGlass - GH.p.TauGlass;
+GH.p.           SOLARTauGlass = 0.80 ; %DUMMY
+                SOLARTauGlass = 0.80;
+GH.p.           SOLARDiffuseGlass = 1 - GH.p.SOLARAbsorbanceGlass - GH.p.SOLARTauGlass;
+GH.p.           FIRDiffuseGlass = 1 - GH.p.FIRAbsorbanceGlass;
 
 % Floor parameters
-GH.p.           AbsorbanceFloor = 0.9; %DUMMY
+GH.p.           SOLARAbsorbanceFloor = 0.5; %DUMMY
+GH.p.           FIRAbsorbanceFloor = 0.15; %DUMMY
 GH.p.           EmittanceFloor = 0.9 ; %DUMMY
-GH.p.           DiffuseFloor = 1 - GH.p.AbsorbanceFloor;
+GH.p.           SOLARDiffuseFloor = 1 - GH.p.SOLARAbsorbanceFloor;
+GH.p.           FIRDiffuseFloor = 1 - GH.p.FIRAbsorbanceFloor
 GH.p.           KFloor = 0.3 ; %accurate enough for prototype
 GH.p.           LFloorGround = 19e-2 ; % meter
+
+% Heatingpipe parameters
+
+GH.p.           EmittancePipe = 0.88; %DUMMY
 
 
 % Humidity equations parameters
@@ -81,11 +91,13 @@ GH.p.           BetaAir = 1/283 ; % Thermal expansion coefficient
 
 
 
-EmmitanceArray = [0; GH.p.EmittanceGlass; GH.p.EmittanceGlass; GH.p.EmittanceFloor; GH.p.EmittancePlant];
-AbsorbanceArray = [0; GH.p.AbsorbanceGlass; GH.p.AbsorbanceGlass; GH.p.AbsorbanceFloor; GH.p.AbsorbancePlant];
-DiffuseArray = [0; GH.p.DiffuseGlass; GH.p.DiffuseGlass; GH.p.DiffuseFloor; GH.p.DiffusePlant];
-AreaArray = [0; GH.p.GHTotalArea-GH.p.GHFloorArea; GH.p.GHFloorArea; GH.p.GHFloorArea; GH.p.GHPlantArea];
-AreaSunArray = [0; GH.p.GHFloorArea; 0; (0.7*GH.p.GHFloorArea); GH.p.GHPlantArea];
+EmmitanceArray = [0; GH.p.EmittanceGlass; GH.p.EmittanceFloor; GH.p.EmittancePlant];
+SOLARAbsorbanceArray = [0; GH.p.SOLARAbsorbanceGlass; GH.p.SOLARAbsorbanceFloor; GH.p.SOLARAbsorbancePlant];
+FIRAbsorbanceArray = [0; GH.p.FIRAbsorbanceGlass; GH.p.FIRAbsorbanceFloor; GH.p.FIRAbsorbancePlant];
+SOLARDiffuseArray = [0; GH.p.SOLARDiffuseGlass; GH.p.SOLARDiffuseFloor; GH.p.SOLARDiffusePlant];
+FIRDiffuseArray = [0; GH.p.FIRDiffuseGlass; GH.p.FIRDiffuseFloor; GH.p.FIRDiffusePlant];
+AreaArray = [0; GH.p.GHTotalArea; GH.p.GHFloorArea; GH.p.GHPlantArea];
+AreaSunArray = [0; GH.p.GHFloorArea; (0.7*GH.p.GHFloorArea); GH.p.GHPlantArea];
 
 % Viewing vectors and Areas
 
@@ -100,7 +112,6 @@ ViewArray = [0, 0, 0, 0;
                     0, F_fc, 0, F_fp;
                     0, F_pc, F_pf, 0];
 
-CAPArray = [GH.p.cp_air * GH.p.rho_air * GH.p.GHVolume; GH.p.cp_glass * GH.p.rho_glass * GH.p.GHWallThickness * (GH.p.GHTotalArea - GH.p.GHFloorArea);
-            GH.p.cp_glass * GH.p.rho_glass * GH.p.GHWallThickness * GH.p.GHFloorArea; 
-            GH.p.cp_floor * GH.p.rho_floor * GH.p.GHFloorArea * GH.p.GHFloorThickness; GH.p.cp_lettuce * 10] ;
+CAPArray = [GH.p.cp_air * GH.p.rho_air * GH.p.GHVolume; GH.p.cp_glass * GH.p.rho_glass * GH.p.GHWallThickness * GH.p.GHTotalArea;
+            GH.p.cp_floor * GH.p.rho_floor * GH.p.GHFloorArea * 0.02; GH.p.cp_lettuce * 10] ;
               

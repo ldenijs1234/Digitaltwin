@@ -90,15 +90,15 @@ end
 
 for i = 1:length(t) - 1
     %Variable parameter functions (+ convection rate, ventilation rate...)
-    FloorTemperature(1, i) = T(3, i) ;
+    FloorTemperature(1, i) = T(4, i) ;
     [Q_ground(:, i), QFloor(:, i)] = FGroundConduction(GH, FloorTemperature(:, i), T(:, i)) ;
 
     FloorTemperature(:, i+1) = FloorTemperature(:, i) + QFloor(:, i) / (CAPArray(4) / GH.p.GHFloorArea) * dt ;
 
     %Q functions (+ convection conduction...)
     q_rad_out(:,i) = Fq_rad_out(EmmitanceArray, T(:,i));
-    Q_rad_in(:,i) = FQ_rad_in(AbsorbanceArray, DiffuseArray, AreaArray, ViewArray, q_rad_out(:,i));
-    Q_solar(:,i) = FQ_solar(TauGlass, DiffuseArray, AbsorbanceArray, AreaSunArray,200);
+    Q_rad_in(:,i) = FQ_rad_in(FIRAbsorbanceArray, FIRDiffuseArray, AreaArray, ViewArray, q_rad_out(:,i));
+    Q_solar(:,i) = FQ_solar(SOLARTauGlass, SOLARDiffuseArray, SOLARAbsorbanceArray, AreaSunArray,200);
     Q_conv(:,i) = convection(ConvectionCoefficientsIn, ConvectionCoefficientsOut, T(:,i), OutsideTemperature, AreaArray);
     Q_vent(1, i) = HeatByVentilation(GH, T(1, i), OutsideTemperature, VentilationRate) ;
     Q_vent(2: height(T), i) = zeros(height(T)-1, 1) ;
