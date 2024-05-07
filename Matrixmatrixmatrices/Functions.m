@@ -11,7 +11,7 @@ end
 
 function Q = FQ_outside(transmission, diffuse, absorbance, Area, I)     %input: transmission of the cover, parameter arrays and I_sun(i)
     Q = [0; 1; transmission; transmission] .* absorbance .* Area * I; %absorbed sun radiation by each object
-    Q(1,:) = sum(diffuse(3:end,:) .* Area(3:end,:) * Isun)               %inside air recieves diffused sun radiation of everything except cover
+    Q(1,:) = sum(diffuse(3:end,:) .* Area(3:end,:) * Isun)     ;          %inside air recieves diffused sun radiation of everything except cover
 end
 
 

@@ -16,7 +16,7 @@ end
 
 
 function Q = FQ_solar(transmission, diffuse, absorbance, Areasun, Isun)     %input: transmission of the cover, parameter arrays and I_sun(i)
-    Q = [0; 1;transmission; transmission] .* absorbance .* Areasun * Isun; %absorbed sun radiation by each object
+    Q = transmission .* absorbance .* Areasun * Isun; %absorbed sun radiation by each object
     Q(1,:) = sum(diffuse(3:end,:) .* Areasun(3:end,:) * Isun)     ;          %inside air recieves diffused sun radiation of everything except cover
 end
 
@@ -82,12 +82,12 @@ for i = 1:length(t) - 1
     FloorTemperature(1, i) = T(4, i) ;
     [Q_ground(:, i), QFloor(:, i)] = FGroundConduction(GH, FloorTemperature(:, i), T(:, i)) ;
 
-    FloorTemperature(:, i+1) = FloorTemperature(:, i) + QFloor(:, i) / (CAPArray(4) / GH.p.GHFloorArea) * dt ;
+    FloorTemperature(:, i+1) = FloorTemperature(:, i) + QFloor(:, i) * GH.p.GHFloorArea / CAPArray(4) * dt ;
 
     %Q functions (+ convection conduction...)
     q_rad_out(:,i) = Fq_rad_out(EmmitanceArray, T(:,i));
     Q_rad_in(:,i) = FQ_rad_in(FIRAbsorbanceArray, FIRDiffuseArray, AreaArray, ViewArray, q_rad_out(:,i));
-    Q_solar(:,i) = FQ_solar(SOLARTauGlass, SOLARDiffuseArray, SOLARAbsorbanceArray, AreaSunArray,200);
+    Q_solar(:,i) = FQ_solar(TransmissionArray, SOLARDiffuseArray, SOLARAbsorbanceArray, AreaSunArray,200);
     Q_conv(:,i) = convection(ConvectionCoefficientsIn, ConvectionCoefficientsOut, T(:,i), OutsideTemperature, AreaArray);
     Q_vent(1, i) = HeatByVentilation(GH, T(1, i), OutsideTemperature, VentilationRate) ;
     Q_vent(2: height(T), i) = zeros(height(T)-1, 1) ;
@@ -108,7 +108,7 @@ end
 
 figure;
 plot(t,T)
-legend('T air', 'T cover', 'T floor', 'T plant')
+legend('T air', 'T cover','T_walls', 'T floor', 'T plant')
 hold off
 
 figure;
