@@ -21,7 +21,7 @@ mol_co2 = CO2/44.01;
 co2 = mol_co2/mol_air;
 P_w = h_abs.*(T+273.15)/C; % water vapour pressure
 P_ws = 6.116441*10^(7.591386*(T)/(T+240.7263));  % saturation vapour pressure
-h = P_w/P_ws; % relative humidity for range -20 to +50 celsius
+h = P_w/P_ws % relative humidity for range -20 to +50 celsius
 dT = T-T_wall; % temperature difference
 mu = AirProperties(T,p,h,'xCO2',co2,'mu'); % dynamic viscosity of the air
 rho = AirProperties(T,p,h,'xCO2',co2,'rho'); % density of the air
@@ -41,7 +41,7 @@ CL_r = W*L/(2*L+2*W); % caracteristic length of the roof
 Re = V.*CL.*rho./mu; %reynolds number for the building
 Gr = beta.*abs(dT).*g.*CL^3 / (mu/rho).^2; %grashoff number for the building
 x_tr = (10.^9 .* (mu./rho).^2 ./ (beta.*abs(dT).*g)).^(1/3); % transition point from laminar to turbulent flow
-Ra = g.*beta.*abs(dT).*CL_r^3 ./((mu/rho).*alpha) % Raleigh number 
+Ra = g.*beta.*abs(dT).*CL_r^3 ./((mu/rho).*alpha); % Raleigh number 
 
 %%desiding which wall(s) are in the wind and which are not.
 if 0 <= W_angle <= 45
