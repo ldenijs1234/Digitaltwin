@@ -89,7 +89,7 @@ AreaSunArray = [0; GH.p.GHFloorArea; (0.7*GH.p.GHFloorArea); GH.p.GHPlantArea];
 
 % Viewing vectors and Areas
 
-F_pc=0.6; F_pf=0.4; F_cp=0.3;
+F_pc=0.6; F_pf=0.4; F_cf=0.3;
 F_cp = F_pc * GH.p.GHPlantArea / GH.p.GHTotalArea;
 F_fp = F_pf * GH.p.GHPlantArea / GH.p.GHFloorArea;
 F_fc = F_cf * GH.p.GHTotalArea / GH.p.GHFloorArea;
