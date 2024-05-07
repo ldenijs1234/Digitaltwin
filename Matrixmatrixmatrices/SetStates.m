@@ -2,15 +2,15 @@
 
 AirTemperature = 15 ;  % ALL DUMMY VALUES!!!
 CoverTemperature = 10 ;
-PlantTemperature = 25 ;
+PlantTemperature = 20 ;
 %FloorTemperature initialisation:
 FloorTempIntVar = (AirTemperature - GH.d.GroundTemperature(1))/10;
-% display(FloorTempIntVar)
+display(FloorTempIntVar)
 FloorTemperature = [AirTemperature; AirTemperature-FloorTempIntVar*1; AirTemperature-FloorTempIntVar*2; AirTemperature-FloorTempIntVar*3; AirTemperature-FloorTempIntVar*4; ...
  AirTemperature-FloorTempIntVar*5; AirTemperature-FloorTempIntVar*6; AirTemperature-FloorTempIntVar*7; AirTemperature-FloorTempIntVar*8;...
   AirTemperature-FloorTempIntVar*9; GH.d.GroundTemperature(1)] ;
-Temperatures = [AirTemperature; CoverTemperature; PlantTemperature; FloorTemperature] ;
-% display(Temperatures)
+T(:,1) = [AirTemperature; CoverTemperature; FloorTemperature; PlantTemperature] ;
+display(AirTemperature);
 
 
 

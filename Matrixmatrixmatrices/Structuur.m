@@ -39,17 +39,22 @@ function Q = FloorConduction(GH, i)
     end
 end
 
+function Q = HeatByVentilation(GH, T_air, T_out, VentilationRate)
+    massflow = GH.p.rho_air * GH.p.NumberOfWindows*GH.p.WindowArea * VentilationRate ;
+    Q = (T_out - T_air) * massflow ;
+end
+
 function [W_trans, W_cond, W_vent] = vaporflows(GH, T_air, T_wall, T_out, H_air, H_out, DryMassPlant, VentilationRate)
     
-    G_c = max(0, (1.8e-3 * (T_air - T_wall)^(1/3))) ; %m/s
+    G_c = 1.8e-3 * (max(0, (T_air - T_wall)))^(1/3) ; %m/s
 
     W_trans = (1 - exp(-GH.p.C_pld * DryMassPlant)) * GH.p.C_vplai * ...
     ((GH.p.C_v1 / (GH.p.GasConstantR * 1e3 * (T_air + 273.15))) ...
     * exp(GH.p.C_v2 * T_air / (T_air + GH.p.C_v3)) ...
     - H_air)  ;%kg m^-2 s^-1
     W_cond = (G_c * (0.2522 * exp(0.0485 * T_air) * (T_air ... 
-    - T_out) - ((5.5638 * exp(0.0572 * T_air))*1000 - H_air*1000)))/1000 ; %kg m^-2 s^-1
-    W_vent = VentilationRate * (H_air - H_out) ; %kg m^-2 s^-1
+    - T_out) - ((5.5638 * exp(0.0572 * T_air)) - H_air*1000)))/1000 ; %kg m^-2 s^-1
+    W_vent = VentilationRate * (H_air - H_out) * GH.p.NumberOfWindows*GH.p.WindowArea/GH.p.GHFloorArea ; %kg m^-2 s^-1
    
 
 end
@@ -72,18 +77,28 @@ for i = 1:length(t) - 1
     Q_rad_in(:,i) = FQ_rad_in(AbsorbanceArray, DiffuseArray, AreaArray, ViewArray, q_rad_out(:,i));
     Q_solar(:,i) = FQ_solar(TauGlass, DiffuseArray, AbsorbanceArray, AreaSunArray,200);
     Q_conv(:,i) = convection(ConvectionCoefficientsIn, ConvectionCoefficientsOut, T(:,i), OutsideTemperature, AreaArray);
-    %Totale heat transfer
-    Q_tot(:,i) = Q_rad_in(:,i) + Q_solar(:,i) - AreaArray .* q_rad_out(:,i) + Q_conv(:,i);
+    Q_vent(1, i) = HeatByVentilation(GH, T(1, i), OutsideTemperature, VentilationRate) ;
+    Q_vent(2: height(T), i) = zeros(height(T)-1, 1) ;
 
-    %Temperatuur verandering
+    %Total heat transfer
+    Q_tot(:,i) = Q_vent(:, i) + Q_rad_in(:,i) + Q_solar(:,i) - AreaArray .* q_rad_out(:,i) + Q_conv(:,i);
+
+    % Temperature Change
     T(:,i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
 
     % Vapor flows and balance
-    [W_trans, W_cond, W_vent] = vaporflows(GH, T(1, i), T(2, i), OutsideTemperature, AddStates(1, i), OutsideHumidity, DryMassPlant, VentilationRate);
-    HumidityDot = HumidityBalance(GH, W_trans, W_cond, W_vent);
+    [W_trans(i), W_cond(i), W_vent(i)] = vaporflows(GH, T(1, i), T(2, i), OutsideTemperature, AddStates(1, i), OutsideHumidity, DryMassPlant, VentilationRate);
+    HumidityDot = HumidityBalance(GH, W_trans(i), W_cond(i), W_vent(i));
     AddStates(1, i+1) = AddStates(1, i) + HumidityDot*dt ;
     
 end
 
+figure;
 plot(t,T)
 legend('T air', 'T cover', 'T floor', 'T plant')
+hold off
+
+figure;
+plot(t(1:end-1), W_vent)
+
+[W_trans1, W_cond1, W_vent1] = vaporflows(GH, T(1, 1), T(2, 1), OutsideTemperature, AddStates(1, 1), OutsideHumidity, DryMassPlant, VentilationRate)
