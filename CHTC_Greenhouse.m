@@ -87,57 +87,57 @@ end
 
 %% calculating convection coeifficient in case of forced convection
 if V ~= 0
-switch true
+    switch true
 
-    case w_angle == 0 
-        lnNU_ww = 6.222 - 0.3110 .* log(Re) + 0.00007340 .* log(Gr) + 0.02304 .* (log(Re)).^2 .* - 0.000007894 .* log(Re) .* log(Gr); % all found by RSM fitting, wind ward side
-        lnNU_lw = 13.52 - 2.102.*log(Re) - 0.003229.*log(Gr) + 0.1308*(log(Re)).^2 + 0.0004581.*log(Re).*log(Gr); % the leeward side
-        lnNU_t_s = 7.463 - 0.5098*log(Re) + 0.008807*log(Gr)+ 0.03375*(log(Re)).^2 - 0.001067.*log(Re).*log(Gr); % here the top side and the sides parralel to the wind have the same value
+        case w_angle == 0 
+            lnNU_ww = 6.222 - 0.3110 .* log(Re) + 0.00007340 .* log(Gr) + 0.02304 .* (log(Re)).^2 .* - 0.000007894 .* log(Re) .* log(Gr); % all found by RSM fitting, wind ward side
+            lnNU_lw = 13.52 - 2.102.*log(Re) - 0.003229.*log(Gr) + 0.1308*(log(Re)).^2 + 0.0004581.*log(Re).*log(Gr); % the leeward side
+            lnNU_t_s = 7.463 - 0.5098*log(Re) + 0.008807*log(Gr)+ 0.03375*(log(Re)).^2 - 0.001067.*log(Re).*log(Gr); % here the top side and the sides parralel to the wind have the same value
 
-        wall_1 = lnNU_ww; % wall directly out the wind
-        wall_2 = lnNU_t_s; % wall on clockwise succession of wall_1
-        wall_3 = lnNU_lw; % wall directly opposing wall_1
-        wall_4 = lnNU_t_s; % wall on the counter clockwise succession of wall_1
-        top = lnNU_t_s; % top of the building
+            wall_1 = lnNU_ww; % wall directly out the wind
+            wall_2 = lnNU_t_s; % wall on clockwise succession of wall_1
+            wall_3 = lnNU_lw; % wall directly opposing wall_1
+            wall_4 = lnNU_t_s; % wall on the counter clockwise succession of wall_1
+            top = lnNU_t_s; % top of the building
 
-    case 30 <= w_angle <= 45
-        lnNU_ww = 8.809 - 1.037*log(Re) + 0.03020*log(Gr) + 0.07366*(log(Re)).^2 - 0.003685*log(Re).*log(Gr); % The 2 walls that are in the wind 
-        lnNU_lw1 = 7.954 - 0.7279*log(Re) + 0.02842*log(Gr)+ 0.04606*(log(Re)).^2 - 0.003473*log(Re).*log(Gr); % side out of the wind but most parralel to the wind from the 2 sides out of the wind
-        lnNU_lw2 = 6.255 - 0.3253*log(Re) + 0.02174*log(Gr) + 0.02311*(log(Re)).^2 - 0.002593*log(Re).*log(Gr); % side out of the wind that is not lw1
-        lnNU_t = 7.463 - 0.5098*log(Re) + 0.008807*log(Gr)+ 0.03375*(log(Re)).^2 - 0.001067*log(Re).*log(Gr); % top side, this is the same for the 0 degree case
+        case 30 <= w_angle <= 45
+            lnNU_ww = 8.809 - 1.037*log(Re) + 0.03020*log(Gr) + 0.07366*(log(Re)).^2 - 0.003685*log(Re).*log(Gr); % The 2 walls that are in the wind 
+            lnNU_lw1 = 7.954 - 0.7279*log(Re) + 0.02842*log(Gr)+ 0.04606*(log(Re)).^2 - 0.003473*log(Re).*log(Gr); % side out of the wind but most parralel to the wind from the 2 sides out of the wind
+            lnNU_lw2 = 6.255 - 0.3253*log(Re) + 0.02174*log(Gr) + 0.02311*(log(Re)).^2 - 0.002593*log(Re).*log(Gr); % side out of the wind that is not lw1
+            lnNU_t = 7.463 - 0.5098*log(Re) + 0.008807*log(Gr)+ 0.03375*(log(Re)).^2 - 0.001067*log(Re).*log(Gr); % top side, this is the same for the 0 degree case
 
-        wall_1 = lnNU_ww; % wall directly in the wind
-        wall_2 = lnNU_lw1; % wall on clockwise succession of wall_1
-        wall_3 = lnNU_lw2; % wall directly opposing wall_1
-        wall_4 = lnNU_ww; % wall on the counter clockwise succession of wall_1
-        top = lnNU_t; % top of the building
+            wall_1 = lnNU_ww; % wall directly in the wind
+            wall_2 = lnNU_lw1; % wall on clockwise succession of wall_1
+            wall_3 = lnNU_lw2; % wall directly opposing wall_1
+            wall_4 = lnNU_ww; % wall on the counter clockwise succession of wall_1
+            top = lnNU_t; % top of the building
     
-    case 0 < w_angle < 30 
-        lnNU_ww1 = 6.222 - 0.3110 * log(Re) + 0.00007340 * log(Gr) + 0.02304 * (log(Re)).^2 * - 0.000007894 .* log(Re) .* log(Gr);
-        lnNU_lw11 = 13.52 - 2.102*log(Re) - 0.003229*log(Gr) + 0.1308*(log(Re)).^2 + 0.0004581*log(Re).*log(Gr); 
-        lnNU_t_s = 7.463 - 0.5098*log(Re) + 0.008807*log(Gr)+ 0.03375*(log(Re)).^2 - 0.001067*log(Re).*log(Gr); 
-        lnNU_ww22 = 8.809 - 1.037*log(Re) + 0.03020*log(Gr) + 0.07366*(log(Re)).^2 - 0.003685*log(Re).*log(Gr);
-        lnNU_lw12 = 7.954 - 0.7279*log(Re) + 0.02842*log(Gr)+ 0.04606*(log(Re)).^2 - 0.003473*log(Re).*log(Gr); 
-        lnNU_lw22 = 6.255 - 0.3253*log(Re) + 0.02174*log(Gr) + 0.02311*(log(Re)).^2 - 0.002593*log(Re).*log(Gr); 
-        lnNU_t = 7.463 - 0.5098*log(Re) + 0.008807*log(Gr)+ 0.03375*(log(Re)).^2 - 0.001067*log(Re).*log(Gr); 
+        case 0 < w_angle < 30 
+            lnNU_ww1 = 6.222 - 0.3110 * log(Re) + 0.00007340 * log(Gr) + 0.02304 * (log(Re)).^2 * - 0.000007894 .* log(Re) .* log(Gr);
+            lnNU_lw11 = 13.52 - 2.102*log(Re) - 0.003229*log(Gr) + 0.1308*(log(Re)).^2 + 0.0004581*log(Re).*log(Gr); 
+            lnNU_t_s = 7.463 - 0.5098*log(Re) + 0.008807*log(Gr)+ 0.03375*(log(Re)).^2 - 0.001067*log(Re).*log(Gr); 
+            lnNU_ww22 = 8.809 - 1.037*log(Re) + 0.03020*log(Gr) + 0.07366*(log(Re)).^2 - 0.003685*log(Re).*log(Gr);
+            lnNU_lw12 = 7.954 - 0.7279*log(Re) + 0.02842*log(Gr)+ 0.04606*(log(Re)).^2 - 0.003473*log(Re).*log(Gr); 
+            lnNU_lw22 = 6.255 - 0.3253*log(Re) + 0.02174*log(Gr) + 0.02311*(log(Re)).^2 - 0.002593*log(Re).*log(Gr); 
+            lnNU_t = 7.463 - 0.5098*log(Re) + 0.008807*log(Gr)+ 0.03375*(log(Re)).^2 - 0.001067*log(Re).*log(Gr); 
 
-        wall_1 = lnNU_ww1 + (lnNU_ww22 - lnNU_ww1).*(w_angle/30); % wall directly out the wind
-        wall_2 = lnNU_lw11 + (lnNU_lw22-lnNU_lw11).*(w_angle/30); % wall on clockwise succession of wall_1
-        wall_3 = lnNU_t_s + (lnNU_lw12 - lnNU_t_s).*(w_angle/30); % wall directly opposing wall_1
-        wall_4 = lnNU_t_s + (lnNU_ww22- lnNU_t_s).*(w_angle/30); % wall on the counter clockwise succession of wall_1
-        top = lnNU_t; % top of the building
-end
+            wall_1 = lnNU_ww1 + (lnNU_ww22 - lnNU_ww1).*(w_angle/30); % wall directly out the wind
+            wall_2 = lnNU_lw11 + (lnNU_lw22-lnNU_lw11).*(w_angle/30); % wall on clockwise succession of wall_1
+            wall_3 = lnNU_t_s + (lnNU_lw12 - lnNU_t_s).*(w_angle/30); % wall directly opposing wall_1
+            wall_4 = lnNU_t_s + (lnNU_ww22- lnNU_t_s).*(w_angle/30); % wall on the counter clockwise succession of wall_1
+            top = lnNU_t; % top of the building
+    end
 
 
-%%outputs of this code block
-h_wall_1 = exp(wall_1).*k/CL; % convective heating coefficients of the different walls
-h_wall_2 = exp(wall_2).*k/CL;
-h_wall_3 = exp(wall_3).*k/CL;
-h_wall_4 = exp(wall_4).*k/CL;
-h_top = exp(top).*k/CL;
+    %%outputs of this code block
+    h_wall_1 = exp(wall_1).*k/CL; % convective heating coefficients of the different walls
+    h_wall_2 = exp(wall_2).*k/CL;
+    h_wall_3 = exp(wall_3).*k/CL;
+    h_wall_4 = exp(wall_4).*k/CL;
+    h_top = exp(top).*k/CL;
 
-A = 2*L*H+2*W*H;% total area of the walls
-h_wall = (A_13*h_wall_1+A_24*h_wall_2+A_13*h_wall_3+A_24*h_wall_4)/A; % average convective heat transfer coefficient of the walls
+    A = 2*L*H+2*W*H;% total area of the walls
+    h_wall = (A_13*h_wall_1+A_24*h_wall_2+A_13*h_wall_3+A_24*h_wall_4)/A; % average convective heat transfer coefficient of the walls
 end
 
 %% Calculating convection coefficient in case of natural convection
