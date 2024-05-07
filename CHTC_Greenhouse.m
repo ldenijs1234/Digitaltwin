@@ -5,6 +5,7 @@ W = GH.p.GHWidth; % width of the building in meters
 L = GH.p.GHLength; % length of the building in meters
 H = GH.p.GHHeight; % height of the building in meters
 g = 9.81; % gravitational constant
+
 T_wall = GH.x.WallTemperature; % temperature of the outside wall
 T = GH.d.OutsideTemperature; % air temperature in celsius
 p = 1084; % air pressure in hpa

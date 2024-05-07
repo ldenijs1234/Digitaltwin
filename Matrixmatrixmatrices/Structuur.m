@@ -31,17 +31,21 @@ function Q = convection(hin, hout, T, T_out, Area)   % Convective heat flow arra
     Q(2) = Q(2) + Q_out; 
 end
 
-function Q = FloorConduction(GH, i)
-    for j = 5:13 %Top layer has more complex heat balance, bottom layer is ground layer so take 5-13
-        Qup = (Temperatures(j-1, i) - Temperatures(j,i)) / GH.p.GHFloorThickness * GH.p.KFloor %Heat flow from upper layer to j-th layer
-        Qdown = (Temperatures(j+1,i) - Temperatures(j,i)) / GH.p.GHFloorThickness * GH.p.KFloor %Heat flow from lower layer to j-th layer
-        Q(j, i) = Qup + Qdown %heat balance in j-th layer
+function [Q, QFloor] = FGroundConduction(GH, i, FloorTemperature, T)
+    Q = zeros(height(T), 1) ;
+    for j = 2:10 %Top layer has more complex heat balance, bottom layer is ground layer so take 5-13
+        Qup = (FloorTemperature(j-1, i) - FloorTemperature(j,i)) / GH.p.GHFloorThickness * GH.p.KFloor ;%Heat flow from upper layer to j-th layer
+        Qdown = (FloorTemperature(j+1,i) - FloorTemperature(j,i)) / GH.p.GHFloorThickness * GH.p.KFloor ;%Heat flow from lower layer to j-th layer
+        QFloor(j) = Qup + Qdown ; %heat balance in j-th layer
     end
+    Q(3) = (FloorTemperature(2,i) - FloorTemperature(1,i)) / GH.p.GHFloorThickness * GH.p.KFloor ;
+
+
 end
 
 function Q = HeatByVentilation(GH, T_air, T_out, VentilationRate)
     massflow = GH.p.rho_air * GH.p.NumberOfWindows*GH.p.WindowArea * VentilationRate ;
-    Q = (T_out - T_air) * massflow ;
+    Q = (T_out - T_air) * massflow * GH.p.cp_air ;
 end
 
 function [W_trans, W_cond, W_vent] = vaporflows(GH, T_air, T_wall, T_out, H_air, H_out, DryMassPlant, VentilationRate)
@@ -70,7 +74,12 @@ end
 
 
 for i = 1:length(t) - 1
-    %Variable parameter functies (+ convection rate, ventilation rate...)
+    %Variable parameter functions (+ convection rate, ventilation rate...)
+
+    [Q_ground(:, i), QFloor(:, i)] = FGroundConduction(GH, i, FloorTemperature, T) ;
+    for j = 2:10
+        FloorTemperature(j,i+1) = FloorTemperature(j,i) + QFloor(j) / (CAPArray(3) / GH.p.GHFloorArea) * dt ;
+    end
 
     %Q functions (+ convection conduction...)
     q_rad_out(:,i) = Fq_rad_out(EmmitanceArray, T(:,i));
@@ -79,6 +88,7 @@ for i = 1:length(t) - 1
     Q_conv(:,i) = convection(ConvectionCoefficientsIn, ConvectionCoefficientsOut, T(:,i), OutsideTemperature, AreaArray);
     Q_vent(1, i) = HeatByVentilation(GH, T(1, i), OutsideTemperature, VentilationRate) ;
     Q_vent(2: height(T), i) = zeros(height(T)-1, 1) ;
+    
 
     %Total heat transfer
     Q_tot(:,i) = Q_vent(:, i) + Q_rad_in(:,i) + Q_solar(:,i) - AreaArray .* q_rad_out(:,i) + Q_conv(:,i);
@@ -100,5 +110,3 @@ hold off
 
 figure;
 plot(t(1:end-1), W_vent)
-
-[W_trans1, W_cond1, W_vent1] = vaporflows(GH, T(1, 1), T(2, 1), OutsideTemperature, AddStates(1, 1), OutsideHumidity, DryMassPlant, VentilationRate)
