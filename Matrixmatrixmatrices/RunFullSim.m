@@ -1,6 +1,6 @@
+run("SetModel")
+run("SetParameters")
+run("SetDynParameters")
 run("SetInputs")
-% SetParameters
-% SetDynParameters
-% SetInputs
-% SetStates
-% Structuur
+run("SetStates")
+run("Structuur")
