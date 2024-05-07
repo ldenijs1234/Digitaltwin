@@ -46,17 +46,6 @@ function [Q, QFloor] = FGroundConduction(GH, FloorTemperature, T)
     Q = zeros(height(T), 1) ;
     Q(4) = QFloor(1) ;
 
-    % for j = 2:10 
-    %     Qup = (FloorTemperature(j-1) - FloorTemperature(j)) / GH.p.GHFloorThickness * GH.p.KFloor ;%Heat flow from upper layer to j-th layer
-    %     Qdown = (FloorTemperature(j+1) - FloorTemperature(j)) / GH.p.GHFloorThickness * GH.p.KFloor ;%Heat flow from lower layer to j-th layer
-    %     QFloor(j) = Qup + Qdown ; %heat balance in j-th layer
-    % end
-    % QFloor(11) = 0 ;
-    
-    % QFloor(1) = (FloorTemperature(2) - FloorTemperature(1)) / GH.p.GHFloorThickness * GH.p.KFloor ;
-    
-
-
 end
 
 function Q = HeatByVentilation(GH, T_air, T_out, VentilationRate)

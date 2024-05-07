@@ -9,7 +9,7 @@ h_ac = 5;  % Convection between air and cover
 h_af = 5;  % Convection between air and floor  
 h_out = 20;  % Convection between outside air and greenhouse
 
-ConvectionCoefficientsIn = [0; h_ac; h_ap; h_af] ;
+ConvectionCoefficientsIn = [0; h_ac; h_ac; h_ap; h_af] ;
 
 ConvectionCoefficientsOut = [h_out] ;
 

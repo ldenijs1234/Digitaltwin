@@ -47,7 +47,7 @@ GH.p.           C_resp = 2.65e-7 ; %s^-1 (respiration rate in terms of respired 
 
 % Glass parameters
 GH.p.           SOLARAbsorbanceGlass = 0.04 ; %DUMMY
-GH.p.           FIRAbsorbanceGLass = 0.85; %DUMMY
+GH.p.           FIRAbsorbanceGlass = 0.85; %DUMMY
 GH.p.           EmittanceGlass = 0.8 ; %DUMMY
 GH.p.           SOLARTauGlass = 0.80 ; %DUMMY
                 SOLARTauGlass = 0.80;
@@ -107,12 +107,15 @@ F_fp = F_pf * GH.p.GHPlantArea / GH.p.GHFloorArea;
 F_fc = F_cf * GH.p.GHTotalArea / GH.p.GHFloorArea;
 
 
-ViewArray = [0, 0, 0, 0;
-                    0, 0, F_cf, F_cp;
-                    0, F_fc, 0, F_fp;
-                    0, F_pc, F_pf, 0];
+ViewArray = [0, 0, 0, 0, 0;
+             0, 0, F_cf, F_cp, 0;
+             0, F_fc, 0, F_fp, 0;
+             0, F_pc, F_pf, 0, 0;
+             0, 0, 0, 0, 0];
 
-CAPArray = [GH.p.cp_air * GH.p.rho_air * GH.p.GHVolume; GH.p.cp_glass * GH.p.rho_glass * GH.p.GHWallThickness * AreaArray(2);
+CAPArray = [GH.p.cp_air * GH.p.rho_air * GH.p.GHVolume; 
             GH.p.cp_glass * GH.p.rho_glass * GH.p.GHWallThickness * AreaArray(2);
-            GH.p.cp_floor * GH.p.rho_floor * GH.p.GHFloorArea * 0.02; GH.p.cp_lettuce * 10] ;
+            GH.p.cp_glass * GH.p.rho_glass * GH.p.GHWallThickness * AreaArray(3);
+            GH.p.cp_floor * GH.p.rho_floor * GH.p.GHFloorArea * 0.02; GH.p.cp_lettuce * 10;
+            ] ;
               
