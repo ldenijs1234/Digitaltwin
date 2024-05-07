@@ -47,7 +47,7 @@ GH.p.           C_resp = 2.65e-7 ; %s^-1 (respiration rate in terms of respired 
 GH.p.           AbsorbanceGlass = 0.04 ; %DUMMY
 GH.p.           EmittanceGlass = 0.8 ; %DUMMY
 GH.p.           TauGlass = 0.80 ; %DUMMY
-TauGlass = 0.80;
+                TauGlass = 0.80;
 GH.p.           DiffuseGlass = 1 - GH.p.AbsorbanceGlass - GH.p.TauGlass;
 
 % Floor parameters
