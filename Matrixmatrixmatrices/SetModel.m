@@ -7,4 +7,3 @@ start_time = 0 ;                           % Start of simulation
 t = start_time:dt:simulation_time ;     % simulation time space
 
 OutsideTemperature = 15;
-

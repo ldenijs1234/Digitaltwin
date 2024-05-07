@@ -50,6 +50,15 @@ function CO2Dot = ODE_CO2balance(GH, T_air, SolarIntensity, C_air, C_out, DryMas
 
 end
 
-CO2Dot = ODE_CO2balance(GH, T_air, SolarIntensity, C_air, C_out, DryMassPlant, VentilationRate)
+CO2Dot = ODE_CO2balance(GH, T_air, SolarIntensity, C_air, C_out, DryMassPlant, VentilationRate) ;
+
+
+
+s = height(FloorTemperature) ;
+matrix1 = -2* eye(s) ;
+matrix2 = zeros(s) ; matrix2(2:end, 1:end-1) = eye(s-1) ;
+matrix3 = zeros(s) ; matrix3(1:end-1, 2:end) = eye(s-1) ;
+matrix = matrix1+matrix2+matrix3 ;
+matrix(end, :) = 0 ; matrix(1,1) = -1 ;
 
 % Works!!!!!!!!1

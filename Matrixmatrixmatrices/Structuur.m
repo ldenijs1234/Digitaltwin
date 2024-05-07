@@ -1,7 +1,8 @@
 %state 1: Air
-%state 2: walls
-%state 3: floor
-%state 4: plant
+%state 2: cover
+%state 3: wall
+%state 4: floor
+%state 5: plant
 
 function q = Fq_rad_out(emissivity, T)                          %imput: emissivity array and T(:,i)
     q = 5.670374419*10^-8 * emissivity .* ((T + 273.15).^4);    %emittance of components
@@ -31,15 +32,29 @@ function Q = convection(hin, hout, T, T_out, Area)   % Convective heat flow arra
     Q(2) = Q(2) + Q_out; 
 end
 
-function [Q, QFloor] = FGroundConduction(GH, i, FloorTemperature, T)
+function [Q, QFloor] = FGroundConduction(GH, FloorTemperature, T)
+    
+    s = height(FloorTemperature) ;
+    matrix1 = -2* eye(s) ;
+    matrix2 = zeros(s) ; matrix2(2:end, 1:end-1) = eye(s-1) ;
+    matrix3 = zeros(s) ; matrix3(1:end-1, 2:end) = eye(s-1) ;
+    matrix = matrix1+matrix2+matrix3 ;
+    matrix(end, :) = 0 ; matrix(1,1) = -1 ;
+
+    QFloor = matrix * FloorTemperature / GH.p.GHFloorThickness * GH.p.KFloor ;
+
     Q = zeros(height(T), 1) ;
-    FloorTemperature(1, i) = T(3) ;
-    for j = 2:10 %Top layer has more complex heat balance, bottom layer is ground layer so take 5-13
-        Qup = (FloorTemperature(j-1, i) - FloorTemperature(j,i)) / GH.p.GHFloorThickness * GH.p.KFloor ;%Heat flow from upper layer to j-th layer
-        Qdown = (FloorTemperature(j+1,i) - FloorTemperature(j,i)) / GH.p.GHFloorThickness * GH.p.KFloor ;%Heat flow from lower layer to j-th layer
-        QFloor(j) = Qup + Qdown ; %heat balance in j-th layer
-    end
-    Q(3) = (FloorTemperature(2,i) - FloorTemperature(1,i)) / GH.p.GHFloorThickness * GH.p.KFloor ;
+    Q(4) = QFloor(1) ;
+
+    % for j = 2:10 
+    %     Qup = (FloorTemperature(j-1) - FloorTemperature(j)) / GH.p.GHFloorThickness * GH.p.KFloor ;%Heat flow from upper layer to j-th layer
+    %     Qdown = (FloorTemperature(j+1) - FloorTemperature(j)) / GH.p.GHFloorThickness * GH.p.KFloor ;%Heat flow from lower layer to j-th layer
+    %     QFloor(j) = Qup + Qdown ; %heat balance in j-th layer
+    % end
+    % QFloor(11) = 0 ;
+    
+    % QFloor(1) = (FloorTemperature(2) - FloorTemperature(1)) / GH.p.GHFloorThickness * GH.p.KFloor ;
+    
 
 
 end
@@ -73,14 +88,12 @@ function HumidityDot = HumidityBalance(GH, W_trans, W_cond, W_vent)
 end
 
 
-
 for i = 1:length(t) - 1
     %Variable parameter functions (+ convection rate, ventilation rate...)
+    FloorTemperature(1, i) = T(3, i) ;
+    [Q_ground(:, i), QFloor(:, i)] = FGroundConduction(GH, FloorTemperature(:, i), T(:, i)) ;
 
-    [Q_ground(:, i), QFloor(:, i)] = FGroundConduction(GH, i, FloorTemperature(: i), T(:, i)) ;
-    for j = 2:10
-        FloorTemperature(j,i+1) = FloorTemperature(j,i) + QFloor(j) / (CAPArray(3) / GH.p.GHFloorArea) * dt ;
-    end
+    FloorTemperature(:, i+1) = FloorTemperature(:, i) + QFloor(:, i) / (CAPArray(4) / GH.p.GHFloorArea) * dt ;
 
     %Q functions (+ convection conduction...)
     q_rad_out(:,i) = Fq_rad_out(EmmitanceArray, T(:,i));
