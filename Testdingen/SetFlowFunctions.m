@@ -8,7 +8,7 @@ function Q = convection(hin, hout, T, T_out, Area)   % Convective heat flow arra
     dT = Convection_matrix * T ;
     Q  = Area .* hin .* dT ;
     Q(1) = -sum(Q) ;                                % Convective heat flow to air
-    Q(2) = Q(2) + Area(2) * hout * (T_out - T(2)) ; 
+    Q(2) = Q(2) + Area(2) * hout * (T_out - T(2)) ; % Convective exchange with outside
 end
 
 function Q = LatentHeat(mv)    % Latent heat of evaporation of water mass flow mv
@@ -16,10 +16,10 @@ function Q = LatentHeat(mv)    % Latent heat of evaporation of water mass flow m
 end
 
 
-for i = 1:length(t) - 1
-    HeatFlow(:, i) = convection(ConvectionCoefficientsIn, ConvectionCoefficientsOut, Temperatures(:, i), OutsideTemperature, Area) ;
-    Temperatures(:,i + 1) = Temperatures(:,i) + HeatFlow(:, i) ./ cap * dt ;
-end
+% for i = 1:length(t) - 1
+%     HeatFlow(:, i) = convection(ConvectionCoefficientsIn, ConvectionCoefficientsOut, Temperatures(:, i), OutsideTemperature, AreaArray) ;
+%     Temperatures(:,i + 1) = Temperatures(:,i) + HeatFlow(:, i) ./ cap * dt ;
+% end
 
-plot(t, Temperatures)
-legend('air', 'cover', 'plant', 'floor')
+% plot(t, Temperatures)
+% legend('air', 'cover', 'plant', 'floor')
