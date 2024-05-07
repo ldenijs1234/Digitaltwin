@@ -34,6 +34,8 @@ GH.p.           GHSideArea1 = GH.p.GHLength * GH.p.GHHeight ;
 GH.p.           GHSideArea2 = GH.p.GHWidth * GH.p.GHHeight ;
 GH.p.           GHTotalArea = GH.p.GHFloorArea + 2* GH.p.GHSideArea1 + 2* GH.p.GHSideArea2 ;
 GH.p.           GHPlantArea = 0.3 * GH.p.GHFloorArea ; %DUMMY
+GH.p.           GHWallArea = GH.p.GHLength * GH.p.GHHeight * 2 + GH.p.GHWidth * GH.p.GHHeight * 2
+GH.p.           GHCoverArea =  GH.p.GHLength * GH.p.GHWidth
 
 % Plant parameters
 GH.p.           cp_lettuce = 4020 ;
@@ -50,7 +52,7 @@ GH.p.           SOLARAbsorbanceGlass = 0.04 ; %DUMMY
 GH.p.           FIRAbsorbanceGlass = 0.85; %DUMMY
 GH.p.           EmittanceGlass = 0.8 ; %DUMMY
 GH.p.           SOLARTauGlass = 0.80 ; %DUMMY
-                SOLARTauGlass = 0.80;
+SOLARTauGlass = 0.80; %DUMMY
 GH.p.           SOLARDiffuseGlass = 1 - GH.p.SOLARAbsorbanceGlass - GH.p.SOLARTauGlass;
 GH.p.           FIRDiffuseGlass = 1 - GH.p.FIRAbsorbanceGlass;
 
@@ -96,26 +98,29 @@ SOLARAbsorbanceArray = [0; GH.p.SOLARAbsorbanceGlass; GH.p.SOLARAbsorbanceGlass;
 FIRAbsorbanceArray = [0; GH.p.FIRAbsorbanceGlass; GH.p.FIRAbsorbanceGlass; GH.p.FIRAbsorbanceFloor; GH.p.FIRAbsorbancePlant];
 SOLARDiffuseArray = [0; GH.p.SOLARDiffuseGlass; GH.p.SOLARDiffuseGlass; GH.p.SOLARDiffuseFloor; GH.p.SOLARDiffusePlant];
 FIRDiffuseArray = [0; GH.p.FIRDiffuseGlass; GH.p.FIRDiffuseGlass; GH.p.FIRDiffuseFloor; GH.p.FIRDiffusePlant];
-AreaArray = [0; GH.p.GHTotalArea-GH.p.GHFloorArea; GH.p.GHFloorArea; GH.p.GHFloorArea; GH.p.GHPlantArea];
+AreaArray = [0; GH.p.GHFloorArea; GH.p.GHTotalArea- GH.p.GHFloorArea; GH.p.GHFloorArea; GH.p.GHPlantArea];
 AreaSunArray = [0; GH.p.GHFloorArea; 0; (0.7*GH.p.GHFloorArea); GH.p.GHPlantArea];
-
+TransmissionArray = [0; 1; 1; GH.p.SOLARTauGlass; GH.p.SOLARTauGLass]; %0 for air, 1 for glass wall and roof, tau for everything underneath glass
 % Viewing vectors and Areas
 
-F_pc=0.6; F_pf=0.4; F_cf=0.3;
-F_cp = F_pc * GH.p.GHPlantArea / GH.p.GHTotalArea;
+F_pc=0.6; F_pf=0.1; F_wc=0.2; F_fc= 0.7; F_pw = 0.3; F_fw=0.5; 
+F_cp = F_pc * GH.p.GHPlantArea / GH.p.GHCoverArea; 
 F_fp = F_pf * GH.p.GHPlantArea / GH.p.GHFloorArea;
-F_fc = F_cf * GH.p.GHTotalArea / GH.p.GHFloorArea;
+F_fc = F_cf * GH.p.GHCoverArea / GH.p.GHFloorArea;
+F_wc = F_cw * GH.p.GHCoverArea / GH.p.GHWallArea;
+
+display(F_cp, F_fp, F_fc)
 
 
-ViewArray = [0, 0, 0, 0, 0;
-             0, 0, F_cf, F_cp, 0;
-             0, F_fc, 0, F_fp, 0;
-             0, F_pc, F_pf, 0, 0;
-             0, 0, 0, 0, 0];
+ViewArray = [0,     0,      0,      0,      0;
+             0,     0,      F_cw,   F_cf,   F_cp;
+             0,     F_wc,   0,      F_wf,   F_wp;
+             0,     F_fc,   F_fw,   0,      F_fp;
+             0,     F_pc,   F_pw,   F_pf,      0];
 
 CAPArray = [GH.p.cp_air * GH.p.rho_air * GH.p.GHVolume; 
             GH.p.cp_glass * GH.p.rho_glass * GH.p.GHWallThickness * AreaArray(2);
             GH.p.cp_glass * GH.p.rho_glass * GH.p.GHWallThickness * AreaArray(3);
-            GH.p.cp_floor * GH.p.rho_floor * GH.p.GHFloorArea * 0.02; GH.p.cp_lettuce * 10;
-            ] ;
+            GH.p.cp_floor * GH.p.rho_floor * GH.p.GHFloorArea * GH.p.GHFloorThickness;
+            GH.p.cp_lettuce * 10]; %variable if plant grows
               
