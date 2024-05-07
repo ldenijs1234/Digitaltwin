@@ -112,4 +112,7 @@ legend('T air', 'T cover','T_walls', 'T floor', 'T plant')
 hold off
 
 figure;
-plot(t, FloorTemperature)
+hold on
+plot(t(1:end-1), q_rad_out)
+legend('air', 'cover','walls', 'floor', 'plant')
+

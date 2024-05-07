@@ -34,8 +34,8 @@ GH.p.           GHSideArea1 = GH.p.GHLength * GH.p.GHHeight ;
 GH.p.           GHSideArea2 = GH.p.GHWidth * GH.p.GHHeight ;
 GH.p.           GHTotalArea = GH.p.GHFloorArea + 2* GH.p.GHSideArea1 + 2* GH.p.GHSideArea2 ;
 GH.p.           GHPlantArea = 0.3 * GH.p.GHFloorArea ; %DUMMY
-GH.p.           GHWallArea = GH.p.GHLength * GH.p.GHHeight * 2 + GH.p.GHWidth * GH.p.GHHeight * 2
-GH.p.           GHCoverArea =  GH.p.GHLength * GH.p.GHWidth
+GH.p.           GHWallArea = GH.p.GHLength * GH.p.GHHeight * 2 + GH.p.GHWidth * GH.p.GHHeight * 2 ;
+GH.p.           GHCoverArea =  GH.p.GHLength * GH.p.GHWidth ;
 
 % Plant parameters
 GH.p.           cp_lettuce = 4020 ;
@@ -100,16 +100,18 @@ SOLARDiffuseArray = [0; GH.p.SOLARDiffuseGlass; GH.p.SOLARDiffuseGlass; GH.p.SOL
 FIRDiffuseArray = [0; GH.p.FIRDiffuseGlass; GH.p.FIRDiffuseGlass; GH.p.FIRDiffuseFloor; GH.p.FIRDiffusePlant];
 AreaArray = [0; GH.p.GHFloorArea; GH.p.GHTotalArea- GH.p.GHFloorArea; GH.p.GHFloorArea; GH.p.GHPlantArea];
 AreaSunArray = [0; GH.p.GHFloorArea; 0; (0.7*GH.p.GHFloorArea); GH.p.GHPlantArea];
-TransmissionArray = [0; 1; 1; GH.p.SOLARTauGlass; GH.p.SOLARTauGLass]; %0 for air, 1 for glass wall and roof, tau for everything underneath glass
+TransmissionArray = [0; 1; 1; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass]; %0 for air, 1 for glass wall and roof, tau for everything underneath glass
 % Viewing vectors and Areas
 
-F_pc=0.6; F_pf=0.1; F_wc=0.2; F_fc= 0.7; F_pw = 0.3; F_fw=0.5; 
+F_pc=0.6; F_pf=0.1; F_wc=0.2; F_fc= 0.6; F_pw = 0.3; F_fw=0.5; 
 F_cp = F_pc * GH.p.GHPlantArea / GH.p.GHCoverArea; 
 F_fp = F_pf * GH.p.GHPlantArea / GH.p.GHFloorArea;
-F_fc = F_cf * GH.p.GHCoverArea / GH.p.GHFloorArea;
-F_wc = F_cw * GH.p.GHCoverArea / GH.p.GHWallArea;
+F_cf = F_fc * GH.p.GHFloorArea / GH.p.GHCoverArea;
+F_cw = F_wc * GH.p.GHWallArea / GH.p.GHCoverArea;
+F_wp = F_pw * GH.p.GHPlantArea / GH.p.GHWallArea;
+F_wf = F_fw * GH.p.GHFloorArea / GH.p.GHWallArea;
 
-display(F_cp, F_fp, F_fc)
+% display(F_cp; F_fp; F_cf; F_cw; F_wp; F_wf)
 
 
 ViewArray = [0,     0,      0,      0,      0;
