@@ -12,7 +12,15 @@ FloorTemperature = [AirTemperature; AirTemperature-FloorTempIntVar*1; AirTempera
   AirTemperature-FloorTempIntVar*9; GroundTemperature] ;
 T(:,1) = [AirTemperature; CoverTemperature; WallTemperature; FloorTemperature(1,1); PlantTemperature] ;
 
-
+%Define size
+Q_tot = zeros(length(T), length(t)-1);
+Q_vent= zeros(length(T), length(t)-1);
+Q_solar = zeros(length(T), length(t)-1);
+Q_sky = zeros(length(T), length(t)-1);
+Q_conv = zeros(length(T), length(t)-1);
+Q_ground = zeros(length(T), length(t)-1);
+Q_rad_in = zeros(length(T), length(t)-1);
+q_rad_out = zeros(length(T), length(t)-1);
 
 
 
