@@ -28,8 +28,8 @@ function Q = convection(hin, hout, T, T_out, Area)   % Convective heat flow arra
     dT = Convection_matrix * T ;
     Q  = Area .* hin .* dT ;
     Q(1) = -sum(Q) ;                                % Convective heat flow to air
-    Q_out = Area(2) * hout * (T_out - T(2)) ;       % Convection with outside air
-    Q(2) = Q(2) + Q_out; 
+    Q_out = Area(2:3) .* hout .* ([T_out; T_out] - T(2:3)) ;       % Convection with outside air
+    Q(2:3) = Q(2:3) + Q_out; 
 end
 
 function [Q, QFloor] = FGroundConduction(GH, FloorTemperature, T)
@@ -106,13 +106,19 @@ for i = 1:length(t) - 1
     
 end
 
-figure;
+figure("WindowStyle", "docked");
 plot(t,T)
-legend('T air', 'T cover','T_walls', 'T floor', 'T plant')
+legend('Air', 'Cover', 'Walls', 'Floor', 'Plant')
 hold off
 
-figure;
-hold on
-plot(t(1:end-1), q_rad_out)
-legend('air', 'cover','walls', 'floor', 'plant')
 
+figure("WindowStyle", "docked")
+hold on
+plot(t(1:end-1),q_rad_out(4,:))
+plot(t(1:end-1),Q_rad_in(4,:) ./ AreaArray(4))
+plot(t(1:end-1),Q_solar(4,:)./ AreaArray(4))
+plot(t(1:end-1),Q_conv(4,:)./ AreaArray(4))
+plot(t(1:end-1),Q_ground(4,:)./ AreaArray(4))
+legend('radiation out', 'radiation in', 'solar', 'convection', 'conduction')
+title('Floor heatflows')
+hold off

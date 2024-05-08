@@ -57,8 +57,8 @@ GH.p.           SOLARDiffuseGlass = 1 - GH.p.SOLARAbsorbanceGlass - GH.p.SOLARTa
 GH.p.           FIRDiffuseGlass = 1 - GH.p.FIRAbsorbanceGlass;
 
 % Floor parameters
-GH.p.           SOLARAbsorbanceFloor = 0.5; %DUMMY
-GH.p.           FIRAbsorbanceFloor = 0.15; %DUMMY
+GH.p.           SOLARAbsorbanceFloor = 0.65; %DUMMY
+GH.p.           FIRAbsorbanceFloor = 0.6; %DUMMY
 GH.p.           EmittanceFloor = 0.9 ; %DUMMY
 GH.p.           SOLARDiffuseFloor = 1 - GH.p.SOLARAbsorbanceFloor;
 GH.p.           FIRDiffuseFloor = 1 - GH.p.FIRAbsorbanceFloor ;
@@ -103,7 +103,7 @@ AreaSunArray = [0; GH.p.GHFloorArea; 0; (0.7*GH.p.GHFloorArea); GH.p.GHPlantArea
 TransmissionArray = [0; 1; 1; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass]; %0 for air, 1 for glass wall and roof, tau for everything underneath glass
 % Viewing vectors and Areas
 
-F_pc=0.6; F_pf=0.1; F_wc=0.2; F_fc= 0.6; F_pw = 0.3; F_fw=0.5; 
+F_pc=0.6; F_pf=0.1; F_wc=0.2; F_fc= 0.4; F_pw = 0.3; F_fw=0.4; 
 F_cp = F_pc * GH.p.GHPlantArea / GH.p.GHCoverArea; 
 F_fp = F_pf * GH.p.GHPlantArea / GH.p.GHFloorArea;
 F_cf = F_fc * GH.p.GHFloorArea / GH.p.GHCoverArea;
