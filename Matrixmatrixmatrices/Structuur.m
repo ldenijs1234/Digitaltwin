@@ -48,6 +48,10 @@ function [Q, QFloor] = FGroundConduction(GH, FloorTemperature, T)
 
 end
 
+function Q = LatentHeat(mv)    % Latent heat of evaporation of water mass flow mv
+    Q = 2.45e6 * mv ;
+end
+
 function Q = HeatByVentilation(GH, T_air, T_out, VentilationRate)
     massflow = GH.p.rho_air * GH.p.NumberOfWindows*GH.p.WindowArea * VentilationRate ;
     Q = (T_out - T_air) * massflow * GH.p.cp_air ;
@@ -76,33 +80,51 @@ function HumidityDot = HumidityBalance(GH, W_trans, W_cond, W_vent)
     HumidityDot = W / CAP_Water ; %kg m^-3 s^-1
 end
 
+function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeed, T_out)
+    u = GH.u ; p = GH.p ; 
+
+    G_l = 2.29e2 * (1 - exp(-u.OpenWindowAngle/21.1)) ; % leeside
+    G_w = 1.2e-3 * u.OpenWindowAngle * exp(u.OpenWindowAngle/211) ; % windward side
+    v_wind = (G_l + G_w) * p.WindowArea * WindSpeed ;
+    H = p.WindowHeight * (sind(p.RoofAngle)- sind(p.RoofAngle - u.OpenWindowAngle)) ;
+    v_temp = p.C_f * p.WindowLength/3 * (abs(p.Gravity*p.BetaAir*(T_air ... 
+    - T_out)))^(0.5) * H^(1.5) ;
+
+    VentilationRate = 0.5 * (p.NumberOfWindows/p.GHFloorArea) * (v_wind^2 + v_temp^2)^(0.5) ;
+end
 
 for i = 1:length(t) - 1
     %Variable parameter functions (+ convection rate, ventilation rate...)
+    VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i)) ;
+    ConvectionCoefficientsOut = ConvCoefficients(GH, T(3, i), OutsideTemperature(i), WindSpeed(i), OutsideHumidity, OutsideCO2) ;
+
+    % Vapor flows and balance
+    [W_trans(i), W_cond(i), W_vent(i)] = vaporflows(GH, T(1, i), T(3, i), OutsideTemperature(1), AddStates(1, i), OutsideHumidity, DryMassPlant, VentilationRate(i));
+    HumidityDot = HumidityBalance(GH, W_trans(i), W_cond(i), W_vent(i));
+    AddStates(1, i+1) = AddStates(1, i) + HumidityDot*dt ;
+
+    %Q functions (+ convection conduction...)
     FloorTemperature(1, i) = T(4, i) ;
     [Q_ground(:, i), QFloor(:, i)] = FGroundConduction(GH, FloorTemperature(:, i), T(:, i)) ;
 
     FloorTemperature(:, i+1) = FloorTemperature(:, i) + QFloor(:, i) * GH.p.GHFloorArea / CAPArray(4) * dt ;
 
-    %Q functions (+ convection conduction...)
     q_rad_out(:,i) = Fq_rad_out(EmmitanceArray, T(:,i));
     Q_rad_in(:,i) = FQ_rad_in(FIRAbsorbanceArray, FIRDiffuseArray, AreaArray, ViewArray, q_rad_out(:,i));
-    Q_solar(:,i) = FQ_solar(TransmissionArray, SOLARDiffuseArray, SOLARAbsorbanceArray, AreaSunArray,200);
-    Q_conv(:,i) = convection(ConvectionCoefficientsIn, ConvectionCoefficientsOut, T(:,i), OutsideTemperature, AreaArray);
-    Q_vent(1, i) = HeatByVentilation(GH, T(1, i), OutsideTemperature, VentilationRate) ;
+    Q_solar(:,i) = FQ_solar(TransmissionArray, SOLARDiffuseArray, SOLARAbsorbanceArray, AreaSunArray, SolarIntensity(i));
+    Q_conv(:,i) = convection(ConvectionCoefficientsIn, ConvectionCoefficientsOut, T(:,i), OutsideTemperature(i), ConvAreaArray);
+    Q_vent(1, i) = HeatByVentilation(GH, T(1, i), OutsideTemperature(i), VentilationRate(i)) ;
     Q_vent(2: height(T), i) = zeros(height(T)-1, 1) ;
-    
+    Q_latent(5, i) = LatentHeat(-W_trans(i)) ;
+    Q_latent(1: height(T)-1, i) = zeros(height(T)-1, 1) ;
 
     %Total heat transfer
-    Q_tot(:,i) = Q_vent(:, i) + Q_rad_in(:,i) + Q_solar(:,i) - AreaArray .* q_rad_out(:,i) + Q_conv(:,i) + Q_ground(:, i);
+    Q_tot(:,i) = Q_vent(:, i) + Q_solar(:,i) + Q_conv(:,i) + Q_ground(:, i) ;%+ Q_rad_in(:,i) - AreaArray .* q_rad_out(:,i);
 
     % Temperature Change
     T(:,i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
 
-    % Vapor flows and balance
-    [W_trans(i), W_cond(i), W_vent(i)] = vaporflows(GH, T(1, i), T(3, i), OutsideTemperature, AddStates(1, i), OutsideHumidity, DryMassPlant, VentilationRate);
-    HumidityDot = HumidityBalance(GH, W_trans(i), W_cond(i), W_vent(i));
-    AddStates(1, i+1) = AddStates(1, i) + HumidityDot*dt ;
+ 
     
 end
 
@@ -114,11 +136,11 @@ hold off
 
 figure("WindowStyle", "docked")
 hold on
-plot(t(1:end-1),q_rad_out(4,:))
-plot(t(1:end-1),Q_rad_in(4,:) ./ AreaArray(4))
-plot(t(1:end-1),Q_solar(4,:)./ AreaArray(4))
-plot(t(1:end-1),Q_conv(4,:)./ AreaArray(4))
-plot(t(1:end-1),Q_ground(4,:)./ AreaArray(4))
-legend('radiation out', 'radiation in', 'solar', 'convection', 'conduction')
-title('Floor heatflows')
+% plot(t(1:end-1),q_rad_out(4,:))
+% plot(t(1:end-1),Q_rad_in(4,:) ./ AreaArray(4))
+plot(t(1:end-1),Q_solar(5,:))
+plot(t(1:end-1),Q_conv(5,:))
+plot(t(1:end-1),Q_latent(5,:))
+legend( 'solar', 'convection', 'latent')
+title('Plant heatflows')
 hold off

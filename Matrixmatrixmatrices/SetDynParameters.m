@@ -13,6 +13,8 @@ ConvectionCoefficientsIn = [0; h_ac; h_ac; h_ap; h_af] ;
 
 ConvectionCoefficientsOut = [h_out; h_out] ;
 
+ConvAreaArray = AreaArray ;
+ConvAreaArray(5) = MassPlant * GH.p.C_pld  ; % Effect plant surface
 
 % Ventilation rate
 function VentilationRate = VentilationRate(GH, T_air, WindSpeed, T_out)

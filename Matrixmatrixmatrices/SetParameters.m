@@ -16,6 +16,8 @@ GH.p.           Kelvin = 273.15 ;
 % Set variables (for matrices), parameters saved in general field 'GH' under field 'p'
 
 % Greenhouse parameters                 ALL DUMMY!!!!!!!!!!!!!
+GH.p.           LAI = 0.7 ; % Leaf Area Index
+
 GH.p.           GHWidth = 10 ; %m 
 GH.p.           GHLength = 10 ; %m
 GH.p.           GHHeight = 3 ; %m
@@ -33,12 +35,13 @@ GH.p.           GHFloorArea = GH.p.GHLength * GH.p.GHWidth ;
 GH.p.           GHSideArea1 = GH.p.GHLength * GH.p.GHHeight ;
 GH.p.           GHSideArea2 = GH.p.GHWidth * GH.p.GHHeight ;
 GH.p.           GHTotalArea = GH.p.GHFloorArea + 2* GH.p.GHSideArea1 + 2* GH.p.GHSideArea2 ;
-GH.p.           GHPlantArea = 0.3 * GH.p.GHFloorArea ; %DUMMY
+GH.p.           GHPlantArea = GH.p.LAI * GH.p.GHFloorArea ; %DUMMY
 GH.p.           GHWallArea = GH.p.GHLength * GH.p.GHHeight * 2 + GH.p.GHWidth * GH.p.GHHeight * 2 ;
 GH.p.           GHCoverArea =  GH.p.GHLength * GH.p.GHWidth ;
 
 % Plant parameters
 GH.p.           cp_lettuce = 4020 ;
+GH.p.           rho_lettuce = 240.92 ; 
 GH.p.           EmittancePlant = 0.90 ; %DUMMY
 GH.p.           SOLARAbsorbancePlant = 0.65 ; %DUMMY
 GH.p.           FIRAbsorbancePlant = 0.78 ; %DUMMY
@@ -71,7 +74,8 @@ GH.p.           EmittancePipe = 0.88; %DUMMY
 
 
 % Humidity equations parameters
-GH.p.           C_pld = 53 ; %m^2 kg^-1 (effective canopy surface)
+
+GH.p.           C_pld = 1/3* GH.p.rho_lettuce* 0.1 ;%53 ; %m^2 kg^-1 (effective canopy surface)
 GH.p.           C_vplai = 3.6e-3 ; %m s^-1 (canopy transpiration mass transfer coefficient)
 GH.p.           C_v1 = 9348 ; %J m^-3 (parameter defining saturation water vapor pressure)
 GH.p.           C_v2 = 17.4 ; %K (parameter defining saturation water vapor pressure)    
@@ -99,11 +103,11 @@ FIRAbsorbanceArray = [0; GH.p.FIRAbsorbanceGlass; GH.p.FIRAbsorbanceGlass; GH.p.
 SOLARDiffuseArray = [0; GH.p.SOLARDiffuseGlass; GH.p.SOLARDiffuseGlass; GH.p.SOLARDiffuseFloor; GH.p.SOLARDiffusePlant];
 FIRDiffuseArray = [0; GH.p.FIRDiffuseGlass; GH.p.FIRDiffuseGlass; GH.p.FIRDiffuseFloor; GH.p.FIRDiffusePlant];
 AreaArray = [0; GH.p.GHFloorArea; GH.p.GHTotalArea- GH.p.GHFloorArea; GH.p.GHFloorArea; GH.p.GHPlantArea];
-AreaSunArray = [0; GH.p.GHFloorArea; 0; (0.7*GH.p.GHFloorArea); GH.p.GHPlantArea];
+AreaSunArray = [0; GH.p.GHFloorArea; 0; (GH.p.LAI*GH.p.GHFloorArea); GH.p.GHPlantArea];
 TransmissionArray = [0; 1; 1; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass]; %0 for air, 1 for glass wall and roof, tau for everything underneath glass
 % Viewing vectors and Areas
 
-F_pc=0.6; F_pf=0.1; F_wc=0.2; F_fc= 0.4; F_pw = 0.3; F_fw=0.4; 
+F_pc=0.6; F_pf=0.1; F_wc=0.2; F_fc= 0.4; F_pw = 0.3; F_fw=0.4; F_ww = 0.4;
 F_cp = F_pc * GH.p.GHPlantArea / GH.p.GHCoverArea; 
 F_fp = F_pf * GH.p.GHPlantArea / GH.p.GHFloorArea;
 F_cf = F_fc * GH.p.GHFloorArea / GH.p.GHCoverArea;
@@ -116,13 +120,9 @@ F_wf = F_fw * GH.p.GHFloorArea / GH.p.GHWallArea;
 
 ViewArray = [0,     0,      0,      0,      0;
              0,     0,      F_cw,   F_cf,   F_cp;
-             0,     F_wc,   0,      F_wf,   F_wp;
+             0,     F_wc,   F_ww,   F_wf,   F_wp;
              0,     F_fc,   F_fw,   0,      F_fp;
              0,     F_pc,   F_pw,   F_pf,      0];
 
-CAPArray = [GH.p.cp_air * GH.p.rho_air * GH.p.GHVolume; 
-            GH.p.cp_glass * GH.p.rho_glass * GH.p.GHWallThickness * AreaArray(2);
-            GH.p.cp_glass * GH.p.rho_glass * GH.p.GHWallThickness * AreaArray(3);
-            GH.p.cp_floor * GH.p.rho_floor * GH.p.GHFloorArea * GH.p.GHFloorThickness;
-            GH.p.cp_lettuce * 10]; %variable if plant grows
+
               

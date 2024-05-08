@@ -1,6 +1,7 @@
 run("SetModel")
 run("SetParameters")
-run("SetDynParameters")
 run("SetInputs")
 run("SetStates")
+run("SetDynParameters")
+run("CHTC_Greenhouse")
 run("Structuur")
