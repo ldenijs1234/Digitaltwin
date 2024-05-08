@@ -20,6 +20,8 @@ function Q = FQ_solar(transmission, diffuse, absorbance, Areasun, Isun)     %inp
     Q(1,:) = sum(diffuse(3:end,:) .* Areasun(3:end,:) * Isun)     ;          %inside air recieves diffused sun radiation of everything except cover
 end
 
+%function Q = FQ_sky()
+    %Q = 5.670374419*10^-8 *  * emissivity(2:3) .* ((T(2:3) + 273.15).^4);
 
 function Q = convection(hin, hout, T, T_out, Area)   % Convective heat flow array from with coefficient h with dt-matrix
     Convection_matrix = - eye(length(T));
