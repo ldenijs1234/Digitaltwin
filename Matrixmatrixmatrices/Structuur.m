@@ -21,7 +21,7 @@ function Q = FQ_solar(transmission, diffuse, absorbance, Areasun, Isun)     %inp
 end
 
 %function Q = FQ_sky()
-    %Q = 5.670374419*10^-8 *  * emissivity(2:3) .* ((T(2:3) + 273.15).^4);
+    %Q = 5.670374419*10^-8 * AreaArray(2:3)( * emissivity(2:3) .* ((T(2:3) + 273.15).^4) );
 
 function Q = convection(hin, hout, T, T_out, Area)   % Convective heat flow array from with coefficient h with dt-matrix
     Convection_matrix = - eye(length(T));
