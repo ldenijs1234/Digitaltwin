@@ -115,7 +115,7 @@ for i = 1:length(t) - 1
     q_rad_out(:,i) = Fq_rad_out(EmmitanceArray, T(:,i));
     Q_rad_in(:,i) = FQ_rad_in(FIRAbsorbanceArray, FIRDiffuseArray, AreaArray, ViewArray, q_rad_out(:,i));
     Q_solar(:,i) = FQ_solar(TransmissionArray, SOLARDiffuseArray, SOLARAbsorbanceArray, AreaSunArray, SolarIntensity(i));
-    Q_sky(2:3,i) = FQ_sky(AreaArray(2:3), FIRAbsorbanceArray(2:3), EmmitanceArray(2:3), SkyTemperature(i), T(2:3,i));
+    Q_sky(2:3,i) = FQ_sky(AreaArray(2:3), FIRAbsorbanceArray(2:3), EmmitanceArray(2:3), OutsideTemperature(i), T(2:3,i));
     Q_conv(:,i) = convection(ConvectionCoefficientsIn, ConvectionCoefficientsOut, T(:,i), OutsideTemperature(i), ConvAreaArray);
     Q_vent(1, i) = HeatByVentilation(GH, T(1, i), OutsideTemperature(i), VentilationRate(i)) ;
     Q_vent(2: height(T), i) = zeros(height(T)-1, 1) ;
@@ -123,7 +123,7 @@ for i = 1:length(t) - 1
     Q_latent(1: height(T)-1, i) = zeros(height(T)-1, 1) ;
 
     %Total heat transfer
-    Q_tot(:,i) = Q_vent(:, i) + Q_solar(:,i)  + Q_conv(:,i) + Q_ground(:, i) +Q_sky(:,i) ;%+ Q_rad_in(:,i) - AreaArray .* q_rad_out(:,i);
+    Q_tot(:,i) = Q_vent(:, i) + Q_solar(:,i)  + Q_conv(:,i) + Q_ground(:, i); %+Q_sky(:,i) ;%+ Q_rad_in(:,i) - AreaArray .* q_rad_out(:,i);
 
     % Temperature Change
     T(:,i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
