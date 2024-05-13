@@ -140,6 +140,6 @@ legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Outside')
 hold off
 
 
-% figure("WindowStyle", "docked")
-% hold on
-% plot(t, FloorTemperature)
+figure("WindowStyle", "docked")
+hold on
+plot(t, FloorTemperature)

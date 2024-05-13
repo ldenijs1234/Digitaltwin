@@ -1,8 +1,8 @@
 % States in array per time step form
 
-AirTemperature = 15 ;  % ALL DUMMY VALUES!!!
-CoverTemperature = 15 ;
-WallTemperature = 15 ;
+AirTemperature = 20 ;  % ALL DUMMY VALUES!!!
+CoverTemperature = 20 ;
+WallTemperature = 20 ;
 PlantTemperature = 20 ;
 %FloorTemperature initialisation:
 FloorTempIntVar = (AirTemperature - GroundTemperature)/10;
