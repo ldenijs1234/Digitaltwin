@@ -21,7 +21,7 @@ function Q = FQ_solar(transmission, diffuse, absorbance, Areasun, Isun)     %inp
 end
 
 function Q = FQ_sky(Area, absorbance, emissivity, Tsky, T) %input: parameter arrays, effective sky temperature and Temperature of walls and roof
-    Q = 5.670374419*10^-8 * Area .* (absorbance * (Tsky + 273.25)^4 - emissivity .* ((T + 273.15).^4) ); %absorbance of sky emmision minus emittance of walls and roof 
+    Q = 5.670374419*10^-8 * Area .* (absorbance * (Tsky + 273.15)^4 - emissivity .* ((T + 273.15).^4) ); %absorbance of sky emmision minus emittance of walls and roof 
 end
 
 function Q = convection(hin, hout, T, T_out, Area)   % Convective heat flow array from with coefficient h with dt-matrix
@@ -102,7 +102,7 @@ for i = 1:length(t) - 1
     %ConvectionCoefficientsOut = ConvCoefficients(GH, T(3, i), OutsideTemperature(i), WindSpeed(i), OutsideHumidity, OutsideCO2) ;
 
     % Vapor flows and balance
-    [W_trans(i), W_cond(i), W_vent(i)] = vaporflows(GH, T(1, i), T(3, i), OutsideTemperature(1), AddStates(1, i), OutsideHumidity, DryMassPlant, VentilationRate(i));
+    [W_trans(i), W_cond(i), W_vent(i)] = vaporflows(GH, T(1, i), T(3, i), OutsideTemperature(1), AddStates(1, i), OutsideHumidity(i), DryMassPlant, VentilationRate(i));
     HumidityDot = HumidityBalance(GH, W_trans(i), W_cond(i), W_vent(i));
     AddStates(1, i+1) = AddStates(1, i) + HumidityDot*dt ;
 
@@ -123,7 +123,7 @@ for i = 1:length(t) - 1
     Q_latent(1: height(T)-1, i) = zeros(height(T)-1, 1) ;
 
     %Total heat transfer
-    Q_tot(:,i) = Q_vent(:, i) + Q_solar(:,i) +Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) ;%+ Q_rad_in(:,i) - AreaArray .* q_rad_out(:,i);
+    Q_tot(:,i) = Q_vent(:, i) + Q_solar(:,i)  + Q_conv(:,i) + Q_ground(:, i) +Q_sky(:,i) ;%+ Q_rad_in(:,i) - AreaArray .* q_rad_out(:,i);
 
     % Temperature Change
     T(:,i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
@@ -134,12 +134,24 @@ end
 
 figure("WindowStyle", "docked");
 hold on
-plot(t,T)
-plot(t, OutsideTemperature)
+plot(t/3600,T)
+plot(t/3600, OutsideTemperature)
 legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Outside')
+xlabel("Time (h)")
+ylabel("Temperature (C)")
 hold off
 
 
+% figure("WindowStyle", "docked")
+% hold on
+% plot(t/3600, FloorTemperature)
+% xlabel("Time (h)")
+% ylabel("Floor layer temperature (C)")
+% hold off
+
 figure("WindowStyle", "docked")
 hold on
-plot(t, FloorTemperature)
+plot(t(1:end-1), Q_sky(2, :)) 
+plot(t(1:end-1), Q_conv(2, :))
+plot(t(1:end-1), Q_solar(2, :))
+legend('sky', 'convection', 'solar')

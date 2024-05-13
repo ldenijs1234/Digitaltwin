@@ -1,3 +1,5 @@
+
+
 function vaporDens = rh2vaporDens(OutsideTemperature, OutsideRelhumidity)
     % RH2VAPORDENS Convert relative humidity [%] to vapor density [kg{H2O} m^{-3}]
     %
@@ -26,7 +28,7 @@ function vaporDens = rh2vaporDens(OutsideTemperature, OutsideRelhumidity)
         p = [610.78 238.3 17.2694 -6140.4 273 28.916];
             % default value is [610.78 238.3 17.2694 -6140.4 273 28.916]
         
-        satP = p(1)*exp(p(3)*OutsideTemperature./(OutsideTemperature+p(2))); 
+        satP = p(1)*exp(p(3)*OutsideTemperature ./ (OutsideTemperature+p(2))); 
             % Saturation vapor pressure of air in given temperature [Pa]
         
         pascals=(OutsideRelhumidity/100).*satP; % Partial pressure of vapor in air [Pa]
@@ -38,4 +40,3 @@ function vaporDens = rh2vaporDens(OutsideTemperature, OutsideRelhumidity)
         vaporDens = pascals*Mw./(R*(OutsideTemperature+C2K));
 end
 
-vaporDens = rh2vaporDens(OutsideTemperature, OutsideRelhumidity) ;

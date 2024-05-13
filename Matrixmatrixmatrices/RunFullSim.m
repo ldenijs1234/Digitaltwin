@@ -1,6 +1,6 @@
 run("SetModel")
 run("SetParameters")
-run("AbsHumCalculator") ; run("Weather2Arrays")
+run("Weather2Arrays") % run("AbsHumCalculator") 
 run("SetInputs")
 run("SetStates")
 run("SetDynParameters")
