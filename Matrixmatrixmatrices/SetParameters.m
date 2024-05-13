@@ -105,18 +105,36 @@ FIRDiffuseArray = [0; GH.p.FIRDiffuseGlass; GH.p.FIRDiffuseGlass; GH.p.FIRDiffus
 AreaArray = [0; GH.p.GHFloorArea; GH.p.GHTotalArea- GH.p.GHFloorArea; GH.p.GHFloorArea; GH.p.GHPlantArea];
 AreaSunArray = [0; GH.p.GHFloorArea; 0; (GH.p.LAI*GH.p.GHFloorArea); GH.p.GHPlantArea];
 TransmissionArray = [0; 1; 1; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass]; %0 for air, 1 for glass wall and roof, tau for everything underneath glass
+
 % Viewing vectors and Areas
 
-F_pc=0.6; F_pf=0.1; F_wc=0.2; F_fc= 0.4; F_pw = 0.3; F_fw=0.4; F_ww = 0.4;
-F_cp = F_pc * GH.p.GHPlantArea / GH.p.GHCoverArea; 
-F_fp = F_pf * GH.p.GHPlantArea / GH.p.GHFloorArea;
-F_cf = F_fc * GH.p.GHFloorArea / GH.p.GHCoverArea;
-F_cw = F_wc * GH.p.GHWallArea / GH.p.GHCoverArea;
-F_wp = F_pw * GH.p.GHPlantArea / GH.p.GHWallArea;
-F_wf = F_fw * GH.p.GHFloorArea / GH.p.GHWallArea;
+%F_pc=0.6; F_pf=0.1; F_wc=0.2; F_fc= 0.4; F_pw = 0.3; F_fw=0.4; F_ww = 0.4;
+%F_cp = F_pc * GH.p.GHPlantArea / GH.p.GHCoverArea; 
+%F_fp = F_pf * GH.p.GHPlantArea / GH.p.GHFloorArea;
+%F_cf = F_fc * GH.p.GHFloorArea / GH.p.GHCoverArea;
+%F_cw = F_wc * GH.p.GHWallArea / GH.p.GHCoverArea;
+%F_wp = F_pw * GH.p.GHPlantArea / GH.p.GHWallArea;
+%F_wf = F_fw * GH.p.GHFloorArea / GH.p.GHWallArea;
 
 % display(F_cp; F_fp; F_cf; F_cw; F_wp; F_wf)
 
+
+F_pc=0.35; F_pf=0.4; F_wc=0.2
+
+syms F_cw F_cf F_cp F_ww F_wf F_wp F_fc F_fw F_fp F_pw
+
+F_wc = 0.1
+
+vars = [F_cw F_cf F_cp F_ww F_wf F_wp F_fc F_fw F_fp F_pw];
+eqns = [F_cw + F_cf + F_cp == 1, F_wc + F_ww + F_wf + F_wp == 1, F_fc + F_fw + F_fp == 1, F_pc + F_pw + F_pf == 1, ...
+    F_cp == F_pc * GH.p.GHPlantArea / GH.p.GHCoverArea, F_fp == F_pf * GH.p.GHPlantArea / GH.p.GHFloorArea, ...
+    F_cf == F_fc * GH.p.GHFloorArea / GH.p.GHCoverArea, F_cw == F_wc * GH.p.GHWallArea / GH.p.GHCoverArea, ...
+    F_wp == F_pw * GH.p.GHPlantArea / GH.p.GHWallArea, F_wf == F_fw * GH.p.GHFloorArea / GH.p.GHWallArea];
+
+size(vars)
+size(eqns)
+
+[F_cw, F_cf, F_cp, F_ww, F_wf, F_wp, F_fc, F_fw, F_fp, F_pw] = solve(eqns, vars)
 
 ViewArray = [0,     0,      0,      0,      0;
              0,     0,      F_cw,   F_cf,   F_cp;
@@ -124,5 +142,3 @@ ViewArray = [0,     0,      0,      0,      0;
              0,     F_fc,   F_fw,   0,      F_fp;
              0,     F_pc,   F_pw,   F_pf,      0];
 
-
-              
