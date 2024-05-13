@@ -29,6 +29,5 @@ OutsideHumidity = 0.01 ;%rh2vaporDens(OutsideTemperature, OutsideRelhumidity) ; 
 OutsideCO2 = 0.0012 ;%* ones(1, length(t)) ; %!!!!
 GroundTemperature = 10  ; % DUMMY!!!!!!!!!!!    
 
-plot(t,SolarRadiation)
 
 VentilationRate = 5; 

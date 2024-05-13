@@ -115,7 +115,7 @@ for i = 1:length(t) - 1
     q_rad_out(:,i) = Fq_rad_out(EmmitanceArray, T(:,i));
     Q_rad_in(:,i) = FQ_rad_in(FIRAbsorbanceArray, FIRDiffuseArray, AreaArray, ViewArray, q_rad_out(:,i));
     Q_solar(:,i) = FQ_solar(TransmissionArray, SOLARDiffuseArray, SOLARAbsorbanceArray, AreaSunArray, SolarIntensity(i));
-    % Q_sky(2:3,i) = FQ_sky(AreaArray(2:3), FIRAbsorbanceArray(2:3), EmmitanceArray(2:3), Tsky, T(2:3,i));
+    Q_sky(2:3,i) = FQ_sky(AreaArray(2:3), FIRAbsorbanceArray(2:3), EmmitanceArray(2:3), SkyTemperature(i), T(2:3,i));
     Q_conv(:,i) = convection(ConvectionCoefficientsIn, ConvectionCoefficientsOut, T(:,i), OutsideTemperature(i), ConvAreaArray);
     Q_vent(1, i) = HeatByVentilation(GH, T(1, i), OutsideTemperature(i), VentilationRate(i)) ;
     Q_vent(2: height(T), i) = zeros(height(T)-1, 1) ;
@@ -142,11 +142,4 @@ hold off
 
 % figure("WindowStyle", "docked")
 % hold on
-% plot(t(1:end-1),q_rad_out(4,:))
-% plot(t(1:end-1),Q_rad_in(4,:) ./ AreaArray(4))
-% plot(t(1:end-1),Q_solar(5,:))
-% plot(t(1:end-1),Q_conv(5,:))
-% plot(t(1:end-1),Q_latent(5,:))
-% legend( 'solar', 'convection', 'latent')
-% title('Plant heatflows')
-% hold off
+% plot(t, FloorTemperature)

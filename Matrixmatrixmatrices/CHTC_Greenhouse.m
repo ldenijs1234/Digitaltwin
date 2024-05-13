@@ -168,4 +168,3 @@ function [h_top, h_wall] = ConvCoefficients(GH, T_wall, T_out, Windspeed, H_out,
 
 end
 
-[X, Y] = ConvCoefficients(GH, 20, 15, 5, 0.01, 0.005) %test
