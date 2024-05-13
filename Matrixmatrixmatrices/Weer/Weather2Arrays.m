@@ -41,4 +41,3 @@ function [time_vec, OutsideTemperature, OutsideRelhumidity, SolarRadiation, Wind
 end
 
 [time_vec, OutsideTemperature, OutsideRelhumidity, SolarRadiation, Windspeed, Winddirection, Sealevelpressure, CloudCover] = interpolate_weather_data(filename, dt);
-

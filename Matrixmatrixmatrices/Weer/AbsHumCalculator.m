@@ -36,4 +36,6 @@ function vaporDens = rh2vaporDens(OutsideTemperature, OutsideRelhumidity)
         % number of kg in a m^3, where Mw is the molar mass of water.
         
         vaporDens = pascals*Mw./(R*(OutsideTemperature+C2K));
-    end
+end
+
+vaporDens = rh2vaporDens(OutsideTemperature, OutsideRelhumidity) ;
