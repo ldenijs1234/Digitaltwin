@@ -12,9 +12,9 @@ GH.u.OpenWindowAngle = 30 ;
 % Defined conditions
 
 
-OutsideTemperature = 15 + 5*sin(2*pi * t/(24*60*dt)) ;%OutsideTemperature ;  % Outside temperature as a field of GH.d
+OutsideTemperature = 15 + 5*sin(2*pi * t/(24*60*60)) ;%OutsideTemperature ;  % Outside temperature as a field of GH.d
 cloud = 0.7 ;%CloudCover./100 ; % 0-1 cloud cover
-SolarRadiation = 300 + 100*sin(2*pi * t/(24*60*dt)) ; 
+SolarRadiation = 300 + 100*sin(2*pi * t/(24*60*60)) ; 
 
 LdClear = 213+5.5*OutsideTemperature;                      % Equation 5.26
 epsClear = LdClear./(sigma*(OutsideTemperature+273.15).^4);   % Equation 5.22
@@ -23,7 +23,7 @@ LdCloud = epsCloud.*sigma.*(OutsideTemperature+273.15).^4;    % Equation 5.22
 
 SkyTemperature = (LdCloud/sigma).^(0.25)-273.15 ; % Katzin
 
-SolarIntensity =  (1-cloud) * SolarRadiation ;%max(0, 50 + 30*sin(2*pi * t/(24*60*60))) ; %!!!!
+SolarIntensity =  (1-cloud) * SolarRadiation ; %!!!!
 WindSpeed = 4.5 * ones(1, length(t)) ; %DUMMY !!! (4.5)
 OutsideHumidity = 0.01 ;%rh2vaporDens(OutsideTemperature, OutsideRelhumidity) ; %!!!!
 OutsideCO2 = 0.0012 ;%* ones(1, length(t)) ; %!!!!
