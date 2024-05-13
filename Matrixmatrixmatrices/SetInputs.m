@@ -2,19 +2,23 @@
 
 % User Inputs
 
-GH.u.Heating = zeros(1, length(t)) ;
+Heating = 000* ones(1, length(t)-1) ;
 
 % GH.u.Heating(round(length(t)/2) : end) = 500 ;
 
-GH.u.OpenWindowAngle = 30 ;
+GH.u.OpenWindowAngle = 0 ;
 
 
 % Defined conditions
 % [time_vec, OutsideTemperature, OutsideRelhumidity, SolarRadiation, Windspeed, Winddirection, Sealevelpressure, CloudCover] = interpolate_weather_data(filename, dt);
 
-% OutsideTemperature = 15 + 5*sin(2*pi * t/(24*60*60)) ;%OutsideTemperature ;  % Outside temperature as a field of GH.d
+
 cloud = CloudCover./100 ; % 0-1 cloud cover
 % SolarRadiation = 100 + 100*sin(2*pi * t/(24*60*60)) ; 
+% cloud = 0.7
+% OutsideTemperature = 15 + 5*sin(2*pi * t/(24*60*60)) ;%OutsideTemperature ;  % Outside temperature as a field of GH.d
+% WindSpeed = 4.5 * ones(1, length(t)) ; %DUMMY !!! (4.5)
+% OutsideHumidity =  0.01* ones(1, length(t)) ;
 
 LdClear = 213+5.5*OutsideTemperature;                      % Equation 5.26
 epsClear = LdClear./(sigma*(OutsideTemperature+273.15).^4);   % Equation 5.22
@@ -25,7 +29,7 @@ SkyTemperature = (LdCloud/sigma).^(0.25)-273.15 ; % Katzin
 
 
 SolarIntensity =  SolarRadiation ; %!!!!
-% WindSpeed = 4.5 * ones(1, length(t)) ; %DUMMY !!! (4.5)
+
 
 function vaporDens = rh2vaporDens(OutsideTemperature, OutsideRelhumidity)
         R = 8.3144598; % molar gas constant [J mol^{-1} K^{-1}]
@@ -37,7 +41,8 @@ function vaporDens = rh2vaporDens(OutsideTemperature, OutsideRelhumidity)
         vaporDens = pascals*Mw./(R*(OutsideTemperature+C2K));
 end
 
-OutsideHumidity =  rh2vaporDens(OutsideTemperature, OutsideRelhumidity) ; %!!!!
+OutsideHumidity =   rh2vaporDens(OutsideTemperature, OutsideRelhumidity) ; %!!!!
+
 OutsideCO2 = 0.0012 ;%* ones(1, length(t)) ; %!!!!
 GroundTemperature = 10  ; % DUMMY!!!!!!!!!!!    
 

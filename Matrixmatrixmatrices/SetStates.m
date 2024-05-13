@@ -21,6 +21,8 @@ Q_conv = zeros(length(T), length(t)-1);
 Q_ground = zeros(length(T), length(t)-1);
 Q_rad_in = zeros(length(T), length(t)-1);
 q_rad_out = zeros(length(T), length(t)-1);
+Q_heat = zeros(length(T), length(t)-1);
+Q_heat(1,:) = Heating ;
 
 
 

@@ -17,7 +17,7 @@ end
 
 function Q = FQ_solar(transmission, diffuse, absorbance, Areasun, Isun)     %input: transmission of the cover, parameter arrays and I_sun(i)
     Q = transmission .* absorbance .* Areasun * Isun; %absorbed sun radiation by each object
-    Q(1,:) = sum(diffuse(3:end,:) .* Areasun(3:end,:) * Isun)     ;          %inside air recieves diffused sun radiation of everything except cover
+    Q(1,:) = sum(diffuse(4:end,:) .* Areasun(4:end,:) * Isun)     ;          %inside air recieves diffused sun radiation of everything except cover
 end
 
 function Q = FQ_sky(Area, absorbance, emissivity, Tsky, T) %input: parameter arrays, effective sky temperature and Temperature of walls and roof
@@ -123,7 +123,7 @@ for i = 1:length(t) - 1
     Q_latent(1: height(T)-1, i) = zeros(height(T)-1, 1) ;
 
     %Total heat transfer
-    Q_tot(:,i) = Q_vent(:, i) + Q_solar(:,i)  + Q_conv(:,i) + Q_ground(:, i); %+Q_sky(:,i) ;%+ Q_rad_in(:,i) - AreaArray .* q_rad_out(:,i);
+    Q_tot(:,i) = Q_heat(:, i) + Q_vent(:, i) + Q_solar(:,i)  + Q_conv(:,i) + Q_ground(:, i) + Q_sky(:,i) ;%+ Q_rad_in(:,i) - AreaArray .* q_rad_out(:,i);
 
     % Temperature Change
     T(:,i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
@@ -138,20 +138,20 @@ plot(t/3600,T)
 plot(t/3600, OutsideTemperature)
 legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Outside')
 xlabel("Time (h)")
-ylabel("Temperature (C)")
+ylabel("Temperature (°C)")
+title('Temperature simulation using weather forecast of Delft')
 hold off
-
 
 % figure("WindowStyle", "docked")
 % hold on
 % plot(t/3600, FloorTemperature)
 % xlabel("Time (h)")
-% ylabel("Floor layer temperature (C)")
+% ylabel("Floor layer temperature (°C)")
 % hold off
 
-figure("WindowStyle", "docked")
-hold on
-plot(t(1:end-1), Q_sky(2, :)) 
-plot(t(1:end-1), Q_conv(2, :))
-plot(t(1:end-1), Q_solar(2, :))
-legend('sky', 'convection', 'solar')
+% figure("WindowStyle", "docked")
+% hold on
+% plot(t(1:end-1), Q_sky(2, :)) 
+% plot(t(1:end-1), Q_conv(2, :))
+% plot(t(1:end-1), Q_solar(2, :))
+% legend('sky', 'convection', 'solar')
