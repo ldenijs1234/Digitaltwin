@@ -20,8 +20,13 @@ function Q = FQ_solar(transmission, diffuse, absorbance, Areasun, Isun)     %inp
     Q(1,:) = sum(diffuse(4:end,:) .* Areasun(4:end,:) * Isun)     ;          %inside air recieves diffused sun radiation of everything except cover
 end
 
-function Q = FQ_sky(Area, absorbance, emissivity, Tsky, T) %input: parameter arrays, effective sky temperature and Temperature of walls and roof
-    Q = 5.670374419*10^-8 * Area .* (absorbance * (Tsky + 273.15)^4 - emissivity .* ((T + 273.15).^4) ); %absorbance of sky emmision minus emittance of walls and roof 
+function Q = FQ_sky(Area, absorbance, emissivity, JSky, T) %input: parameter arrays, effective sky temperature and Temperature of walls and roof
+    Q = 5.670374419*10^-8 * Area .* (absorbance * JSky - emissivity .* ((T + 273.15).^4) ); %absorbance of sky emmision minus emittance of walls and roof 
+end
+
+function J = SkyEmit(T_dew, T_out)
+    epsilon = 0.741 + 0.0062 * T_dew;
+    J = epsilon * (T_out + 273.15)^4;
 end
 
 function Q = convection(hin, hout, T, T_out, Area)   % Convective heat flow array from with coefficient h with dt-matrix
@@ -102,7 +107,7 @@ for i = 1:length(t) - 1
     ConvectionCoefficientsOut = ConvCoefficients(GH, T(3, i), OutsideTemperature(i), WindSpeed(i), OutsideHumidity(i), OutsideCO2) ;
 
     % Vapor flows and balance
-    [W_trans(i), W_cond(i), W_vent(i)] = vaporflows(GH, T(1, i), T(3, i), OutsideTemperature(1), AddStates(1, i), OutsideHumidity(i), DryMassPlant, VentilationRate(i));
+    [W_trans(i), W_cond(i), W_vent(i)] = vaporflows(GH, T(1, i), T(3, i), OutsideTemperature(1,i), AddStates(1, i), OutsideHumidity(i), DryMassPlant, VentilationRate(i));
     HumidityDot = HumidityBalance(GH, W_trans(i), W_cond(i), W_vent(i));
     AddStates(1, i+1) = AddStates(1, i) + HumidityDot*dt ;
 
@@ -115,7 +120,8 @@ for i = 1:length(t) - 1
     q_rad_out(:,i) = Fq_rad_out(EmmitanceArray, T(:,i));
     Q_rad_in(:,i) = FQ_rad_in(FIRAbsorbanceArray, FIRDiffuseArray, AreaArray, ViewArray, q_rad_out(:,i));
     Q_solar(:,i) = FQ_solar(TransmissionArray, SOLARDiffuseArray, SOLARAbsorbanceArray, AreaSunArray, SolarIntensity(i));
-    Q_sky(2:3,i) = FQ_sky(AreaArray(2:3), FIRAbsorbanceArray(2:3), EmmitanceArray(2:3), OutsideTemperature(i), T(2:3,i));
+    J_sky(i) = SkyEmit(DewPoint(i),OutsideTemperature(i));
+    Q_sky(2:3,i) = FQ_sky(AreaArray(2:3), FIRAbsorbanceArray(2:3), EmmitanceArray(2:3), J_sky(i), T(2:3,i));
     Q_conv(:,i) = convection(ConvectionCoefficientsIn, ConvectionCoefficientsOut, T(:,i), OutsideTemperature(i), ConvAreaArray);
     Q_vent(1, i) = HeatByVentilation(GH, T(1, i), OutsideTemperature(i), VentilationRate(i)) ;
     Q_vent(2: height(T), i) = zeros(height(T)-1, 1) ;
@@ -123,7 +129,7 @@ for i = 1:length(t) - 1
     Q_latent(1: height(T)-1, i) = zeros(height(T)-1, 1) ;
 
     %Total heat transfer
-    Q_tot(:,i) = Q_heat(:, i) + Q_vent(:, i) + Q_solar(:,i)  + Q_conv(:,i) + Q_ground(:, i) + Q_sky(:,i) ;%+ Q_rad_in(:,i) - AreaArray .* q_rad_out(:,i);
+    Q_tot(:,i) = Q_vent(:, i) + Q_solar(:,i) +Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i); %+ Q_rad_in(:,i) - AreaArray .* q_rad_out(:,i);
 
     % Temperature Change
     T(:,i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
@@ -134,12 +140,9 @@ end
 
 figure("WindowStyle", "docked");
 hold on
-plot(t/3600,T)
-plot(t/3600, OutsideTemperature)
+plot(t,T)
+plot(t, OutsideTemperature)
 legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Outside')
-xlabel("Time (h)")
-ylabel("Temperature (°C)")
-title('Temperature simulation using weather forecast of Delft')
 hold off
 
 figure("WindowStyle", "docked");
