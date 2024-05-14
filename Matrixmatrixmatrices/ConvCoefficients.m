@@ -1,6 +1,6 @@
-GH = GH ;
+    GH = GH ;
 
-function [h_top, h_wall] = ConvCoefficients(GH, T_wall, T_out, Windspeed, H_out, C_out)
+    function [h_top, h_wall] = ConvCoefficients(GH, T_wall, T_out, Windspeed, H_out, C_out)
     %inputs from outside this code block
     W_angle = 0; % angle of the wind in degrees
     W = GH.p.GHWidth; % width of the building in meters
@@ -165,6 +165,6 @@ function [h_top, h_wall] = ConvCoefficients(GH, T_wall, T_out, Windspeed, H_out,
             h_top = k.*0.27.*Ra.^0.25 ./ CL_r;
         end
     end
-
 end
+
 
