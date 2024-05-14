@@ -1,6 +1,6 @@
 % States in array per time step form
 
-AirTemperature = 15 ;  % ALL DUMMY VALUES!!!
+AirTemperature = 14 ;  % ALL DUMMY VALUES!!!
 CoverTemperature = 15 ;
 WallTemperature = 15 ;
 PlantTemperature = 15;
