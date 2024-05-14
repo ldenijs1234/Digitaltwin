@@ -6,7 +6,7 @@ Heating = 000* ones(1, length(t)-1) ;
 
 % GH.u.Heating(round(length(t)/2) : end) = 500 ;
 
-GH.u.OpenWindowAngle = 20 ;
+GH.u.OpenWindowAngle = 0 ;
 
 
 % Defined conditions
