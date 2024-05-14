@@ -20,8 +20,8 @@ function Q = FQ_solar(transmission, diffuse, absorbance, Areasun, Isun)     %inp
     Q(1,:) = sum(diffuse(4:end,:) .* Areasun(4:end,:) * Isun)     ;          %inside air recieves diffused sun radiation of everything except cover
 end
 
-function Q = FQ_sky(Area, absorbance, emissivity, JSky, T) %input: parameter arrays, effective sky temperature and Temperature of walls and roof
-    Q = 5.670374419*10^-8 * Area .* (absorbance * JSky - emissivity .* ((T + 273.15).^4) ); %absorbance of sky emmision minus emittance of walls and roof 
+function Q = FQ_sky(Area, absorbance, emissivity, TSky, T) %input: parameter arrays, effective sky temperature and Temperature of walls and roof
+    Q = 5.670374419*10^-8 * Area .* (absorbance * (TSky + 273.15).^4 - emissivity .* ((T + 273.15).^4) ); %absorbance of sky emmision minus emittance of walls and roof 
 end
 
 function J = SkyEmit(T_dew, T_out)
@@ -104,7 +104,7 @@ end
 for i = 1:length(t) - 1
     %Variable parameter functions (+ convection rate, ventilation rate...)
     VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i)) ;
-    ConvectionCoefficientsOut = ConvCoefficients(GH, T(3, i), OutsideTemperature(i), WindSpeed(i), OutsideHumidity(i), OutsideCO2) ;
+    ConvectionCoefficientsOut(:,i) = (ConvCoefficients(GH, T(3, i), OutsideTemperature(i), WindSpeed(i), OutsideHumidity(i), OutsideCO2)).' ;
 
     % Vapor flows and balance
     [W_trans(i), W_cond(i), W_vent(i)] = vaporflows(GH, T(1, i), T(3, i), OutsideTemperature(1,i), AddStates(1, i), OutsideHumidity(i), DryMassPlant, VentilationRate(i));
@@ -121,8 +121,8 @@ for i = 1:length(t) - 1
     Q_rad_in(:,i) = FQ_rad_in(FIRAbsorbanceArray, FIRDiffuseArray, AreaArray, ViewArray, q_rad_out(:,i));
     Q_solar(:,i) = FQ_solar(TransmissionArray, SOLARDiffuseArray, SOLARAbsorbanceArray, AreaSunArray, SolarIntensity(i));
     J_sky(i) = SkyEmit(DewPoint(i),OutsideTemperature(i));
-    Q_sky(2:3,i) = FQ_sky(AreaArray(2:3), FIRAbsorbanceArray(2:3), EmmitanceArray(2:3), J_sky(i), T(2:3,i));
-    Q_conv(:,i) = convection(ConvectionCoefficientsIn, ConvectionCoefficientsOut, T(:,i), OutsideTemperature(i), ConvAreaArray);
+    Q_sky(2:3,i) = FQ_sky(AreaArray(2:3), FIRAbsorbanceArray(2:3), EmmitanceArray(2:3), SkyTemperature(i), T(2:3,i));
+    Q_conv(:,i) = convection(ConvectionCoefficientsIn, ConvectionCoefficientsOut(:, i), T(:,i), OutsideTemperature(i), ConvAreaArray);
     Q_vent(1, i) = HeatByVentilation(GH, T(1, i), OutsideTemperature(i), VentilationRate(i)) ;
     Q_vent(2: height(T), i) = zeros(height(T)-1, 1) ;
     Q_latent(5, i) = LatentHeat(-W_trans(i)) ;
@@ -145,6 +145,9 @@ plot(t/3600, OutsideTemperature)
 legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Outside')
 hold off
 
+
+figure("WindowStyle", "docked");
+plot(t(1:end-1)/3600, ConvectionCoefficientsOut)
 
 % figure("WindowStyle", "docked")
 % hold on

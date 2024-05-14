@@ -24,7 +24,7 @@ GH.p.           GHHeight = 3 ; %m
 GH.p.           GHWallThickness = 3e-3 ; %m
 GH.p.           GHFloorThickness = 1e-2 ;	%m
 
-GH.p.           NumberOfWindows = 10 ; 
+GH.p.           NumberOfWindows = 15 ; 
 GH.p.           WindowLength = 0.2 ;
 GH.p.           WindowHeight = 0.4 ;
 GH.p.           RoofAngle = 10 ; % degrees
