@@ -147,7 +147,13 @@ hold off
 
 
 figure("WindowStyle", "docked");
-plot(t(1:end-1)/3600, ConvectionCoefficientsOut)
+hold on
+% plot(t/3600, AddStates(1, :))
+plot(t(1:end-1)/3600, W_trans)
+plot(t(1:end-1)/3600, W_cond)
+plot(t(1:end-1)/3600, W_vent)
+legend('humidity', 'trans', 'cond', 'vent')
+
 
 % figure("WindowStyle", "docked")
 % hold on
