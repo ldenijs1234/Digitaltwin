@@ -3,7 +3,7 @@
 AirTemperature = 15 ;  % ALL DUMMY VALUES!!!
 CoverTemperature = 15 ;
 WallTemperature = 15 ;
-PlantTemperature = 20 ;
+PlantTemperature = 15;
 %FloorTemperature initialisation:
 FloorTempIntVar = (AirTemperature - GroundTemperature)/10;
 
@@ -21,6 +21,8 @@ Q_conv = zeros(length(T), length(t)-1);
 Q_ground = zeros(length(T), length(t)-1);
 Q_rad_in = zeros(length(T), length(t)-1);
 q_rad_out = zeros(length(T), length(t)-1);
+Q_heat = zeros(length(T), length(t)-1);
+Q_heat(1,:) = Heating ;
 
 
 
