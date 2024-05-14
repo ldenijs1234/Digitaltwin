@@ -131,10 +131,16 @@ for i = 1:length(t) - 1
     HumidityDot = HumidityBalance(GH, W_trans(i), W_cond(i), W_vent(i));
     AddStates(1, i+1) = AddStates(1, i) + HumidityDot*dt ;
 
+    % CO2 flows and balance
+    [C_trans(i), C_vent(i)] = CO2flows(GH, AddStates(3,i), SolarIntensity(i), T(1, i), AddStates(2, i), OutsideCO2, VentilationRate(i)) ;
+    CO2Dot = CO2Balance(GH, C_trans(i), C_vent(i), CO2_injection) ;
+    DryWeightDot = DryWeight(GH, AddStates(3,i), C_trans(i), T(1, i)) ;
+    AddStates(2, i+1) = AddStates(2, i) + CO2Dot*dt ;
+    AddStates(3, i+1) = AddStates(3, i) + DryWeightDot*dt ;
+
     %Q functions (+ convection conduction...)
     FloorTemperature(1, i) = T(4, i) ;
     [Q_ground(:, i), QFloor(:, i)] = FGroundConduction(GH, FloorTemperature(:, i), T(:, i)) ;
-
     FloorTemperature(:, i+1) = FloorTemperature(:, i) + QFloor(:, i) * GH.p.GHFloorArea / CAPArray(4) * dt ;
 
     q_rad_out(:,i) = Fq_rad_out(EmmitanceArray, T(:,i));
@@ -165,13 +171,18 @@ plot(t/3600, OutsideTemperature)
 legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Outside')
 hold off
 
-
 figure("WindowStyle", "docked");
 hold on
-plot(t(1:end-1)/3600, W_trans)
-plot(t(1:end-1)/3600, W_cond)
-plot(t(1:end-1)/3600, W_vent)
-legend( 'trans', 'cond', 'vent')
+plot(t/3600,AddStates(2))
+hold off
+
+
+% figure("WindowStyle", "docked");
+% hold on
+% plot(t(1:end-1)/3600, W_trans)
+% plot(t(1:end-1)/3600, W_cond)
+% plot(t(1:end-1)/3600, W_vent)
+% legend( 'trans', 'cond', 'vent')
 
 
 % figure("WindowStyle", "docked")
