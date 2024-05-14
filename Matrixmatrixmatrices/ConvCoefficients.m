@@ -1,4 +1,4 @@
-    GH = GH ;
+
 
     function [h_top, h_wall] = ConvCoefficients(GH, T_wall, T_out, Windspeed, H_out, C_out)
     %inputs from outside this code block

@@ -99,7 +99,7 @@ end
 for i = 1:length(t) - 1
     %Variable parameter functions (+ convection rate, ventilation rate...)
     VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i)) ;
-    %ConvectionCoefficientsOut = ConvCoefficients(GH, T(3, i), OutsideTemperature(i), WindSpeed(i), OutsideHumidity, OutsideCO2) ;
+    ConvectionCoefficientsOut = ConvCoefficients(GH, T(3, i), OutsideTemperature(i), WindSpeed(i), OutsideHumidity(i), OutsideCO2) ;
 
     % Vapor flows and balance
     [W_trans(i), W_cond(i), W_vent(i)] = vaporflows(GH, T(1, i), T(3, i), OutsideTemperature(1), AddStates(1, i), OutsideHumidity(i), DryMassPlant, VentilationRate(i));
@@ -141,6 +141,9 @@ xlabel("Time (h)")
 ylabel("Temperature (°C)")
 title('Temperature simulation using weather forecast of Delft')
 hold off
+
+figure("WindowStyle", "docked");
+plot(t(1:100)/3600, Q_vent(1:100))
 
 % figure("WindowStyle", "docked")
 % hold on
