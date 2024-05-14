@@ -145,8 +145,6 @@ plot(t, OutsideTemperature)
 legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Outside')
 hold off
 
-figure("WindowStyle", "docked");
-plot(t(1:100)/3600, Q_vent(1:100))
 
 % figure("WindowStyle", "docked")
 % hold on
