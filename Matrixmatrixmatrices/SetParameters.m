@@ -18,8 +18,8 @@ GH.p.           Kelvin = 273.15 ;
 % Greenhouse parameters                 ALL DUMMY!!!!!!!!!!!!!
 GH.p.           LAI = 0.9 ; % Leaf Area Index
 
-GH.p.           GHWidth = 50 ; %m 
-GH.p.           GHLength = 60 ; %m
+GH.p.           GHWidth = 10 ; %m 
+GH.p.           GHLength = 10 ; %m
 GH.p.           GHHeight = 3 ; %m
 GH.p.           GHWallThickness = 3e-3 ; %m
 GH.p.           GHFloorThickness = 1e-2 ;	%m

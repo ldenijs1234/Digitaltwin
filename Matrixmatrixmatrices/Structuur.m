@@ -140,8 +140,8 @@ end
 
 figure("WindowStyle", "docked");
 hold on
-plot(t,T)
-plot(t, OutsideTemperature)
+plot(t/3600,T)
+plot(t/3600, OutsideTemperature)
 legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Outside')
 hold off
 
