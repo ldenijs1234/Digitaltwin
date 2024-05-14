@@ -1,6 +1,6 @@
 filename = 'WeerDelft2-5.csv'; % File name of the weather data CSV file
 
-function [time_vec, OutsideTemperature, OutsideRelhumidity, SolarRadiation, Windspeed, Winddirection, Sealevelpressure, CloudCover] = interpolate_weather_data(filename, dt)
+function [time_vec, OutsideTemperature, OutsideRelhumidity, SolarRadiation, Windspeed, Winddirection, Sealevelpressure, CloudCover, DewPoint] = interpolate_weather_data(filename, dt)
     % Read the data using readtable
     tbl = readtable(filename);
     
@@ -12,6 +12,7 @@ function [time_vec, OutsideTemperature, OutsideRelhumidity, SolarRadiation, Wind
     sealevel_pressure = table2array(tbl(:,15));
     cloud_cover = table2array(tbl(:,17));
     solar_rad = table2array(tbl(:,18)); 
+    dew_point = table2array(tbl(:,5)); 
 
     % Generate a time vector for data points (modify as per actual data timing)
     time_hours = 0:1:((height(tbl) - 1) * 1);
@@ -27,6 +28,8 @@ function [time_vec, OutsideTemperature, OutsideRelhumidity, SolarRadiation, Wind
     sealevel_pressure_interp = interp1(time_hours, sealevel_pressure, new_time_hours, 'linear', 'extrap');
     cloud_cover_interp = interp1(time_hours, cloud_cover, new_time_hours, 'linear', 'extrap');
     solar_interp = interp1(time_hours, solar_rad, new_time_hours, 'linear', 'extrap');
+    dew_interp = interp1(time_hours, dew_point, new_time_hours, 'linear', 'extrap');
+
 
     OutsideTemperature = temp_interp;
     OutsideRelhumidity = hum_interp;
@@ -35,10 +38,11 @@ function [time_vec, OutsideTemperature, OutsideRelhumidity, SolarRadiation, Wind
     Winddirection = wind_dir_interp;
     Sealevelpressure = sealevel_pressure_interp;
     CloudCover = cloud_cover_interp;
+    DewPoint = dew_interp;
 
     % Assign outputs
     time_vec = new_time_hours;
 end
 
-[time_vec, OutsideTemperature, OutsideRelhumidity, SolarRadiation, WindSpeed, Winddirection, Sealevelpressure, CloudCover] = interpolate_weather_data(filename, dt);
+[time_vec, OutsideTemperature, OutsideRelhumidity, SolarRadiation, WindSpeed, Winddirection, Sealevelpressure, CloudCover, DewPoint] = interpolate_weather_data(filename, dt);
 

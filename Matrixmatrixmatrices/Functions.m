@@ -15,8 +15,8 @@ function Q = FQ_solar(transmission, diffuse, absorbance, Areasun, Isun)     %inp
 end
 
 
-function T = effT(T_outside)
-    T = T_outside;
+function epsilon = SkyEmit(T_dew, t)
+    epsilon = 0.734 + 0.0061 * T_dew;
 end
 
 
