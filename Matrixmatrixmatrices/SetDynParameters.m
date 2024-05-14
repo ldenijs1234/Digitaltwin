@@ -11,7 +11,7 @@ h_out = 20;  % Convection between outside air and greenhouse
 
 ConvectionCoefficientsIn = [0; h_ac; h_ac; h_ap; h_af] ;
 
-ConvectionCoefficientsOut = [h_out; h_out] ;
+% ConvectionCoefficientsOut = [h_out; h_out] ;
 
 ConvAreaArray = AreaArray ;
 ConvAreaArray(5) = MassPlant * GH.p.C_pld  ; % Effect plant surface
