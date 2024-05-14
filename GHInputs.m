@@ -1,4 +1,4 @@
-% Put het in
+%  Put het in
 
 GH.u.Heating = zeros(1, length(t)) ;
 
