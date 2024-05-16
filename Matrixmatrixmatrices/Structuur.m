@@ -165,7 +165,7 @@ for i = 1:length(t) - 1
     Q_latent(1: height(T)-1, i) = zeros(height(T)-1, 1) ;
 
     %Total heat transfer
-    Q_tot(:,i) = Q_vent(:, i) + Q_solar(:,i) +Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i);% + Q_rad_in(:,i) - AreaArrayRad .* q_rad_out(:,i);
+    Q_tot(:,i) = Q_vent(:, i) + Q_solar(:,i) +Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i); + Q_rad_in(:,i) - AreaArrayRad .* q_rad_out(:,i);
 
     % Temperature Change
     T(:,i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
@@ -197,9 +197,12 @@ hold off
 % ylabel("Floor layer temperature (°C)")
 % hold off
 
-% figure("WindowStyle", "docked")
-% hold on
-% plot(t(1:end-1), Q_sky(2, :)) 
-% plot(t(1:end-1), Q_conv(2, :))
-% plot(t(1:end-1), Q_solar(2, :))
-% legend('sky', 'convection', 'solar')
+figure("WindowStyle", "docked")
+hold on
+plot(t(1:50), Q_vent(2, 1:50)) 
+plot(t(1:50), Q_sky(2, 1:50)) 
+plot(t(1:50), Q_conv(2, 1:50))
+plot(t(1:50), Q_solar(2, 1:50))
+plot(t(1:50), Q_rad_in(2, 1:50)) 
+plot(t(1:50), AreaArrayRad(2) * q_rad_out(2, 1:50))
+legend('vent', 'sky', 'convection', 'solar','radiation in', 'radiation out')
