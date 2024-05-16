@@ -65,3 +65,6 @@ Fin_efficiency = (sqrt(2*c*(1-c)^3)/(epsi*(1-c^2)))*((besseli(2/3,u)*besseli(-2/
 A = L*F*S+(L-L*F*2*t)*2*pi*r_1; % total area of the pipe in m^2
 Q_ideal = h_pipe*A*(T_pipe-T_air);
 Q = Q_ideal*Fin_efficiency
+re = (0.1*10/(0.01*pi))/(4*10^-4)
+
+%N_tu = h_c*A/(m*c_pH);
