@@ -61,8 +61,8 @@ GH.p.           FIRDiffuseGlass = 1 - GH.p.FIRAbsorbanceGlass;
 
 % Floor parameters
 GH.p.           SOLARAbsorbanceFloor = 0.65; %DUMMY
-GH.p.           FIRAbsorbanceFloor = 0.6; %DUMMY
-GH.p.           EmittanceFloor = 0.9 ; %DUMMY
+GH.p.           FIRAbsorbanceFloor = 0.8; %DUMMY
+GH.p.           EmittanceFloor = 0.8 ; %DUMMY
 GH.p.           SOLARDiffuseFloor = 1 - GH.p.SOLARAbsorbanceFloor;
 GH.p.           FIRDiffuseFloor = 1 - GH.p.FIRAbsorbanceFloor ;
 GH.p.           KFloor = 0.3 ; %accurate enough for prototype
@@ -104,17 +104,18 @@ SOLARDiffuseArray = [0; GH.p.SOLARDiffuseGlass; GH.p.SOLARDiffuseGlass; GH.p.SOL
 FIRDiffuseArray = [0; GH.p.FIRDiffuseGlass; GH.p.FIRDiffuseGlass; GH.p.FIRDiffuseFloor; GH.p.FIRDiffusePlant];
 AreaArray = [0; GH.p.GHFloorArea; GH.p.GHTotalArea- GH.p.GHFloorArea; GH.p.GHFloorArea; GH.p.GHPlantArea];
 AreaSunArray = [0; GH.p.GHFloorArea; 0; ((1-GH.p.LAI)*GH.p.GHFloorArea); GH.p.GHPlantArea];
+AreaArrayRad = AreaArray; AreaArrayRad(5) = 2 * AreaArray(5);
 TransmissionArray = [0; 1; 1; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass]; %0 for air, 1 for glass wall and roof, tau for everything underneath glass
 
 % Viewing vectors and Areas
 
-F_pc=0.6; F_pf=0.1; F_wc=0.2; F_fc= 0.4; F_pw = 0.3; F_fw=0.4; F_ww = 0.4;
-F_cp = F_pc * GH.p.GHPlantArea / GH.p.GHCoverArea; 
-F_fp = F_pf * GH.p.GHPlantArea / GH.p.GHFloorArea;
-F_cf = F_fc * GH.p.GHFloorArea / GH.p.GHCoverArea;
-F_cw = F_wc * GH.p.GHWallArea / GH.p.GHCoverArea;
-F_wp = F_pw * GH.p.GHPlantArea / GH.p.GHWallArea;
-F_wf = F_fw * GH.p.GHFloorArea / GH.p.GHWallArea;
+% F_pc=0.6; F_pf=0.1; F_wc=0.2; F_fc= 0.4; F_pw = 0.3; F_fw=0.4; F_ww = 0.4;
+% F_cp = F_pc * GH.p.GHPlantArea / GH.p.GHCoverArea; 
+% F_fp = F_pf * GH.p.GHPlantArea / GH.p.GHFloorArea;
+% F_cf = F_fc * GH.p.GHFloorArea / GH.p.GHCoverArea;
+% F_cw = F_wc * GH.p.GHWallArea / GH.p.GHCoverArea;
+% F_wp = F_pw * GH.p.GHPlantArea / GH.p.GHWallArea;
+% F_wf = F_fw * GH.p.GHFloorArea / GH.p.GHWallArea;
 
 % display(F_cp; F_fp; F_cf; F_cw; F_wp; F_wf)
 
@@ -136,7 +137,13 @@ F_wf = F_fw * GH.p.GHFloorArea / GH.p.GHWallArea;
 
 % [F_cw, F_cf, F_cp, F_ww, F_wf, F_wp, F_fc, F_fw, F_fp, F_pw] = solve(eqns, vars)
 
-ViewArray = [0,     0,      0,      0,      0;
+F_ww = 0.3; F_wc=0.35; F_wp = 0.7 * F_wc; F_wf = 0.3 * F_wc;
+F_cw = 0.42; F_cp = 0.7 * 0.58; F_cf = 0.3 * 0.58;
+F_fw = 0.3 * 0.42; F_fc = 0.3 * 0.58; F_fp = 1 - F_fw - F_fc;
+F_pw = 0.42/2; F_pc = 0.58/2; F_pf = 1/2;
+
+
+ViewMatrix = [0,     0,      0,      0,      0;
              0,     0,      F_cw,   F_cf,   F_cp;
              0,     F_wc,   F_ww,   F_wf,   F_wp;
              0,     F_fc,   F_fw,   0,      F_fp;
