@@ -154,7 +154,7 @@ for i = 1:length(t) - 1
     FloorTemperature(:, i+1) = FloorTemperature(:, i) + QFloor(:, i) * GH.p.GHFloorArea / CAPArray(4) * dt ;
 
     q_rad_out(:,i) = Fq_rad_out(EmmitanceArray, T(:,i));
-    Q_rad_in(:,i) = FQ_rad_in(FIRAbsorbanceArray, FIRDiffuseArray, AreaArray, ViewArray, q_rad_out(:,i));
+    Q_rad_in(:,i) = FQ_rad_in(FIRAbsorbanceArray, FIRDiffuseArray, AreaArrayRad, ViewMatrix, q_rad_out(:,i));
     Q_solar(:,i) = FQ_solar(TransmissionArray, SOLARDiffuseArray, SOLARAbsorbanceArray, AreaSunArray, SolarIntensity(i));
     J_sky(i) = SkyEmit(DewPoint(i),OutsideTemperature(i));
     Q_sky(2:3,i) = FQ_sky(AreaArray(2:3), FIRAbsorbanceArray(2:3), EmmitanceArray(2:3), SkyTemperature(i), T(2:3,i));
@@ -165,7 +165,7 @@ for i = 1:length(t) - 1
     Q_latent(1: height(T)-1, i) = zeros(height(T)-1, 1) ;
 
     %Total heat transfer
-    Q_tot(:,i) = Q_vent(:, i) + Q_solar(:,i) +Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i); %+ Q_rad_in(:,i) - AreaArray .* q_rad_out(:,i);
+    Q_tot(:,i) = Q_vent(:, i) + Q_solar(:,i) +Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i);% + Q_rad_in(:,i) - AreaArrayRad .* q_rad_out(:,i);
 
     % Temperature Change
     T(:,i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
@@ -179,11 +179,6 @@ hold on
 plot(t/3600,T)
 plot(t/3600, OutsideTemperature)
 legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Outside')
-hold off
-
-figure("WindowStyle", "docked");
-hold on
-plot(t/3600,AddStates(2))
 hold off
 
 
