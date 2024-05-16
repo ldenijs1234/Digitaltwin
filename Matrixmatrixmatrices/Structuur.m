@@ -95,6 +95,26 @@ function HumidityDot = HumidityBalance(GH, W_trans, W_cond, W_vent)
     HumidityDot = W / CAP_Water ; %kg m^-3 s^-1
 end
 
+function [C_trans, C_vent] = CO2flows(GH, DryMassPlant, SolarIntensity, T_air, C_in, C_out, VentilationRate)
+    
+    C_trans = (1 - exp(-GH.p.C_pld * DryMassPlant)) * ((GH.p.C_RadPhoto * SolarIntensity * ... 
+    (-GH.p.C_CO21 * T_air^2 + GH.p.C_CO22 * T_air - GH.p.C_CO23) * (C_in * GH.p.C_R)) / ... 
+    (GH.p.C_RadPhoto * SolarIntensity + (-GH.p.C_CO21 * T_air^2 + GH.p.C_CO22 * T_air - ... 
+    GH.p.C_CO23) * (C_in * GH.p.C_R))) ;
+    C_vent = VentilationRate * (C_in - C_out) ; %kg m^-2 s^-1
+end
+
+function CO2Dot = CO2Balance(GH, C_trans, C_vent, C_inject)
+    CAP_CO2 = GH.p.GHVolume / GH.p.GHFloorArea; %m
+    C = - C_trans - C_vent + C_inject/GH.p.GHFloorArea;
+    CO2Dot = C / CAP_CO2 ; %kg m^-3 s^-1
+end
+
+function DryWeightDot = DryWeight(GH, DryMassPlant, C_trans, T_air)
+    DryWeightDot = GH.p.YieldFactor*C_trans - GH.p.C_resp*DryMassPlant * 2^(0.1*T_air- 2.5) ;
+end
+
+
 function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeed, T_out)
     u = GH.u ; p = GH.p ; 
 
@@ -121,10 +141,16 @@ for i = 1:length(t) - 1
     HumidityDot = HumidityBalance(GH, W_trans(i), W_cond(i), W_vent(i));
     AddStates(1, i+1) = AddStates(1, i) + HumidityDot*dt ;
 
+    % CO2 flows and balance
+    [C_trans(i), C_vent(i)] = CO2flows(GH, AddStates(3,i), SolarIntensity(i), T(1, i), AddStates(2, i), OutsideCO2, VentilationRate(i)) ;
+    CO2Dot = CO2Balance(GH, C_trans(i), C_vent(i), CO2_injection) ;
+    DryWeightDot = DryWeight(GH, AddStates(3,i), C_trans(i), T(1, i)) ;
+    AddStates(2, i+1) = AddStates(2, i) + CO2Dot*dt ;
+    AddStates(3, i+1) = AddStates(3, i) + DryWeightDot*dt ;
+
     %Q functions (+ convection conduction...)
     FloorTemperature(1, i) = T(4, i) ;
     [Q_ground(:, i), QFloor(:, i)] = FGroundConduction(GH, FloorTemperature(:, i), T(:, i)) ;
-
     FloorTemperature(:, i+1) = FloorTemperature(:, i) + QFloor(:, i) * GH.p.GHFloorArea / CAPArray(4) * dt ;
 
     q_rad_out(:,i) = Fq_rad_out(EmmitanceArray, T(:,i));
@@ -155,14 +181,18 @@ plot(t/3600, OutsideTemperature)
 legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Outside')
 hold off
 
-
 figure("WindowStyle", "docked");
 hold on
-% plot(t/3600, AddStates(1, :))
-plot(t(1:end-1)/3600, W_trans)
-plot(t(1:end-1)/3600, W_cond)
-plot(t(1:end-1)/3600, W_vent)
-legend('humidity', 'trans', 'cond', 'vent')
+plot(t/3600,AddStates(2))
+hold off
+
+
+% figure("WindowStyle", "docked");
+% hold on
+% plot(t(1:end-1)/3600, W_trans)
+% plot(t(1:end-1)/3600, W_cond)
+% plot(t(1:end-1)/3600, W_vent)
+% legend( 'trans', 'cond', 'vent')
 
 
 % figure("WindowStyle", "docked")
