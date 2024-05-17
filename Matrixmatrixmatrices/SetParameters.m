@@ -137,18 +137,18 @@ TransmissionArray = [0; 1; 1; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass]; %0 for ai
 
 % [F_cw, F_cf, F_cp, F_ww, F_wf, F_wp, F_fc, F_fw, F_fp, F_pw] = solve(eqns, vars)
 
-F_ww = 0.3; F_wc=0.35; F_wp = GH.p.LAI * F_wc; F_wf = (1-GH.p.LAI) * F_wc;
+F_cc =0; F_cw = 0.42; F_cf = (1-GH.p.LAI) * 0.58; F_cp = GH.p.LAI * 0.58;
 
-F_cw = 0.42; F_cp = GH.p.LAI * 0.58; F_cf = (1-GH.p.LAI) * 0.58;
+F_ww = 0.3; F_wc=0.35; F_wf = (1-GH.p.LAI) * F_wc; F_wp = GH.p.LAI * F_wc;
 
-F_fw = (1-GH.p.LAI) * 0.42; F_fc = (1-GH.p.LAI) * 0.58; F_fp = 1 - F_fw - F_fc;
+F_fc = (1-GH.p.LAI) * 0.58; F_fw = (1-GH.p.LAI) * 0.42; F_ff = 0; F_fp = 1 - F_fw - F_fc;
 
-F_pw = F_wp * AreaArrayRad(3) / AreaArrayRad(5); F_pc = F_cp * AreaArrayRad(2) / AreaArrayRad(5); F_pf = F_fp * AreaArrayRad(4) / AreaArrayRad(5);
+F_pc = F_cp * AreaArrayRad(2) / AreaArrayRad(5); F_pw = F_wp * AreaArrayRad(3) / AreaArrayRad(5);  F_pf = F_fp * AreaArrayRad(4) / AreaArrayRad(5); F_pp = 0;
 
 
 ViewMatrix = [0,     0,      0,      0,      0;
-             0,     0,      F_cw,   F_cf,   F_cp;
+             0,     F_cc,      F_cw,   F_cf,   F_cp;
              0,     F_wc,   F_ww,   F_wf,   F_wp;
-             0,     F_fc,   F_fw,   0,      F_fp;
-             0,     F_pc,   F_pw,   F_pf,      0];
+             0,     F_fc,   F_fw,   F_ff,      F_fp;
+             0,     F_pc,   F_pw,   F_pf,      F_pp];
 
