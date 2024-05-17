@@ -1,5 +1,5 @@
 % Simulation parameters
-total_time = 100;   % Total simulation time in seconds
+total_time = 3600;   % Total simulation time in seconds
 dt = 1;             % Time step in seconds
 
 % Initialize arrays to store data for plotting
@@ -8,7 +8,7 @@ temperature = zeros(size(time));
 heating_input = zeros(size(time));
 
 % Define parameters
-setpoint = 22 + 2 * sin(2*pi*time*100);  % Setpoint temperature in degrees Celsius
+setpoint = 2 * sind(2*pi*(time)*1/120) + 22;  % Setpoint temperature in degrees Celsius
 kp = 0.5;       % Proportional gain
 ki = 0.1;       % Integral gain
 
@@ -16,7 +16,7 @@ ki = 0.1;       % Integral gain
 integral = 0;   % Integral term
 
 % Simulation loop
-current_temp = 20 %* sin(time);  % Initial temperature
+current_temp = 15 ;%* sin(time);  % Initial temperature
 for i = 1:numel(time)
     % Calculate error
     error = setpoint(i) - current_temp;
@@ -25,8 +25,8 @@ for i = 1:numel(time)
     integral = integral + error * dt;
     
     % Calculate control output
-    proportional = kp * error;
-    integral_component = ki * integral;
+    proportional = max(0,kp * error);
+    integral_component = max(0,ki * integral);
     output = proportional + integral_component;
     
     
@@ -34,28 +34,45 @@ for i = 1:numel(time)
     heating_input(i) = output;
     
     % Simulate temperature dynamics
-    heat_loss = 0.1 * (current_temp - 20); % Simple linear heat loss model
+    heat_loss = 0.1 * (current_temp - 10); % Simple linear heat loss model
     current_temp = current_temp + (heating_input(i) - heat_loss) * dt;
     
     % Store temperature for plotting
     temperature(i) = current_temp;
 end
 
+% Calculate energy consumption in kWh
+energy_consumption_kWh = heating_input * dt / (1000 * 3600);  % Convert from W to kWh
+
+% Price per kWh
+price_per_kWh = 3.4 + 2 * sind(2*pi*(time-1800)*1/60);  % Euro
+
+% Calculate total cost in euros
+total_cost_euro = energy_consumption_kWh .* price_per_kWh ;
+sum(total_cost_euro) % 'ans' is the total cost in euros
+
 % Plot results
-figure;
-subplot(2, 1, 1);
-plot(time, temperature, 'b', 'LineWidth', 1.5);
+figure("windowStyle","docked");
+subplot(3, 1, 1);
+plot(time/3600, temperature, 'b', 'LineWidth', 1.5);
 hold on;
-plot(time, setpoint(i), 'r--', 'LineWidth', 1.5);
-xlabel('Time (s)');
+plot(time/3600, setpoint, 'r--', 'LineWidth', 1.5);
+xlabel('Time (h)');
 ylabel('Temperature (°C)');
 title('Temperature Control with PI Controller');
 legend('Temperature', 'Setpoint', 'Location', 'best');
 grid on;
 
-subplot(2, 1, 2);
-plot(time, heating_input, 'g', 'LineWidth', 1.5);
-xlabel('Time (s)');
-ylabel('Heating Input (W)');
+subplot(3, 1, 2);
+plot(time/3600, energy_consumption_kWh, 'g', 'LineWidth', 1.5);
+xlabel('Time (h)');
+ylabel('Heating Input (kWh)');
 title('Heating Input Control Signal');
+grid on;
+
+subplot(3, 1, 3);
+plot(time/3600, total_cost_euro, 'm', 'LineWidth', 1.5);
+xlabel('Time (h)');
+ylabel('Cost (€/kWh)');
+title('Total Cost of Heating');
 grid on;
