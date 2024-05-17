@@ -10,10 +10,12 @@ L = 20; % length of the pipe
 F = 40; % Fins per meter of pipe %!!!!keep the thickness in mind not more fins then fit on the pipe!!!!
 g = 9.81;
 dT = T_pipe - T_air;
-r_1 = 0.01; % outside radian of the pipe in meters
-r_2 = 0.04; % outside radian of the fin in meters
+r_0 = 0.025; % inside radius of the pipe in meters
+r_1 = 0.03; % outside radius of the pipe in meters
+r_2 = 0.05; % outside radius of the fin in meters
 k = 180; % conductive heat transfer coefficient of the material in W/(m*K)
 t = 0.003; % half of the thickness of one fin in meters
+A_in = pi*r_0^2; % Area of inside of the pipe
 
 p = 1084; % air pressure in hpa
 h_abs = H_out*1000; % absolute humidity of the outside air in g/m^3
@@ -65,6 +67,7 @@ Fin_efficiency = (sqrt(2*c*(1-c)^3)/(epsi*(1-c^2)))*((besseli(2/3,u)*besseli(-2/
 A = L*F*S+(L-L*F*2*t)*2*pi*r_1; % total area of the pipe in m^2
 Q_ideal = h_pipe*A*(T_pipe-T_air);
 Q = Q_ideal*Fin_efficiency
-re = (0.1*10/(0.01*pi))/(4*10^-4)
 
+mu = water.rho(T_in)*water.nu(T_in); %dynamic viscosity
+Re = (m/A_in)*2*r_0/mu
 %N_tu = h_c*A/(m*c_pH);
