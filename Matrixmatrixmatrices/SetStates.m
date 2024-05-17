@@ -29,7 +29,7 @@ Q_heat(1,:) = Heating ;
 Humidity = 0.012 ; % kg/m^3 air
 
 CO2Air = 0.000464 ; % kg/m^3 air
-MassPlant = GH.p.GHPlantArea*0.01*241 ; % Dry Mass plant (CO2)
+MassPlant = GH.p.GHPlantArea*GH.p.rho_lettuce*0.1 ; % Dry Mass plant (CO2)
 DryMassPlant = MassPlant / 20 ; % Assume plant = ~95% water, (5% Dry Mass)
 
 AddStates(:,1) = [Humidity; CO2Air; DryMassPlant; MassPlant] ;   % additional states
