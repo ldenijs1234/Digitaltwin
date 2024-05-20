@@ -129,6 +129,22 @@ function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeed, T_out)
 end
 
 for i = 1:length(t) - 1
+    
+    %PI controller
+    Kp = 1;
+    Ki = 0.1;
+    TauI = 10;
+    sp(i) = 20;
+    %sp(2161:6480) = 22;
+    %sp(6480:end) = 20;
+    pv(i) = T(1, i);
+    e = sp - pv;
+    P(i) = Kp * e;
+    if i >= 1
+    I(i) = Ki/TauI * (I(i-1) + e * dt);
+    end
+    u(i) = u(0) + P(i) + I(i);
+    
     %Variable parameter functions (+ convection rate, ventilation rate...)
     VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i)) ;
     ConvectionCoefficientsOut(:,i) = (ConvCoefficients(GH, T(3, i), OutsideTemperature(i), WindSpeed(i), OutsideHumidity(i), OutsideCO2)).' ;
@@ -166,7 +182,7 @@ for i = 1:length(t) - 1
     Q_latent(1: height(T)-1, i) = zeros(height(T)-1, 1) ;
 
     %Total heat transfer
-    Q_tot(:,i) = Q_vent(:, i) + Q_solar(:,i) +Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_rad_in(:,i) - AreaArrayRad .* q_rad_out(:,i);
+    Q_tot(:,i) = Q_vent(:, i) +Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) +  Q_rad_in(:,i) - AreaArrayRad .* q_rad_out(:,i);
 
     % Temperature Change
     T(:,i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
@@ -200,11 +216,11 @@ hold off
 
 figure("WindowStyle", "docked")
 hold on
-plot(t(1:end-1), Q_vent(4,:)) 
-plot(t(1:end-1), Q_sky(4,:)) 
-plot(t(1:end-1), Q_conv(4,:))
-plot(t(1:end-1), Q_solar(4,:))
-plot(t(1:end-1), Q_rad_in(4,:) - AreaArrayRad(4) * q_rad_out(4,:))
-plot(t(1:end-1), Q_ground(4,:)) 
+plot(t(1:end-1), Q_vent(1,:)) 
+plot(t(1:end-1), Q_sky(1,:)) 
+plot(t(1:end-1), Q_conv(1,:))
+plot(t(1:end-1), Q_solar(1,:))
+plot(t(1:end-1), Q_rad_in(1,:) - AreaArrayRad(1) * q_rad_out(1,:))
+plot(t(1:end-1), Q_ground(1,:)) 
 legend('vent', 'sky', 'convection', 'solar','radiation','ground')
 hold off
