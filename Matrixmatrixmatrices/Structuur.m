@@ -136,6 +136,7 @@ for i = 1:length(t) - 1
     ConvectionCoefficientsIn(2,i) = h_ac ;
     ConvectionCoefficientsIn(3,i) = h_ac ;
     ConvectionCoefficientsIn(5,i) = h_ap ;
+    
     % Vapor flows and balance
     [W_trans(i), W_cond(i), W_vent(i)] = vaporflows(GH, T(1, i), T(3, i), OutsideTemperature(1,i), AddStates(1, i), OutsideHumidity(i), DryMassPlant, VentilationRate(i));
     HumidityDot = HumidityBalance(GH, W_trans(i), W_cond(i), W_vent(i));
