@@ -4,7 +4,7 @@
 
 Heating = 000* ones(1, length(t)-1) ;
 CO2_injection = 0 ;
-GH.u.OpenWindowAngle = 0 ;
+GH.u.OpenWindowAngle = 15 ;
 
 
 % Defined conditions
@@ -27,7 +27,7 @@ LdCloud = epsCloud.*sigma.*(OutsideTemperature+273.15).^4;    % Equation 5.22
 SkyTemperature = (LdCloud/sigma).^(0.25)-273.15 ; % Katzin
 
 
-SolarIntensity =  SolarRadiation ; % Data already in the form of intensity
+SolarIntensity =  SolarRadiation .* (1-cloud); % Data already in the form of intensity
 
 OutsideHumidity =   rh2vaporDens(OutsideTemperature, OutsideRelhumidity) ; %!!!!
 
