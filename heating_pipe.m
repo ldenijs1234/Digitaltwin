@@ -68,6 +68,6 @@ A = L*F*S+(L-L*F*2*t)*2*pi*r_1; % total area of the pipe in m^2
 Q_ideal = h_pipe*A*(T_pipe-T_air);
 Q = Q_ideal*Fin_efficiency
 
-mu = water.rho(T_in)*water.nu(T_in); %dynamic viscosity
+mu = water.rho(T_in)*water.nu(T_in) %dynamic viscosity
 Re = (m/A_in)*2*r_0/mu
 %N_tu = h_c*A/(m*c_pH);
