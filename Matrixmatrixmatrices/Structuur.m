@@ -115,9 +115,9 @@ function DryWeightDot = DryWeight(GH, DryMassPlant, C_trans, T_air)
 end
 
 
-function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeed, T_out)
+function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeed, T_out, OpenWindowAngle)
     u = GH.u ; p = GH.p ; 
-
+    u.OpenWindowAngle = OpenWindowAngle ;
     G_l = 2.29e2 * (1 - exp(-u.OpenWindowAngle/21.1)) ; % leeside
     G_w = 1.2e-3 * u.OpenWindowAngle * exp(u.OpenWindowAngle/211) ; % windward side
     v_wind = (G_l + G_w) * p.WindowArea * WindSpeed ;
@@ -129,24 +129,31 @@ function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeed, T_out)
 end
 
 for i = 1:length(t) - 1
-    
-    %PI controller
-    Kp = 1;
-    Ki = 0.1;
-    TauI = 10;
-    sp(i) = 20;
-    %sp(2161:6480) = 22;
-    %sp(6480:end) = 20;
-    pv(i) = T(1, i);
-    e = sp - pv;
-    P(i) = Kp * e;
-    if i >= 1
-    I(i) = Ki/TauI * (I(i-1) + e * dt);
+    setpoint = zeros(length(t), 1) ;
+    setpoint(i) = 20 + 5 * sind(2*pi * t(i)/(24*60*60)) ;
+
+    if T(1, i) > 20
+        GH.u.OpenWindowAngle(i) = 45 ;
+    else
+        GH.u.OpenWindowAngle(i) = 15 ;
     end
-    u(i) = u(0) + P(i) + I(i);
+    %PI controller
+    % Kp = 1;
+    % Ki = 0.1;
+    % TauI = 10;
+    % sp(i) = 20;
+    % %sp(2161:6480) = 22;
+    % %sp(6480:end) = 20;
+    % pv(i) = T(1, i);
+    % e = sp - pv;
+    % P(i) = Kp * e;
+    % if i >= 1
+    % I(i) = Ki/TauI * (I(i-1) + e * dt);
+    % end
+    % u(i) = u(0) + P(i) + I(i);
     
     %Variable parameter functions (+ convection rate, ventilation rate...)
-    VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i)) ;
+    VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i), GH.u.OpenWindowAngle(i)) ;
     ConvectionCoefficientsOut(:,i) = (ConvCoefficients(GH, T(3, i), OutsideTemperature(i), WindSpeed(i), OutsideHumidity(i), OutsideCO2)).' ;
     ConvectionCoefficientsIn(4,i) = ConvFloor(T(4, i), T(1, i)) ;
     ConvectionCoefficientsIn(2,i) = h_ac ;
@@ -193,8 +200,12 @@ end
 figure("WindowStyle", "docked");
 hold on
 plot(t/3600,T)
-plot(t/3600, OutsideTemperature)
-legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Outside')
+plot(t/3600, OutsideTemperature, 'b--')
+plot(t/3600, setpoint(i), 'r--')
+title("Temperatures in the greenhouse")
+xlabel("Time (h)")
+ylabel("Temperature (°C)")
+legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Outside', 'Setpoint')
 hold off
 
 
