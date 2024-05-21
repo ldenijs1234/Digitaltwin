@@ -115,13 +115,13 @@ function DryWeightDot = DryWeight(GH, DryMassPlant, C_trans, T_air)
 end
 
 
-function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeed, T_out)
-    u = GH.u ; p = GH.p ; 
+function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeed, T_out, OpenWindowAngle)
+    p = GH.p ; 
 
-    G_l = 2.29e2 * (1 - exp(-u.OpenWindowAngle/21.1)) ; % leeside
-    G_w = 1.2e-3 * u.OpenWindowAngle * exp(u.OpenWindowAngle/211) ; % windward side
+    G_l = 2.29e2 * (1 - exp(-OpenWindowAngle/21.1)) ; % leeside
+    G_w = 1.2e-3 * OpenWindowAngle * exp(OpenWindowAngle/211) ; % windward side
     v_wind = (G_l + G_w) * p.WindowArea * WindSpeed ;
-    H = p.WindowHeight * (sind(p.RoofAngle)- sind(p.RoofAngle - u.OpenWindowAngle)) ;
+    H = p.WindowHeight * (sind(p.RoofAngle)- sind(p.RoofAngle - OpenWindowAngle)) ;
     v_temp = p.C_f * p.WindowLength/3 * (abs(p.Gravity*p.BetaAir*(T_air ... 
     - T_out)))^(0.5) * H^(1.5) ;
 
@@ -146,7 +146,7 @@ for i = 1:length(t) - 1
     u(i) = u(0) + P(i) + I(i);
     
     %Variable parameter functions (+ convection rate, ventilation rate...)
-    VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i)) ;
+    VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i), OpenWindowAngle) ;
     ConvectionCoefficientsOut(:,i) = (ConvCoefficients(GH, T(3, i), OutsideTemperature(i), WindSpeed(i), OutsideHumidity(i), OutsideCO2)).' ;
     ConvectionCoefficientsIn(4,i) = ConvFloor(T(4, i), T(1, i)) ;
     ConvectionCoefficientsIn(2,i) = h_ac ;
@@ -182,7 +182,7 @@ for i = 1:length(t) - 1
     Q_latent(1: height(T)-1, i) = zeros(height(T)-1, 1) ;
 
     %Total heat transfer
-    Q_tot(:,i) = Q_vent(:, i) +Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) +  Q_rad_in(:,i) - AreaArrayRad .* q_rad_out(:,i);
+    Q_tot(:,i) = Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) +  Q_rad_in(:,i) - AreaArrayRad .* q_rad_out(:,i);
 
     % Temperature Change
     T(:,i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
