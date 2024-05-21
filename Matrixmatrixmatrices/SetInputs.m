@@ -2,7 +2,7 @@
 
 % User Inputs
 
-Heating = 000* ones(1, length(t)-1) ;
+Heating = zeros(1, length(t)-1) ;
 CO2_injection = 0 ;
 OpenWindowAngle = 15 ;
 

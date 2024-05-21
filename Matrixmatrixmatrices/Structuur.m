@@ -129,21 +129,28 @@ function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeed, T_out, Open
 end
 
 for i = 1:length(t) - 1
-    
-    %PI controller
-    Kp = 1;
-    Ki = 0.1;
-    TauI = 10;
-    sp(i) = 20;
-    %sp(2161:6480) = 22;
-    %sp(6480:end) = 20;
-    pv(i) = T(1, i);
-    e = sp - pv;
-    P(i) = Kp * e;
-    if i >= 1
-    I(i) = Ki/TauI * (I(i-1) + e * dt);
+    setpoint = zeros(length(t), 1) ;
+    setpoint = 20 + 5 * sind(2*pi * t(i)/(24*60*60)) ;
+
+    if T(1, i) > 20
+        GH.u.OpenWindowAngle(i) = 45 ;
+    else
+        GH.u.OpenWindowAngle(i) = 15 ;
     end
-    u(i) = u(0) + P(i) + I(i);
+    %PI controller
+    % Kp = 1;
+    % Ki = 0.1;
+    % TauI = 10;
+    % sp(i) = 20;
+    % %sp(2161:6480) = 22;
+    % %sp(6480:end) = 20;
+    % pv(i) = T(1, i);
+    % e = sp - pv;
+    % P(i) = Kp * e;
+    % if i >= 1
+    % I(i) = Ki/TauI * (I(i-1) + e * dt);
+    % end
+    % u(i) = u(0) + P(i) + I(i);
     
     %Variable parameter functions (+ convection rate, ventilation rate...)
     VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i), OpenWindowAngle) ;
@@ -152,7 +159,6 @@ for i = 1:length(t) - 1
     ConvectionCoefficientsIn(2,i) = h_ac ;
     ConvectionCoefficientsIn(3,i) = h_ac ;
     ConvectionCoefficientsIn(5,i) = h_ap ;
-    
     % Vapor flows and balance
     [W_trans(i), W_cond(i), W_vent(i)] = vaporflows(GH, T(1, i), T(3, i), OutsideTemperature(1,i), AddStates(1, i), OutsideHumidity(i), DryMassPlant, VentilationRate(i));
     HumidityDot = HumidityBalance(GH, W_trans(i), W_cond(i), W_vent(i));
@@ -194,8 +200,12 @@ end
 figure("WindowStyle", "docked");
 hold on
 plot(t/3600,T)
-plot(t/3600, OutsideTemperature)
-legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Outside')
+plot(t/3600, OutsideTemperature, 'b--')
+plot(t/3600, setpoint(i), 'r--')
+title("Temperatures in the greenhouse")
+xlabel("Time (h)")
+ylabel("Temperature (°C)")
+legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Outside', 'Setpoint')
 hold off
 
 
