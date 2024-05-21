@@ -115,13 +115,13 @@ function DryWeightDot = DryWeight(GH, DryMassPlant, C_trans, T_air)
 end
 
 
-function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeed, T_out)
-    u = GH.u ; p = GH.p ; 
+function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeed, T_out, OpenWindowAngle)
+    p = GH.p ; 
 
-    G_l = 2.29e2 * (1 - exp(-u.OpenWindowAngle/21.1)) ; % leeside
-    G_w = 1.2e-3 * u.OpenWindowAngle * exp(u.OpenWindowAngle/211) ; % windward side
+    G_l = 2.29e2 * (1 - exp(-OpenWindowAngle/21.1)) ; % leeside
+    G_w = 1.2e-3 * OpenWindowAngle * exp(OpenWindowAngle/211) ; % windward side
     v_wind = (G_l + G_w) * p.WindowArea * WindSpeed ;
-    H = p.WindowHeight * (sind(p.RoofAngle)- sind(p.RoofAngle - u.OpenWindowAngle)) ;
+    H = p.WindowHeight * (sind(p.RoofAngle)- sind(p.RoofAngle - OpenWindowAngle)) ;
     v_temp = p.C_f * p.WindowLength/3 * (abs(p.Gravity*p.BetaAir*(T_air ... 
     - T_out)))^(0.5) * H^(1.5) ;
 
@@ -129,30 +129,36 @@ function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeed, T_out)
 end
 
 for i = 1:length(t) - 1
-    
+    % setpoint = zeros(length(t), 1) ;
+    % setpoint = 20 + 5 * sind(2*pi * t(i)/(24*60*60)) ;
+
+    % if T(1, i) > 20
+    %     OpenWindowAngle(i) = 45 ;
+    % else
+    %     OpenWindowAngle(i) = 15 ;
+    % end
     %PI controller
-    Kp = 1;
-    Ki = 0.1;
-    TauI = 10;
-    sp(i) = 20;
-    %sp(2161:6480) = 22;
-    %sp(6480:end) = 20;
-    pv(i) = T(1, i);
-    e = sp - pv;
-    P(i) = Kp * e;
-    if i >= 1
-    I(i) = Ki/TauI * (I(i-1) + e * dt);
-    end
-    u(i) = u(0) + P(i) + I(i);
+    % Kp = 1;
+    % Ki = 0.1;
+    % TauI = 10;
+    % sp(i) = 20;
+    % %sp(2161:6480) = 22;
+    % %sp(6480:end) = 20;
+    % pv(i) = T(1, i);
+    % e = sp - pv;
+    % P(i) = Kp * e;
+    % if i >= 1
+    % I(i) = Ki/TauI * (I(i-1) + e * dt);
+    % end
+    % u(i) = u(0) + P(i) + I(i);
     
     %Variable parameter functions (+ convection rate, ventilation rate...)
-    VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i)) ;
+    VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i), OpenWindowAngle(i)) ;
     ConvectionCoefficientsOut(:,i) = (ConvCoefficients(GH, T(3, i), OutsideTemperature(i), WindSpeed(i), OutsideHumidity(i), OutsideCO2)).' ;
     ConvectionCoefficientsIn(4,i) = ConvFloor(T(4, i), T(1, i)) ;
     ConvectionCoefficientsIn(2,i) = h_ac ;
     ConvectionCoefficientsIn(3,i) = h_ac ;
     ConvectionCoefficientsIn(5,i) = h_ap ;
-    
     % Vapor flows and balance
     [W_trans(i), W_cond(i), W_vent(i)] = vaporflows(GH, T(1, i), T(3, i), OutsideTemperature(1,i), AddStates(1, i), OutsideHumidity(i), DryMassPlant, VentilationRate(i));
     HumidityDot = HumidityBalance(GH, W_trans(i), W_cond(i), W_vent(i));
@@ -182,7 +188,7 @@ for i = 1:length(t) - 1
     Q_latent(1: height(T)-1, i) = zeros(height(T)-1, 1) ;
 
     %Total heat transfer
-    Q_tot(:,i) = Q_vent(:, i) +Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) +  Q_rad_in(:,i) - AreaArrayRad .* q_rad_out(:,i);
+    Q_tot(:,i) = Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) +  Q_rad_in(:,i) - AreaArrayRad .* q_rad_out(:,i);
 
     % Temperature Change
     T(:,i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
@@ -194,8 +200,12 @@ end
 figure("WindowStyle", "docked");
 hold on
 plot(t/3600,T)
-plot(t/3600, OutsideTemperature)
-legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Outside')
+plot(t/3600, OutsideTemperature, 'b--')
+% plot(t/3600, setpoint(i), 'r--')
+title("Temperatures in the greenhouse")
+xlabel("Time (h)")
+ylabel("Temperature (°C)")
+legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Outside', 'Setpoint')
 hold off
 
 
