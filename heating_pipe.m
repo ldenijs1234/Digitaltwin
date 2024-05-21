@@ -1,15 +1,15 @@
-
-function [Q_out,T_pipes]  = Pipe_heating(T_in,T_air,T_pipe,Q_pipes,dt)
+Pipe_heating(90,20,39.755,0,600)
+function [Q_pipe,Q_out,T_pipes]  = Pipe_heating(T_in,T_air,T_pipe,Q_pipes,dt)
    %%inputs
-    m = 0.2; %mass flow through the pipe in kg/s
+    m = 0.1; %mass flow through the pipe in kg/s
     H_out = 0.012; % Kg/m^3
     C_out = 0.0464; % Kg/m^3
     L = 200; % length of the pipe
     F = 40; % Fins per meter of pipe %!!!!keep the thickness in mind not more fins then fit on the pipe!!!!
     g = 9.81;
-    r_0 = 0.05; % inside radius of the pipe in meters
-    r_1 = 0.055; % outside radius of the pipe in meters
-    r_2 = 0.1; % outside radius of the fin in meters
+    r_0 = 0.078; % inside radius of the pipe in meters
+    r_1 = 0.08; % outside radius of the pipe in meters
+    r_2 = 0.137; % outside radius of the fin in meters
     k = 180; % conductive heat transfer coefficient of the material in W/(m*K)
     t = 0.003; % half of the thickness of one fin in meters
     A_in = pi*r_0^2; % Area of inside of the pipe
@@ -98,8 +98,8 @@ function [Q_out,T_pipes]  = Pipe_heating(T_in,T_air,T_pipe,Q_pipes,dt)
         Q_pipeses = Q_pipes;
     end
 
-    Q_in = (T_in-T_out)*m*c_p;
-    Q_out = h_pipe*A*abs(T_pipe-T_air)*Fin_efficiency*dt;
+    Q_in = (T_in-T_out)*m*c_p
+    Q_out = h_pipe*A*abs(T_pipe-T_air)*Fin_efficiency*dt
     Q_pipe = Q_pipeses+Q_in*dt;
-    T_pipes = Q_pipe/(c_alu*V_pipe*rho_alu)-273.15;
+    T_pipes = Q_pipe/(c_alu*V_pipe*rho_alu)-273.15
 end
