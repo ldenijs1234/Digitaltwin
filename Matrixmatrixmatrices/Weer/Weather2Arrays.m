@@ -1,6 +1,5 @@
-filename = 'WeerDelft2-5.csv'; % File name of the weather data CSV file
 
-function [time_vec, OutsideTemperature, OutsideRelhumidity, SolarRadiation, Windspeed, Winddirection, Sealevelpressure, CloudCover, DewPoint] = interpolate_weather_data(filename, dt)
+function [time_vec, OutsideTemperature, OutsideRelhumidity, SolarRadiation, Windspeed, Winddirection, Sealevelpressure, CloudCover, DewPoint] = Weather2Arrays(filename, dt)
     % Read the data using readtable
     tbl = readtable(filename);
     
@@ -44,5 +43,4 @@ function [time_vec, OutsideTemperature, OutsideRelhumidity, SolarRadiation, Wind
     time_vec = new_time_hours;
 end
 
-[time_vec, OutsideTemperature, OutsideRelhumidity, SolarRadiation, WindSpeed, Winddirection, Sealevelpressure, CloudCover, DewPoint] = interpolate_weather_data(filename, dt);
 

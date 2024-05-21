@@ -114,6 +114,10 @@ AreaArray = [0; GH.p.GHFloorArea; GH.p.GHTotalArea- GH.p.GHFloorArea; GH.p.GHFlo
 AreaSunArray = [0; GH.p.GHFloorArea; 0; ((1-GH.p.LAI)*GH.p.GHFloorArea); GH.p.GHPlantArea];
 AreaArrayRad = AreaArray; AreaArrayRad(5) = 2 * AreaArray(5);
 TransmissionArray = [0; 1; 1; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass]; %0 for air, 1 for glass wall and roof, tau for everything underneath glass
+ConvAreaArray = AreaArray ;
+MassPlant = GH.p.GHPlantArea*GH.p.rho_lettuce*0.1 ;
+ConvAreaArray(5) = MassPlant * GH.p.C_pld  ; % Effect plant surface
+
 
 ConvAreaArray = AreaArray ;
 MassPlant = GH.p.GHPlantArea*GH.p.rho_lettuce*0.1 ;

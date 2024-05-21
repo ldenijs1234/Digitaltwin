@@ -116,12 +116,12 @@ end
 
 
 function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeed, T_out, OpenWindowAngle)
-    u = GH.u ; p = GH.p ; 
-    u.OpenWindowAngle = OpenWindowAngle ;
-    G_l = 2.29e2 * (1 - exp(-u.OpenWindowAngle/21.1)) ; % leeside
-    G_w = 1.2e-3 * u.OpenWindowAngle * exp(u.OpenWindowAngle/211) ; % windward side
+    p = GH.p ; 
+
+    G_l = 2.29e2 * (1 - exp(-OpenWindowAngle/21.1)) ; % leeside
+    G_w = 1.2e-3 * OpenWindowAngle * exp(OpenWindowAngle/211) ; % windward side
     v_wind = (G_l + G_w) * p.WindowArea * WindSpeed ;
-    H = p.WindowHeight * (sind(p.RoofAngle)- sind(p.RoofAngle - u.OpenWindowAngle)) ;
+    H = p.WindowHeight * (sind(p.RoofAngle)- sind(p.RoofAngle - OpenWindowAngle)) ;
     v_temp = p.C_f * p.WindowLength/3 * (abs(p.Gravity*p.BetaAir*(T_air ... 
     - T_out)))^(0.5) * H^(1.5) ;
 
@@ -129,6 +129,7 @@ function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeed, T_out, Open
 end
 
 for i = 1:length(t) - 1
+<<<<<<< HEAD
     
     
 
@@ -138,6 +139,16 @@ for i = 1:length(t) - 1
         GH.u.OpenWindowAngle(i) = 0 ;
     end
 
+=======
+    % setpoint = zeros(length(t), 1) ;
+    % setpoint = 20 + 5 * sind(2*pi * t(i)/(24*60*60)) ;
+
+    % if T(1, i) > 20
+    %     OpenWindowAngle(i) = 45 ;
+    % else
+    %     OpenWindowAngle(i) = 15 ;
+    % end
+>>>>>>> b44b39989559bfe089f5d4b4c85cbba2d5e3a99c
     %PI controller
     setpoint(i) = 20; % Setpoint temperature (°C)
     % Price per kWh
@@ -159,7 +170,7 @@ for i = 1:length(t) - 1
     output(i) = proportional(i) + integral_component(i);
     
     %Variable parameter functions (+ convection rate, ventilation rate...)
-    VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i), GH.u.OpenWindowAngle(i)) ;
+    VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i), OpenWindowAngle(i)) ;
     ConvectionCoefficientsOut(:,i) = (ConvCoefficients(GH, T(3, i), OutsideTemperature(i), WindSpeed(i), OutsideHumidity(i), OutsideCO2)).' ;
     ConvectionCoefficientsIn(4,i) = ConvFloor(T(4, i), T(1, i)) ;
     ConvectionCoefficientsIn(2,i) = h_ac ;
@@ -194,7 +205,7 @@ for i = 1:length(t) - 1
     Q_latent(1: height(T)-1, i) = zeros(height(T)-1, 1) ;
     Q_heat(1,i) = output(i) ;
     %Total heat transfer
-    Q_tot(:,i) = Q_vent(:, i) +Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) +  Q_rad_in(:,i) - AreaArrayRad .* q_rad_out(:,i);
+    Q_tot(:,i) = Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) +  Q_rad_in(:,i) - AreaArrayRad .* q_rad_out(:,i);
 
     % Temperature Change
     T(:,i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
@@ -207,7 +218,11 @@ figure("WindowStyle", "docked");
 hold on
 plot(t/3600,T)
 plot(t/3600, OutsideTemperature, 'b--')
+<<<<<<< HEAD
 plot(t/3600, setpoint, 'r--')
+=======
+% plot(t/3600, setpoint(i), 'r--')
+>>>>>>> b44b39989559bfe089f5d4b4c85cbba2d5e3a99c
 title("Temperatures in the greenhouse")
 xlabel("Time (h)")
 ylabel("Temperature (°C)")

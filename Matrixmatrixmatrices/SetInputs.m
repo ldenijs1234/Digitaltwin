@@ -4,7 +4,7 @@
 
 Heating = zeros(1, length(t)-1) ;
 CO2_injection = 0 ;
-GH.u.OpenWindowAngle = 15 * ones(1, length(t)-1) ; 
+OpenWindowAngle = 15 * ones(1, length(t)-1) ;
 
 
 % Defined conditions
