@@ -1,4 +1,5 @@
-Pipe_heating(90,20,39.755,0,600)
+
+[a, b, c, d] = Pipe_heating(90,20,20.2,0,600)
 function [Q_pipe,Q_out,T_pipes,T_out]  = Pipe_heating(T_in,T_air,T_pipe,Q_pipes,dt)
    %%inputs
 
