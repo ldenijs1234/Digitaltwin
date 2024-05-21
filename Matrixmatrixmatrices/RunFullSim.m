@@ -4,11 +4,13 @@ time_steps = simulation_time/dt+1 ;
 filename = 'WeerDelft2-5.csv'; % File name of the weather data CSV file 
 [time_vec, OutsideTemperatureF, OutsideRelhumidityF, SolarRadiationF, WindspeedF, WinddirectionF, SealevelpressureF, CloudCoverF, DewPointF] = Weather2Arrays(filename, dt) ;
 
-if islogical(SimulationCount) 
-    SimCount = SimCount ;
-else
-    SimCount = 1 ;
-end
+% if islogical(SimulationCount) 
+%     SimCount = SimCount ;
+% else
+%     SimCount = 1 ;
+% end
+
+SimCount = 1 ;
 SimStart = time_steps*(SimCount-1) + 1 ;
 SimEnd = time_steps*SimCount ;
 
