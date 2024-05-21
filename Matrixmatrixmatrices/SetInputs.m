@@ -7,8 +7,10 @@ CO2_injection = 0 ;
 OpenWindowAngle = 15 * ones(1, length(t)-1) ;
 
 
-% Defined conditions
-% Weather conditions from Weather2Arrays
+% control inputs
+price_per_kWh = zeros(1, length(t)-1) ; % Price per kWh 
+price_per_kWh = 0.34 + 0.2 * sind(2*pi*(t));  % Euro
+setpoint = 20; % Setpoint temperature (°C)
 
 
 cloud = CloudCover./100 ; % 0-1 cloud cover
