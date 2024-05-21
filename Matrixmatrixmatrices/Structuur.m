@@ -133,9 +133,9 @@ for i = 1:length(t) - 1
     setpoint = 20 + 5 * sind(2*pi * t(i)/(24*60*60)) ;
 
     if T(1, i) > 20
-        GH.u.OpenWindowAngle(i) = 45 ;
+        OpenWindowAngle(i) = 45 ;
     else
-        GH.u.OpenWindowAngle(i) = 15 ;
+        OpenWindowAngle(i) = 15 ;
     end
     %PI controller
     % Kp = 1;
