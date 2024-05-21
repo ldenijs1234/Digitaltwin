@@ -119,6 +119,10 @@ MassPlant = GH.p.GHPlantArea*GH.p.rho_lettuce*0.1 ;
 ConvAreaArray(5) = MassPlant * GH.p.C_pld  ; % Effect plant surface
 
 
+ConvAreaArray = AreaArray ;
+MassPlant = GH.p.GHPlantArea*GH.p.rho_lettuce*0.1 ;
+ConvAreaArray(5) = MassPlant * GH.p.C_pld  ; % Effect plant surface
+
 % Viewing vectors and Areas
 
 % F_pc=0.6; F_pf=0.1; F_wc=0.2; F_fc= 0.4; F_pw = 0.3; F_fw=0.4; F_ww = 0.4;

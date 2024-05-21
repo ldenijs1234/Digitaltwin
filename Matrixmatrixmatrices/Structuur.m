@@ -129,6 +129,17 @@ function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeed, T_out, Open
 end
 
 for i = 1:length(t) - 1
+<<<<<<< HEAD
+    
+    
+
+    if T(1, i) > 20
+        GH.u.OpenWindowAngle(i) = 45 ;
+    else
+        GH.u.OpenWindowAngle(i) = 0 ;
+    end
+
+=======
     % setpoint = zeros(length(t), 1) ;
     % setpoint = 20 + 5 * sind(2*pi * t(i)/(24*60*60)) ;
 
@@ -137,20 +148,26 @@ for i = 1:length(t) - 1
     % else
     %     OpenWindowAngle(i) = 15 ;
     % end
+>>>>>>> b44b39989559bfe089f5d4b4c85cbba2d5e3a99c
     %PI controller
-    % Kp = 1;
-    % Ki = 0.1;
-    % TauI = 10;
-    % sp(i) = 20;
-    % %sp(2161:6480) = 22;
-    % %sp(6480:end) = 20;
-    % pv(i) = T(1, i);
-    % e = sp - pv;
-    % P(i) = Kp * e;
-    % if i >= 1
-    % I(i) = Ki/TauI * (I(i-1) + e * dt);
-    % end
-    % u(i) = u(0) + P(i) + I(i);
+    setpoint(i) = 20; % Setpoint temperature (°C)
+    % Price per kWh
+    price_per_kWh = 0.34 + 0.2 * sind(2*pi*(t));  % Euro
+   
+    kp = 0.15;       % Proportional gain
+    ki = 0.01;       % Integral gain
+    
+    % Initialize variables
+    integral = 0;   % Integral term
+    % Calculate error
+    error(i) = setpoint(i) - T(1, i);
+    % Update integral term
+    integral(i) = integral + error(i) * dt;
+    
+    % Calculate control output
+    proportional(i) = kp * error(i);
+    integral_component(i) = ki * integral(i);
+    output(i) = proportional(i) + integral_component(i);
     
     %Variable parameter functions (+ convection rate, ventilation rate...)
     VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i), OpenWindowAngle(i)) ;
@@ -186,7 +203,7 @@ for i = 1:length(t) - 1
     Q_vent(2: height(T), i) = zeros(height(T)-1, 1) ;
     Q_latent(5, i) = LatentHeat(-W_trans(i)) ;
     Q_latent(1: height(T)-1, i) = zeros(height(T)-1, 1) ;
-
+    Q_heat(1,i) = output(i) ;
     %Total heat transfer
     Q_tot(:,i) = Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) +  Q_rad_in(:,i) - AreaArrayRad .* q_rad_out(:,i);
 
@@ -201,7 +218,11 @@ figure("WindowStyle", "docked");
 hold on
 plot(t/3600,T)
 plot(t/3600, OutsideTemperature, 'b--')
+<<<<<<< HEAD
+plot(t/3600, setpoint, 'r--')
+=======
 % plot(t/3600, setpoint(i), 'r--')
+>>>>>>> b44b39989559bfe089f5d4b4c85cbba2d5e3a99c
 title("Temperatures in the greenhouse")
 xlabel("Time (h)")
 ylabel("Temperature (°C)")
