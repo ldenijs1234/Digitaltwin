@@ -129,14 +129,14 @@ function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeed, T_out, Open
 end
 
 for i = 1:length(t) - 1
-    setpoint = zeros(length(t), 1) ;
-    setpoint = 20 + 5 * sind(2*pi * t(i)/(24*60*60)) ;
+    % setpoint = zeros(length(t), 1) ;
+    % setpoint = 20 + 5 * sind(2*pi * t(i)/(24*60*60)) ;
 
-    if T(1, i) > 20
-        OpenWindowAngle(i) = 45 ;
-    else
-        OpenWindowAngle(i) = 15 ;
-    end
+    % if T(1, i) > 20
+    %     OpenWindowAngle(i) = 45 ;
+    % else
+    %     OpenWindowAngle(i) = 15 ;
+    % end
     %PI controller
     % Kp = 1;
     % Ki = 0.1;
@@ -201,7 +201,7 @@ figure("WindowStyle", "docked");
 hold on
 plot(t/3600,T)
 plot(t/3600, OutsideTemperature, 'b--')
-plot(t/3600, setpoint(i), 'r--')
+% plot(t/3600, setpoint(i), 'r--')
 title("Temperatures in the greenhouse")
 xlabel("Time (h)")
 ylabel("Temperature (°C)")
