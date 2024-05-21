@@ -194,7 +194,7 @@ for i = 1:length(t) - 1
     Q_vent(2: height(T), i) = zeros(height(T)-1, 1) ;
     Q_latent(5, i) = LatentHeat(-W_trans(i)) ;
     Q_latent(1: height(T)-1, i) = zeros(height(T)-1, 1) ;
-    [error(i), Q_heat(1,i)] = ControllerInput(GH, T(1,i), price_per_kWh(i), setpoint, dt) ;
+    %[error(i), Q_heat(1,i)] = ControllerInput(GH, T(1,i), price_per_kWh(i), setpoint, dt) ;
     %Total heat transfer
     Q_tot(:,i) = Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) +  Q_rad_in(:,i) - AreaArrayRad .* q_rad_out(:,i);
 
@@ -207,7 +207,7 @@ end
 
 figure("WindowStyle", "docked");
 hold on
-plot(t/3600,T)
+plot(t/3600,T(:,:))
 plot(t/3600, OutsideTemperature, 'b--')
 plot(t/3600, setpoint, 'r--')
 % plot(t/3600, setpoint(i), 'r--')
