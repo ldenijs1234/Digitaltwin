@@ -72,7 +72,6 @@ function [Q_pipe,Q_out,T_pipes,T_out]  = Pipe_heating(T_in,T_air,T_pipe,Q_pipes,
     Fin_efficiency = (sqrt(2*c*(1-c)^3)/(epsi*(1-c^2)))*((besseli(2/3,u)*besseli(-2/3,v)-besseli(-2/3,u)*besseli(2/3,v))...
     /(besseli(-1/3,v)*besseli(-2/3,v)-besseli(2/3,u)*besseli(1/3,v))); % effective heat transfer from ideal heat transfer
 
-
     %% thermodynamic properties calculations for the heated water flow
     %% Interpolation in table
     m = 0.1; %mass flow through the pipe in kg/s
