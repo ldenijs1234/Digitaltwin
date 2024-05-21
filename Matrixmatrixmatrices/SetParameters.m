@@ -95,7 +95,7 @@ GH.p.           BetaAir = 1/283 ; % Thermal expansion coefficient
 % Temperature equations parameters   
 
 % Convection coefficients, can de dynamic
-h_ap = 15;  % Convection between air and plant
+h_ap = 5;  % Convection between air and plant
 h_ac = 15;  % Convection between air and cover
 h_af = 15;  % Convection between air and floor  
 h_out = 20;  % Convection between outside air and greenhouse
@@ -116,7 +116,7 @@ AreaArrayRad = AreaArray; AreaArrayRad(5) = 2 * AreaArray(5);
 TransmissionArray = [0; 1; 1; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass]; %0 for air, 1 for glass wall and roof, tau for everything underneath glass
 
 ConvAreaArray = AreaArray ;
-MassPlant = GH.p.GHPlantArea*GH.p.rho_lettuce*0.1 ;
+MassPlant = GH.p.GHPlantArea*GH.p.rho_lettuce*0.01 ;
 ConvAreaArray(5) = MassPlant * GH.p.C_pld  ; % Effect plant surface
 
 % Viewing vectors and Areas

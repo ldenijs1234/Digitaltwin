@@ -153,11 +153,11 @@ end
 for i = 1:length(t) - 1
       
 
-    if T(1, i) > 20
-        OpenWindowAngle(i) = 45 ;
-    else
-        OpenWindowAngle(i) = 0 ;
-    end
+    % if T(1, i) > 20
+    %     OpenWindowAngle(i) = 45 ;
+    % else
+    %     OpenWindowAngle(i) = 0 ;
+    % end
 
      
     %Variable parameter functions (+ convection rate, ventilation rate...)
