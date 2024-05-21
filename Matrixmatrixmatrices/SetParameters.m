@@ -92,7 +92,7 @@ GH.p.           C_CO23 = 6.29e-4 ; %m s^-1 K^-1 (temperature effect on CO2 diffi
 GH.p.           C_f = 0.6 ; % Discharge of energy by friction
 GH.p.           BetaAir = 1/283 ; % Thermal expansion coefficient
 
-% Temperature equations parameters       (Berg check ff hoe je dit allemaal wilt integreren in de rest van de code mbt overzichtelijkheid)
+% Temperature equations parameters   
 
 % Convection coefficients, can de dynamic
 h_ap = 15;  % Convection between air and plant
@@ -114,10 +114,6 @@ AreaArray = [0; GH.p.GHFloorArea; GH.p.GHTotalArea- GH.p.GHFloorArea; GH.p.GHFlo
 AreaSunArray = [0; GH.p.GHFloorArea; 0; ((1-GH.p.LAI)*GH.p.GHFloorArea); GH.p.GHPlantArea];
 AreaArrayRad = AreaArray; AreaArrayRad(5) = 2 * AreaArray(5);
 TransmissionArray = [0; 1; 1; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass]; %0 for air, 1 for glass wall and roof, tau for everything underneath glass
-ConvAreaArray = AreaArray ;
-MassPlant = GH.p.GHPlantArea*GH.p.rho_lettuce*0.1 ;
-ConvAreaArray(5) = MassPlant * GH.p.C_pld  ; % Effect plant surface
-
 
 ConvAreaArray = AreaArray ;
 MassPlant = GH.p.GHPlantArea*GH.p.rho_lettuce*0.1 ;

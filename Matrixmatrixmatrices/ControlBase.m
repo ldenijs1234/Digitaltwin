@@ -3,7 +3,7 @@
 % Initialize model
 run("SetModel")
 
-SimulationCount = true ;
+SimulationCount = false ;
 SimCount = 1 ;
 
 run("RunFullSim")    % Run a single simulation
