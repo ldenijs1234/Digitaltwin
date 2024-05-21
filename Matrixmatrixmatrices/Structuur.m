@@ -153,7 +153,7 @@ for i = 1:length(t) - 1
     % u(i) = u(0) + P(i) + I(i);
     
     %Variable parameter functions (+ convection rate, ventilation rate...)
-    VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i), OpenWindowAngle) ;
+    VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i), OpenWindowAngle(i)) ;
     ConvectionCoefficientsOut(:,i) = (ConvCoefficients(GH, T(3, i), OutsideTemperature(i), WindSpeed(i), OutsideHumidity(i), OutsideCO2)).' ;
     ConvectionCoefficientsIn(4,i) = ConvFloor(T(4, i), T(1, i)) ;
     ConvectionCoefficientsIn(2,i) = h_ac ;
