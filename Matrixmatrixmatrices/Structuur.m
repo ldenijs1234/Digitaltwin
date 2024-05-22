@@ -130,11 +130,18 @@ end
 
 function [integral, error, ControllerOutput, OpenWindowAngle] = ControllerInput(GH, T_air, price, setpoint, dt, integral)
     %PI controller
+<<<<<<< HEAD
     k = 200000;        % Multiplication
     kp = 0.5;       % Proportional gain
     ki = 5;       % Integral gain
     kpv = -2
 
+=======
+    k = 250000;        % Multiplication
+    kp = 0.15;       % Proportional gain
+    ki = 0.01;       % Integral gain
+    
+>>>>>>> c4fd96375352d5943ded6028746ded6b2c9cb8c4
     % Initialize variables
     % Calculate error
     error = setpoint - T_air; 
@@ -160,9 +167,9 @@ for i = 1:length(t) - 1
     % end
 =======
     if T(1, i) > 20
-        OpenWindowAngle(i) = 20 ;
+        OpenWindowAngle(i) = 15 ;
     else
-        OpenWindowAngle(i) = 10 ;
+        OpenWindowAngle(i) = 15 ;
     end
 >>>>>>> b720f08d03182776d6249e1b440510d12b4e3e76
 
@@ -202,8 +209,13 @@ for i = 1:length(t) - 1
     Q_vent(2: height(T), i) = zeros(height(T)-1, 1) ;
     Q_latent(5, i) = LatentHeat(-W_trans(i)) ;
     Q_latent(1: height(T)-1, i) = zeros(height(T)-1, 1) ;
+<<<<<<< HEAD
     [integral(i+1), error(i), Q_heat(1,i)] = ControllerInput(GH, T(1,i), price_per_kWh(i), setpoint(i), dt, integral(i)) ;
     %Total heat transfer 
+=======
+    [error(i), Q_heat(1,i)] = ControllerInput(GH, T(1,i), price_per_kWh(i), setpoint, dt) ;
+    %Total heat transfer
+>>>>>>> c4fd96375352d5943ded6028746ded6b2c9cb8c4
     Q_tot(:,i) = Q_heat(:,i) + Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) +  Q_rad_in(:,i) - AreaArrayRad .* q_rad_out(:,i);
 
     % Temperature Change
@@ -215,10 +227,9 @@ end
 
 figure("WindowStyle", "docked");
 hold on
-plot(t/3600,T(:,:))
+plot(t/3600, T(:,:))
 plot(t/3600, OutsideTemperature, 'b--')
-plot(t/3600, setpoint, 'r--')
-% plot(t/3600, setpoint(i), 'r--')
+plot(t/3600, setpoint*ones(size(t)), 'r--') % Create an array with the same length as t
 title("Temperatures in the greenhouse")
 xlabel("Time (h)")
 ylabel("Temperature (°C)")
@@ -250,5 +261,10 @@ plot(t(1:end-1), Q_conv(1,:))
 plot(t(1:end-1), Q_solar(1,:))
 plot(t(1:end-1), Q_rad_in(1,:) - AreaArrayRad(1) * q_rad_out(1,:))
 plot(t(1:end-1), Q_ground(1,:)) 
+<<<<<<< HEAD
 legend('Heat','vent', 'sky', 'convection', 'solar','radiation','ground')
+=======
+plot(t(1:end-1), Q_heat(1,:))
+legend('vent', 'sky', 'convection', 'solar','radiation','ground', 'heating')
+>>>>>>> c4fd96375352d5943ded6028746ded6b2c9cb8c4
 hold off
