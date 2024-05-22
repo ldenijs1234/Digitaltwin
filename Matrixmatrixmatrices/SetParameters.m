@@ -98,7 +98,7 @@ GH.p.           BetaAir = 1/283 ; % Thermal expansion coefficient
 h_ap = 5;  % Convection between air and plant
 h_ac = 15;  % Convection between air and cover
 h_af = 15;  % Convection between air and floor  
-h_out = 20;  % Convection between outside air and greenhouse
+h_out = 20;  % Convect(ion between outside air and greenhouse
 ConvectionCoefficientsIn = [0; h_ac; h_ac; h_af; h_ap] ;
 
 % ConvectionCoefficientsOut = [h_out; h_out] ;

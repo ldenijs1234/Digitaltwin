@@ -43,7 +43,7 @@ if SimCount == 1
 else
   AddStates = state_add ;
 end
-MassPlant = AddStates(4,1) ;
+MassPlant = AddStates(4,1) ; 
 CAPArray = [GH.p.cp_air * GH.p.rho_air * GH.p.GHVolume; 
             GH.p.cp_glass * GH.p.rho_glass * GH.p.GHWallThickness * AreaArray(2);
             GH.p.cp_glass * GH.p.rho_glass * GH.p.GHWallThickness * AreaArray(3);
