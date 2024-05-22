@@ -166,6 +166,7 @@ for i = 1:length(t) - 1
     ConvectionCoefficientsIn(2,i) = h_ac ;
     ConvectionCoefficientsIn(3,i) = h_ac ;
     ConvectionCoefficientsIn(5,i) = h_ap ;
+    ConvectionCoefficientsIn(6,i) = h_ah ;
 
     % Vapor flows and balance
     [W_trans(i), W_cond(i), W_vent(i)] = vaporflows(GH, T(1, i), T(3, i), OutsideTemperature(1,i), AddStates(1, i), OutsideHumidity(i), DryMassPlant, VentilationRate(i));
@@ -208,7 +209,7 @@ end
 
 figure("WindowStyle", "docked");
 hold on
-plot(t/3600, T(1,:))
+plot(t/3600, T(:,:))
 plot(t/3600, OutsideTemperature, 'b--')
 plot(t/3600, setpoint, 'r--') 
 title("Temperatures in the greenhouse")
