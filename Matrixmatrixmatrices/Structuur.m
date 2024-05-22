@@ -3,6 +3,7 @@
 %state 3: wall
 %state 4: floor
 %state 5: plant
+%state 6: heatpipe
 
 function q = Fq_rad_out(emissivity, T)                          %imput: emissivity array and T(:,i)
     q = 5.670374419*10^-8 * emissivity .* ((T + 273.15).^4);    %emittance of components
@@ -144,9 +145,8 @@ function [integral, error, ControllerOutput, OpenWindowAngle] = ControllerInput(
     % Calculate control output
     proportional = kp * error;
     integral_component = ki * integral;
-    ControllerOutput = max(0, k * proportional + integral_component);
+    ControllerOutput = max(0, k * (proportional + integral_component));
     OpenWindowAngle = max(0, kpv*error);
-    
 end
 
 for i = 1:length(t) - 1
@@ -201,7 +201,8 @@ for i = 1:length(t) - 1
     % Temperature Change
     T(:,i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
 
- 
+    Energy_kWh = Q_heat(1,:) * dt / (1000 * 3600);  % Convert from W to kWh
+    sum(Energy_kWh(:)*0.2);
     
 end
 
@@ -216,7 +217,11 @@ ylabel("Temperature (°C)")
 legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Outside', 'Setpoint')
 hold off
 
-
+figure("WindowStyle", "docked");
+hold on 
+plot(t(1:end-1)/3600, Energy_kWh(:))
+hold off
+sum(Energy_kWh(:)*0.2);
 % figure("WindowStyle", "docked");
 % hold on
 % plot(t(1:end-1)/3600, W_trans)

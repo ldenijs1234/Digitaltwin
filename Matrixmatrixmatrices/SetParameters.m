@@ -69,9 +69,8 @@ GH.p.           KFloor = 0.3 ; %accurate enough for prototype
 GH.p.           LFloorGround = 19e-2 ; % meter
 
 % Heatingpipe parameters
-
 GH.p.           EmittancePipe = 0.88; %DUMMY
-
+GH.p. 
 
 % Humidity equations parameters
 
@@ -95,22 +94,23 @@ GH.p.           BetaAir = 1/283 ; % Thermal expansion coefficient
 % Temperature equations parameters   
 
 % Convection coefficients, can de dynamic
-h_ap = 5;  % Convection between air and plant
+h_out = 20;  % Convection between outside air and greenhouse
 h_ac = 15;  % Convection between air and cover
 h_af = 15;  % Convection between air and floor  
-h_out = 20;  % Convect(ion between outside air and greenhouse
-ConvectionCoefficientsIn = [0; h_ac; h_ac; h_af; h_ap] ;
+h_ap = 15;  % Convection between air and plant
+h_ah = 15;  % Convection between air and heatpipe
+ConvectionCoefficientsIn = [0; h_ac; h_ac; h_af; h_ap; h_ah] ;
 
 % ConvectionCoefficientsOut = [h_out; h_out] ;
 
 
 % Radiation
-EmmitanceArray = [0; GH.p.EmittanceGlass; GH.p.EmittanceGlass; GH.p.EmittanceFloor; GH.p.EmittancePlant];
-SOLARAbsorbanceArray = [0; GH.p.SOLARAbsorbanceGlass; GH.p.SOLARAbsorbanceGlass; GH.p.SOLARAbsorbanceFloor; GH.p.SOLARAbsorbancePlant];
-FIRAbsorbanceArray = [0; GH.p.FIRAbsorbanceGlass; GH.p.FIRAbsorbanceGlass; GH.p.FIRAbsorbanceFloor; GH.p.FIRAbsorbancePlant];
-SOLARDiffuseArray = [0; GH.p.SOLARDiffuseGlass; GH.p.SOLARDiffuseGlass; GH.p.SOLARDiffuseFloor; GH.p.SOLARDiffusePlant];
-FIRDiffuseArray = [0; GH.p.FIRDiffuseGlass; GH.p.FIRDiffuseGlass; GH.p.FIRDiffuseFloor; GH.p.FIRDiffusePlant];
-AreaArray = [0; GH.p.GHFloorArea; GH.p.GHTotalArea- GH.p.GHFloorArea; GH.p.GHFloorArea; GH.p.GHPlantArea];
+EmmitanceArray = [0; GH.p.EmittanceGlass; GH.p.EmittanceGlass; GH.p.EmittanceFloor; GH.p.EmittancePlant; GH.p.EmittancePipe];
+SOLARAbsorbanceArray = [0; GH.p.SOLARAbsorbanceGlass; GH.p.SOLARAbsorbanceGlass; GH.p.SOLARAbsorbanceFloor; GH.p.SOLARAbsorbancePlant; GH.p.SOLARAbsorbancePipe];
+FIRAbsorbanceArray = [0; GH.p.FIRAbsorbanceGlass; GH.p.FIRAbsorbanceGlass; GH.p.FIRAbsorbanceFloor; GH.p.FIRAbsorbancePlant; GH.p.FIRAbsorbancePipe];
+SOLARDiffuseArray = [0; GH.p.SOLARDiffuseGlass; GH.p.SOLARDiffuseGlass; GH.p.SOLARDiffuseFloor; GH.p.SOLARDiffusePlant; GH.p.SOLARDiffusePipe];
+FIRDiffuseArray = [0; GH.p.FIRDiffuseGlass; GH.p.FIRDiffuseGlass; GH.p.FIRDiffuseFloor; GH.p.FIRDiffusePlant; GH.p.FIRDiffusePipe];
+AreaArray = [0; GH.p.GHFloorArea; GH.p.GHTotalArea- GH.p.GHFloorArea; GH.p.GHFloorArea; GH.p.GHPlantArea; GH.p.PipeArea];
 AreaSunArray = [0; GH.p.GHFloorArea; 0; ((1-GH.p.LAI)*GH.p.GHFloorArea); GH.p.GHPlantArea];
 AreaArrayRad = AreaArray; AreaArrayRad(5) = 2 * AreaArray(5);
 TransmissionArray = [0; 1; 1; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass]; %0 for air, 1 for glass wall and roof, tau for everything underneath glass

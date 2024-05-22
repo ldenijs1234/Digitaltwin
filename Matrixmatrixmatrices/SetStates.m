@@ -46,4 +46,6 @@ CAPArray = [GH.p.cp_air * GH.p.rho_air * GH.p.GHVolume;
             GH.p.cp_glass * GH.p.rho_glass * GH.p.GHWallThickness * AreaArray(2);
             GH.p.cp_glass * GH.p.rho_glass * GH.p.GHWallThickness * AreaArray(3);
             GH.p.cp_floor * GH.p.rho_floor * GH.p.GHFloorArea * GH.p.GHFloorThickness;
-            GH.p.cp_lettuce * MassPlant]; %variable if plant grows
+            GH.p.cp_lettuce * MassPlant;
+            0.25*pi*gl.p.lPipe*((gl.p.phiPipeE^2-gl.p.phiPipeI^2)*gl.p.rhoSteel*...
+        gl.p.cPSteel+gl.p.phiPipeI^2*gl.p.rhoWater*gl.p.cPWater))]; %variable if plant grows
