@@ -1,5 +1,5 @@
-
-
+%% The heating pipe is modeled to be made out of aluminum and to be a pipe with annular parabolic fins
+% most of the formulas can be found in "Basic heat and mass transfer" writen by A.F. Mills and C.F.M Coimbra, Third edition
 function [Q_pipe,Q_out,T_pipes,T_out]  = Pipe_heating(T_in,T_air,T_pipe,Q_pipes,dt)
      %%inputs
 
@@ -7,7 +7,7 @@ function [Q_pipe,Q_out,T_pipes,T_out]  = Pipe_heating(T_in,T_air,T_pipe,Q_pipes,
     r_0 = 0.078; % inside radius of the pipe in meters
     r_1 = 0.08; % outside radius of the pipe in meters
     r_2 = 0.137; % outside radius of the fin in meters 
-    L = 200; % length of the pipe in meters
+    L = 50; % length of the pipe in meters
     F = 80; % Fins per meter of pipe %!!!!keep the thickness in mind not more fins then fit on the pipe!!!!
     t = 0.001; % half of the thickness of one fin in meters
 
