@@ -5,6 +5,7 @@ AirTemperature = 14 ;  % ALL DUMMY VALUES!!!
 CoverTemperature = 15 ;
 WallTemperature = 15 ;
 PlantTemperature = 15;
+PipeTemperature = 15 ;
 
 %FloorTemperature initialisation:
 FloorTempIntVar = (AirTemperature - GroundTemperature)/10;
@@ -13,7 +14,7 @@ init_FloorTemperature = [AirTemperature; AirTemperature-FloorTempIntVar*1; AirTe
 AirTemperature-FloorTempIntVar*5; AirTemperature-FloorTempIntVar*6; AirTemperature-FloorTempIntVar*7; AirTemperature-FloorTempIntVar*8;...
 AirTemperature-FloorTempIntVar*9; GroundTemperature] ;
 
-initial_T(:,1) = [AirTemperature; CoverTemperature; WallTemperature; init_FloorTemperature(1,1); PlantTemperature] ;
+initial_T(:,1) = [AirTemperature; CoverTemperature; WallTemperature; init_FloorTemperature(1,1); PlantTemperature, PipeTemperature] ;
 
 set_FloorTemperature = init_FloorTemperature ;
 
