@@ -130,7 +130,7 @@ end
 
 function [error, ControllerOutput] = ControllerInput(GH, T_air, price, setpoint, dt)
     %PI controller
-    k = 1000;        % Multiplication
+    k = 250000;        % Multiplication
     kp = 0.15;       % Proportional gain
     ki = 0.01;       % Integral gain
     
@@ -154,9 +154,9 @@ for i = 1:length(t) - 1
       
 
     if T(1, i) > 20
-        OpenWindowAngle(i) = 20 ;
+        OpenWindowAngle(i) = 15 ;
     else
-        OpenWindowAngle(i) = 10 ;
+        OpenWindowAngle(i) = 15 ;
     end
 
      
@@ -194,9 +194,9 @@ for i = 1:length(t) - 1
     Q_vent(2: height(T), i) = zeros(height(T)-1, 1) ;
     Q_latent(5, i) = LatentHeat(-W_trans(i)) ;
     Q_latent(1: height(T)-1, i) = zeros(height(T)-1, 1) ;
-    %[error(i), Q_heat(1,i)] = ControllerInput(GH, T(1,i), price_per_kWh(i), setpoint, dt) ;
+    [error(i), Q_heat(1,i)] = ControllerInput(GH, T(1,i), price_per_kWh(i), setpoint, dt) ;
     %Total heat transfer
-    Q_tot(:,i) = Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) +  Q_rad_in(:,i) - AreaArrayRad .* q_rad_out(:,i);
+    Q_tot(:,i) = Q_heat(:,i) + Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) +  Q_rad_in(:,i) - AreaArrayRad .* q_rad_out(:,i);
 
     % Temperature Change
     T(:,i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
@@ -207,10 +207,9 @@ end
 
 figure("WindowStyle", "docked");
 hold on
-plot(t/3600,T(:,:))
+plot(t/3600, T(:,:))
 plot(t/3600, OutsideTemperature, 'b--')
-plot(t/3600, setpoint, 'r--')
-% plot(t/3600, setpoint(i), 'r--')
+plot(t/3600, setpoint*ones(size(t)), 'r--') % Create an array with the same length as t
 title("Temperatures in the greenhouse")
 xlabel("Time (h)")
 ylabel("Temperature (°C)")
@@ -241,5 +240,6 @@ plot(t(1:end-1), Q_conv(1,:))
 plot(t(1:end-1), Q_solar(1,:))
 plot(t(1:end-1), Q_rad_in(1,:) - AreaArrayRad(1) * q_rad_out(1,:))
 plot(t(1:end-1), Q_ground(1,:)) 
-legend('vent', 'sky', 'convection', 'solar','radiation','ground')
+plot(t(1:end-1), Q_heat(1,:))
+legend('vent', 'sky', 'convection', 'solar','radiation','ground', 'heating')
 hold off
