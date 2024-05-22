@@ -1,5 +1,4 @@
 
-
 function y = bound(min, max, t1, t2, t3, t4, dt, days) %inputs: minimum and maximum, minimum before t1 and after t4, maximum at t2:t3
     time = (0:dt:24*60^2) / 60^2;
     a = min * ones(1,round(length(time) * t1 / 24));
@@ -11,12 +10,3 @@ function y = bound(min, max, t1, t2, t3, t4, dt, days) %inputs: minimum and maxi
     y = repmat(y, 1, days);
 end
 
-tdag = (0:dt:24* 3*60^2) / 60^2;
-a = bound(18, 20, 6, 8, 19, 21, dt, 3);
-b = bound(22, 24, 6, 8, 19, 21, dt, 3);
-
-figure()
-hold on
-plot(tdag(1:end-1), a)
-plot(tdag(1:end-1), b)
-hold off
