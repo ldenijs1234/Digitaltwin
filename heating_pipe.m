@@ -1,5 +1,7 @@
-Pipe_heating(90,20,39.755,0,600)
-function [Q_pipe,Q_out,T_pipes]  = Pipe_heating(T_in,T_air,T_pipe,Q_pipes,dt)
+
+
+function [Q_pipe,Q_out,T_pipes,T_out]  = Pipe_heating(T_in,T_air,T_pipe,Q_pipes,dt)
+
    %%inputs
     m = 0.1; %mass flow through the pipe in kg/s
     H_out = 0.012; % Kg/m^3
