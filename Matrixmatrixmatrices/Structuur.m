@@ -207,7 +207,7 @@ end
 
 figure("WindowStyle", "docked");
 hold on
-plot(t/3600, T)
+plot(t/3600, T(1,:))
 plot(t/3600, OutsideTemperature, 'b--')
 plot(t/3600, setpoint, 'r--') 
 title("Temperatures in the greenhouse")
@@ -234,12 +234,17 @@ hold off
 
 figure("WindowStyle", "docked");
 hold on
-plot(t(1:end-1), Q_heat(1,:))
-plot(t(1:end-1), Q_vent(1,:)) 
-plot(t(1:end-1), Q_sky(1,:)) 
-plot(t(1:end-1), Q_conv(1,:))
-plot(t(1:end-1), Q_solar(1,:))
-plot(t(1:end-1), Q_rad_in(1,:) - AreaArrayRad(1) * q_rad_out(1,:))
-plot(t(1:end-1), Q_ground(1,:)) 
+plot(t(1:end-1), Q_heat(4,:))
+plot(t(1:end-1), Q_vent(4,:)) 
+plot(t(1:end-1), Q_sky(4,:)) 
+plot(t(1:end-1), Q_conv(4,:))
+plot(t(1:end-1), Q_solar(4,:))
+plot(t(1:end-1), Q_rad_in(4,:) - AreaArrayRad(4) * q_rad_out(4,:))
+plot(t(1:end-1), Q_ground(4,:)) 
 legend('Heat','vent', 'sky', 'convection', 'solar','radiation','ground')
+hold off
+
+figure("WindowStyle", "docked");
+hold on
+plot(t, FloorTemperature)
 hold off

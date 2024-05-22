@@ -4,7 +4,7 @@
 % run("SetModel")
 
 % SimulationCount = false ;
-SimCount = SimCount + 1 ;
+% SimCount = SimCount + 1 ;
 
 % run("RunFullSim")    % Run a single simulation
 
