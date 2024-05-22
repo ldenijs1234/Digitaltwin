@@ -210,7 +210,7 @@ end
 
 figure("WindowStyle", "docked");
 hold on
-plot(t/3600, T(1,:))
+plot(t/3600, T(:,:))
 plot(t/3600, OutsideTemperature, 'b--')
 plot(t/3600, setpoint, 'r--') 
 title("Temperatures in the greenhouse")
