@@ -4,9 +4,12 @@ GH.p.           cp_air = 1003.5 ; %J kg^-1 K^-1
 GH.p.           cp_glass = 840 ; %J kg^-1 K^-1
 GH.p.           cp_water = 4186 ;%J kg^-1 K^-1
 GH.p.           cp_floor = 10000 ; %DUMMY
+GH.p.           cp_steel = 640 ; %J kg^-1 K^-1	
 GH.p.           rho_air = 1.2 ; %kg m^-3
 GH.p.           rho_glass = 2500 ; %kg m^-3
 GH.p.           rho_floor = 2000 ; %DUMMY
+GH.p.           rho_steel = 7850 ; %kg m^-3
+GH.p.           rho_water = 1000 ; %kg m^-3
 GH.p.           GasConstantR = 8.314 ; % J/mol K
 GH.p.           StefBolzConst = 5.670374419e-8 ; % W/m^2 K^4 
 sigma = 5.670374419e-8 ;
@@ -69,8 +72,13 @@ GH.p.           KFloor = 0.3 ; %accurate enough for prototype
 GH.p.           LFloorGround = 19e-2 ; % meter
 
 % Heatingpipe parameters
-GH.p.           EmittancePipe = 0.88; %DUMMY
-GH.p. 
+GH.p.           EmittancePipe = 0.88; 
+GH.p.           r_0 = 0.078; % inside radius of the pipe in meters
+GH.p.           r_1 = 0.08; % outside radius of the pipe in meters  
+GH.p.           r_2 = 0.137; % outside radius of the fin in meters  
+GH.p.           pipeL = 50 ; % length of the pipe in meters
+GH.p.           pipeF = 80; % Fins per meter of pipe %!!!!keep the thickness in mind not more fins then fit on the pipe!!!!
+GH.p.           pipet = 0.001; % half of the thickness of one fin in meters 
 
 % Humidity equations parameters
 
@@ -97,7 +105,7 @@ GH.p.           BetaAir = 1/283 ; % Thermal expansion coefficient
 h_out = 20;  % Convection between outside air and greenhouse
 h_ac = 15;  % Convection between air and cover
 h_af = 15;  % Convection between air and floor  
-h_ap = 15;  % Convection between air and plant
+h_ap = 5;  % Convection between air and plant
 h_ah = 15;  % Convection between air and heatpipe
 ConvectionCoefficientsIn = [0; h_ac; h_ac; h_af; h_ap; h_ah] ;
 

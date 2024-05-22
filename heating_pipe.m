@@ -1,21 +1,21 @@
 %% The heating pipe is modeled to be made out of aluminum and to be a pipe with annular parabolic fins
 % most of the formulas can be found in "Basic heat and mass transfer" writen by A.F. Mills and C.F.M Coimbra, Third edition
 [a,b,c,d] = Pipe_heating(0,20,20,0,5)
-function [Q_pipe,Q_out,T_pipes,T_out]  = Pipe_heating(T_in,T_air,T_pipe,Q_pipes,dt)
+function [Q_pipe,Q_out,Q_in,T_pipes,T_out]  = Pipe_heating(GH, T_in,T_air,T_pipe,Q_pipes,dt)
      %%inputs
 
     %% Geometric inputs for the pipe
-    r_0 = 0.078; % inside radius of the pipe in meters
-    r_1 = 0.08; % outside radius of the pipe in meters
-    r_2 = 0.137; % outside radius of the fin in meters 
-    L = 50; % length of the pipe in meters
-    F = 80; % Fins per meter of pipe %!!!!keep the thickness in mind not more fins then fit on the pipe!!!!
-    t = 0.001; % half of the thickness of one fin in meters
+    r_0 = GH.p.r_0; % inside radius of the pipe in meters
+    r_1 = GH.p.r_1; % outside radius of the pipe in meters
+    r_2 = GH.p.r_2; % outside radius of the fin in meters 
+    L = GH.p.pipeL; % length of the pipe in meters
+    F = GH.p.pipeF; % Fins per meter of pipe %!!!!keep the thickness in mind not more fins then fit on the pipe!!!!
+    t = GH.p.pipet; % half of the thickness of one fin in meters
 
-    %% Thermodynamic properties of the pipe, material choosen is aluminium
-    k_alu = 237; %conduction coefficient aluminium for the pipe in W/(m*K)
-    rho_alu = 2702; %kg/m^3
-    c_alu = 903; % in J/(kg*K)
+    %% Thermodynamic properties of the pipe, material choosen is steel
+    k_alu = 15; %conduction coefficient steel for the pipe in W/(m*K)
+    rho_alu = GH.p.rho_steel; %kg/m^3
+    c_alu = GH.p.cp_steel; % in J/(kg*K)
 
     H_out = 0.012; % Kg/m^3
     C_out = 0.0464; % Kg/m^3
@@ -26,7 +26,7 @@ function [Q_pipe,Q_out,T_pipes,T_out]  = Pipe_heating(T_in,T_air,T_pipe,Q_pipes,
     D = sqrt((r_2^2 /r_1)^2 + t^2);
     S = 2*pi*r_1*(D-B+(t/2)*log(((D-t)*(B+t))/((D+t)*(B-t)))); % surface area of a fin in m^2
     V = 4*pi*t*r_1*(r_2-r_1); %volume of a fin in m^3
-    V_pipe = V*L*F+(r_1^2-r_0^2)*pi*L;
+    V_pipe = V*L*F+(r_1^2-r_0^2)*pi*L; %Volume of the material of the pipe
     A_in = pi*r_0^2; % Area of inside of the pipe
     A = L*F*S+(L-L*F*2*t)*2*pi*r_1; % total area of the pipe in m^2
 
@@ -75,6 +75,9 @@ function [Q_pipe,Q_out,T_pipes,T_out]  = Pipe_heating(T_in,T_air,T_pipe,Q_pipes,
     /(besseli(-1/3,v)*besseli(-2/3,v)-besseli(2/3,u)*besseli(1/3,v))); % effective heat transfer from ideal heat transfer
 
     if T_in == 0
+        T_out = 0;
+        Q_in = 0; % Watt of the heat transfer from the water to the pipe
+    else
         %% thermodynamic properties calculations for the heated water flow
         %% Interpolation in table
         m = 0.1; %mass flow through the pipe in kg/s
@@ -97,7 +100,8 @@ function [Q_pipe,Q_out,T_pipes,T_out]  = Pipe_heating(T_in,T_air,T_pipe,Q_pipes,
         N_tu = h_total*L/(m*c_p);
         epsi = 1-exp(-N_tu);
         T_out = T_in - epsi*(T_in-T_air); %Temperature at the outlet
-
+        Q_in = (T_in-T_out)*m*c_p; % Watt of the heat transfer from the water to the pipe
+    end
     %% Final calculations of the heat transfers and temperatures
     if Q_pipes == 0
         Q_pipeses = (T_pipe+273.15)*c_alu*V_pipe*rho_alu;
@@ -105,7 +109,6 @@ function [Q_pipe,Q_out,T_pipes,T_out]  = Pipe_heating(T_in,T_air,T_pipe,Q_pipes,
         Q_pipeses = Q_pipes;
     end
 
-    Q_in = (T_in-T_out)*m*c_p; % Watt of the heat transfer from the water to the pipe
     Q_out = h_pipe*A*(T_pipe-T_air)*Fin_efficiency*dt; % Jules of heat transfer per time step from the pipe to the air 
     Q_pipe = Q_pipeses+Q_in*dt-Q_out; % Heat energy in the mass of the pipe
     T_pipes = Q_pipe/(c_alu*V_pipe*rho_alu)-273.15; % Temperature of the pipe in celsius
