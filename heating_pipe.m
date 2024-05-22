@@ -1,5 +1,6 @@
-
-
+%% The heating pipe is modeled to be made out of aluminum and to be a pipe with annular parabolic fins
+% most of the formulas can be found in "Basic heat and mass transfer" writen by A.F. Mills and C.F.M Coimbra, Third edition
+[a,b,c,d] = Pipe_heating(0,20,20,0,5)
 function [Q_pipe,Q_out,T_pipes,T_out]  = Pipe_heating(T_in,T_air,T_pipe,Q_pipes,dt)
      %%inputs
 
@@ -7,7 +8,7 @@ function [Q_pipe,Q_out,T_pipes,T_out]  = Pipe_heating(T_in,T_air,T_pipe,Q_pipes,
     r_0 = 0.078; % inside radius of the pipe in meters
     r_1 = 0.08; % outside radius of the pipe in meters
     r_2 = 0.137; % outside radius of the fin in meters 
-    L = 200; % length of the pipe in meters
+    L = 50; % length of the pipe in meters
     F = 80; % Fins per meter of pipe %!!!!keep the thickness in mind not more fins then fit on the pipe!!!!
     t = 0.001; % half of the thickness of one fin in meters
 
@@ -40,7 +41,7 @@ function [Q_pipe,Q_out,T_pipes,T_out]  = Pipe_heating(T_in,T_air,T_pipe,Q_pipes,
     P_w = h_abs.*(T_air+273.15)/C; % water vapour pressure
     P_ws = 6.116441*10^(7.591386*(T_air)/(T_air+240.7263));  % saturation vapour pressure
     h = P_w/P_ws; % relative humidity for range -20 to +50 celsius
-    dT = T_pipe - T_air;
+    dT = abs(T_pipe - T_air);
 
     T2 = T_air + 0.001; % small temperature change
     rho = AirProperties(T_air,p,h,'xCO2',co2,'rho'); % density for this slightly different temperature
@@ -73,28 +74,29 @@ function [Q_pipe,Q_out,T_pipes,T_out]  = Pipe_heating(T_in,T_air,T_pipe,Q_pipes,
     Fin_efficiency = (sqrt(2*c*(1-c)^3)/(epsi*(1-c^2)))*((besseli(2/3,u)*besseli(-2/3,v)-besseli(-2/3,u)*besseli(2/3,v))...
     /(besseli(-1/3,v)*besseli(-2/3,v)-besseli(2/3,u)*besseli(1/3,v))); % effective heat transfer from ideal heat transfer
 
-    %% thermodynamic properties calculations for the heated water flow
-    %% Interpolation in table
-    m = 0.1; %mass flow through the pipe in kg/s
-    T = [275,280,285,290,295,300,310,320,330,340,350,360,370,373.15,380,390,400];
-    Pr_array = [12.9,10.7,9,7.8,6.7,5.9,4.6,3.8,3.2,2.7,2.4,2,1.81,1.76,1.65,1.51,1.40];
-    T_array = T-273.15;
-    k_array = [0.556,0.568,0.58,0.591,0.602,0.611,0.628,0.641,0.652,0.661,0.669,0.676,0.68,0.681,0.683,0.684,0.685];
-    c_p_array = [4217,4203,4192,4186,4181,4178,4174,4174,4178,4184,4190,4200,4209,4212,4220,4234,4250];
-    k_water = interp1(T_array,k_array,T_in); %Conductive heat coefficient of water in W/(m*K)
-    Pr = interp1(T_array,Pr_array,T_in); %parental number from table from "Basic heat and mass transfer"
-    c_p = interp1(T_array,c_p_array,T_in);
+    if T_in == 0
+        %% thermodynamic properties calculations for the heated water flow
+        %% Interpolation in table
+        m = 0.1; %mass flow through the pipe in kg/s
+        T = [275,280,285,290,295,300,310,320,330,340,350,360,370,373.15,380,390,400];
+        Pr_array = [12.9,10.7,9,7.8,6.7,5.9,4.6,3.8,3.2,2.7,2.4,2,1.81,1.76,1.65,1.51,1.40];
+        T_array = T-273.15;
+        k_array = [0.556,0.568,0.58,0.591,0.602,0.611,0.628,0.641,0.652,0.661,0.669,0.676,0.68,0.681,0.683,0.684,0.685];
+        c_p_array = [4217,4203,4192,4186,4181,4178,4174,4174,4178,4184,4190,4200,4209,4212,4220,4234,4250];
+        k_water = interp1(T_array,k_array,T_in); %Conductive heat coefficient of water in W/(m*K)
+        Pr = interp1(T_array,Pr_array,T_in); %parental number from table from "Basic heat and mass transfer"
+        c_p = interp1(T_array,c_p_array,T_in);
 
-    mu = water.rho(T_in)*water.nu(T_in); %dynamic viscosity
-    Re = (m/A_in)*2*r_0/mu; %reynolds number
-    f = (0.790*log(Re)-1.64)^(-2); % friction factor
+        mu = water.rho(T_in)*water.nu(T_in); %dynamic viscosity
+        Re = (m/A_in)*2*r_0/mu; %reynolds number
+        f = (0.790*log(Re)-1.64)^(-2); % friction factor
 
-    Nu_inside = ((f/8)*(Re-1000)*Pr/(1+(12.7*sqrt(f/8)*(Pr^(2/3) -1)))); %Nusselt number for inside the pipe
-    h_inside = k_water*Nu_inside/(2*r_0);
-    h_total = 1/((1/(h_inside*2*pi*r_0)) + (log(r_1/r_0)/(2*pi*k_alu)) + (1/(h_pipe*Fin_efficiency*F*S+h_pipe*(1-F*2*t)*2*pi*r_1)));% heat coefficient for the entire pipe in W/(m*K)
-    N_tu = h_total*L/(m*c_p);
-    epsi = 1-exp(-N_tu);
-    T_out = T_in - epsi*(T_in-T_air); %Temperature at the outlet
+        Nu_inside = ((f/8)*(Re-1000)*Pr/(1+(12.7*sqrt(f/8)*(Pr^(2/3) -1)))); %Nusselt number for inside the pipe
+        h_inside = k_water*Nu_inside/(2*r_0);
+        h_total = 1/((1/(h_inside*2*pi*r_0)) + (log(r_1/r_0)/(2*pi*k_alu)) + (1/(h_pipe*Fin_efficiency*F*S+h_pipe*(1-F*2*t)*2*pi*r_1)));% heat coefficient for the entire pipe in W/(m*K)
+        N_tu = h_total*L/(m*c_p);
+        epsi = 1-exp(-N_tu);
+        T_out = T_in - epsi*(T_in-T_air); %Temperature at the outlet
 
     %% Final calculations of the heat transfers and temperatures
     if Q_pipes == 0
@@ -104,7 +106,7 @@ function [Q_pipe,Q_out,T_pipes,T_out]  = Pipe_heating(T_in,T_air,T_pipe,Q_pipes,
     end
 
     Q_in = (T_in-T_out)*m*c_p; % Watt of the heat transfer from the water to the pipe
-    Q_out = h_pipe*A*abs(T_pipe-T_air)*Fin_efficiency*dt; % Jules of heat transfer per time step from the pipe to the air 
+    Q_out = h_pipe*A*(T_pipe-T_air)*Fin_efficiency*dt; % Jules of heat transfer per time step from the pipe to the air 
     Q_pipe = Q_pipeses+Q_in*dt-Q_out; % Heat energy in the mass of the pipe
     T_pipes = Q_pipe/(c_alu*V_pipe*rho_alu)-273.15; % Temperature of the pipe in celsius
 end

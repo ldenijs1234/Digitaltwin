@@ -134,7 +134,7 @@ function [integral, error, ControllerOutput, OpenWindowAngle] = ControllerInput(
     k = 200000;        % Multiplication
     kp = 0.5;       % Proportional gain
     ki = 5;       % Integral gain
-    kpv = -2;
+    kpv = -2 ;
 
     % Initialize variables
     % Calculate error
@@ -152,11 +152,11 @@ end
 for i = 1:length(t) - 1
       
 
-    if T(1, i) > 20
-        OpenWindowAngle(i) = 10 ;
-    else
-        OpenWindowAngle(i) = 5 ;
-    end
+    % if T(1, i) > 20
+    %     OpenWindowAngle(i) = 10 ;
+    % else
+    %     OpenWindowAngle(i) = 1 ;
+    % end
 
      
     %Variable parameter functions (+ convection rate, ventilation rate...)
@@ -210,8 +210,7 @@ figure("WindowStyle", "docked");
 hold on
 plot(t/3600,T(:,:))
 plot(t/3600, OutsideTemperature, 'b--')
-plot(t/3600, setpoint, 'r--')
-% plot(t/3600, setpoint(i), 'r--')
+plot(t/3600, setpoint, 'r--') 
 title("Temperatures in the greenhouse")
 xlabel("Time (h)")
 ylabel("Temperature (°C)")
