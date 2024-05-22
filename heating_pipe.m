@@ -106,6 +106,6 @@ function [Q_pipe,Q_out,T_pipes,T_out]  = Pipe_heating(T_in,T_air,T_pipe,Q_pipes,
 
     Q_in = (T_in-T_out)*m*c_p; % Watt of the heat transfer from the water to the pipe
     Q_out = h_pipe*A*abs(T_pipe-T_air)*Fin_efficiency*dt; % Jules of heat transfer per time step from the pipe to the air 
-    Q_pipe = Q_pipeses+Q_in*dt; % Heat energy in the mass of the pipe
+    Q_pipe = Q_pipeses+Q_in*dt-Q_out; % Heat energy in the mass of the pipe
     T_pipes = Q_pipe/(c_alu*V_pipe*rho_alu)-273.15; % Temperature of the pipe in celsius
 end
