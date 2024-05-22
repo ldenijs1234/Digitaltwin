@@ -40,7 +40,7 @@ function [Q_pipe,Q_out,T_pipes,T_out]  = Pipe_heating(T_in,T_air,T_pipe,Q_pipes,
     P_w = h_abs.*(T_air+273.15)/C; % water vapour pressure
     P_ws = 6.116441*10^(7.591386*(T_air)/(T_air+240.7263));  % saturation vapour pressure
     h = P_w/P_ws; % relative humidity for range -20 to +50 celsius
-    dT = T_pipe - T_air;
+    dT = abs(T_pipe - T_air);
 
     T2 = T_air + 0.001; % small temperature change
     rho = AirProperties(T_air,p,h,'xCO2',co2,'rho'); % density for this slightly different temperature
@@ -104,7 +104,7 @@ function [Q_pipe,Q_out,T_pipes,T_out]  = Pipe_heating(T_in,T_air,T_pipe,Q_pipes,
     end
 
     Q_in = (T_in-T_out)*m*c_p; % Watt of the heat transfer from the water to the pipe
-    Q_out = h_pipe*A*abs(T_pipe-T_air)*Fin_efficiency*dt; % Jules of heat transfer per time step from the pipe to the air 
+    Q_out = h_pipe*A*(T_pipe-T_air)*Fin_efficiency*dt; % Jules of heat transfer per time step from the pipe to the air 
     Q_pipe = Q_pipeses+Q_in*dt-Q_out; % Heat energy in the mass of the pipe
     T_pipes = Q_pipe/(c_alu*V_pipe*rho_alu)-273.15; % Temperature of the pipe in celsius
 end
