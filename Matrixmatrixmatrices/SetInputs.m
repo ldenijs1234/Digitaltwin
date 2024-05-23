@@ -39,7 +39,7 @@ SkyTemperature = (LdCloud/sigma).^(0.25)-273.15 ; % Katzin
 
 
 SolarIntensity =  SolarRadiation .* (1-cloud); % Data already in the form of intensity
-
+WindSpeed = Windspeed / 3.6 ;
 OutsideHumidity =   rh2vaporDens(OutsideTemperature, OutsideRelhumidity) ; %!!!!
 
 OutsideCO2 = 0.0012 ; %!!!!

@@ -28,8 +28,8 @@ GH.p.           GHWallThickness = 3e-3 ; %m
 GH.p.           GHFloorThickness = 1e-2 ;	%m
 
 GH.p.           NumberOfWindows = 15 ; 
-GH.p.           WindowLength = 0.2 ;
-GH.p.           WindowHeight = 0.4 ;
+GH.p.           WindowLength = 0.4 ;
+GH.p.           WindowHeight = 0.2 ;
 GH.p.           RoofAngle = 10 ; % degrees
 
 GH.p.           WindowArea = GH.p.WindowHeight*GH.p.WindowLength ;
@@ -73,17 +73,17 @@ GH.p.           LFloorGround = 19e-2 ; % meter
 
 % Heatingpipe parameters
 GH.p.           EmittancePipe = 0.88; 
-GH.p.           SOLARAbsorbancePipe = 0.9; %DUMMY
-GH.p.           FIRAbsorbancePipe = 0.9; %DUMMY
-GH.p.           SOLARDiffusePipe = 1 - GH.p.SOLARAbsorbancePipe; %DUMMY
-GH.p.           FIRDiffusePipe = 1 - GH.p.FIRAbsorbancePipe ; %DUMMY
-GH.p.           PipeArea = GH.p.pipeL * pi * 2 * GH.p.r_1 ;
+GH.p.           SOLARAbsorbancePipe = 0.95;
+GH.p.           FIRAbsorbancePipe = 0.95;
+GH.p.           SOLARDiffusePipe = 1 - GH.p.SOLARAbsorbancePipe ;
+GH.p.           FIRDiffusePipe = 1 - GH.p.FIRAbsorbancePipe ;
 GH.p.           r_0 = 0.078; % inside radius of the pipe in meters
 GH.p.           r_1 = 0.08; % outside radius of the pipe in meters  
 GH.p.           r_2 = 0.137; % outside radius of the fin in meters  
 GH.p.           pipeL = 50 ; % length of the pipe in meters
 GH.p.           pipeF = 80; % Fins per meter of pipe %!!!!keep the thickness in mind not more fins then fit on the pipe!!!!
 GH.p.           pipet = 0.001; % half of the thickness of one fin in meters 
+GH.p.           PipeArea = GH.p.pipeL*pi*GH.p.r_2^2 ;
 
 % Humidity equations parameters
 
