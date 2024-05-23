@@ -10,7 +10,7 @@ filename = 'Delft21-5.csv'; % File name of the weather data CSV file
 %     SimCount = 1 ;
 % end
 
-% SimCount = 1 ;
+SimCount = 1 ;
 SimStart = time_steps*(SimCount-1) + 1 ;
 SimEnd = time_steps*SimCount ;
 
