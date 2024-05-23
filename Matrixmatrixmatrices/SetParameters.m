@@ -73,12 +73,17 @@ GH.p.           LFloorGround = 19e-2 ; % meter
 
 % Heatingpipe parameters
 GH.p.           EmittancePipe = 0.88; 
+GH.p.           SOLARAbsorbancePipe = 0.95;
+GH.p.           FIRAbsorbancePipe = 0.95;
+GH.p.           SOLARDiffusePipe = 1 - GH.p.SOLARAbsorbancePipe ;
+GH.p.           FIRDiffusePipe = 1 - GH.p.FIRAbsorbancePipe ;
 GH.p.           r_0 = 0.078; % inside radius of the pipe in meters
 GH.p.           r_1 = 0.08; % outside radius of the pipe in meters  
 GH.p.           r_2 = 0.137; % outside radius of the fin in meters  
 GH.p.           pipeL = 50 ; % length of the pipe in meters
 GH.p.           pipeF = 80; % Fins per meter of pipe %!!!!keep the thickness in mind not more fins then fit on the pipe!!!!
 GH.p.           pipet = 0.001; % half of the thickness of one fin in meters 
+GH.p.           PipeArea = GH.p.pipeL*pi*GH.p.r_2^2 ;
 
 % Humidity equations parameters
 
@@ -119,7 +124,7 @@ FIRAbsorbanceArray = [0; GH.p.FIRAbsorbanceGlass; GH.p.FIRAbsorbanceGlass; GH.p.
 SOLARDiffuseArray = [0; GH.p.SOLARDiffuseGlass; GH.p.SOLARDiffuseGlass; GH.p.SOLARDiffuseFloor; GH.p.SOLARDiffusePlant; GH.p.SOLARDiffusePipe];
 FIRDiffuseArray = [0; GH.p.FIRDiffuseGlass; GH.p.FIRDiffuseGlass; GH.p.FIRDiffuseFloor; GH.p.FIRDiffusePlant; GH.p.FIRDiffusePipe];
 AreaArray = [0; GH.p.GHFloorArea; GH.p.GHTotalArea- GH.p.GHFloorArea; GH.p.GHFloorArea; GH.p.GHPlantArea; GH.p.PipeArea];
-AreaSunArray = [0; GH.p.GHFloorArea; 0; ((1-GH.p.LAI)*GH.p.GHFloorArea); GH.p.GHPlantArea];
+AreaSunArray = [0; GH.p.GHFloorArea; 0; ((1-GH.p.LAI)*GH.p.GHFloorArea); GH.p.GHPlantArea; GH.p.PipeArea];
 AreaArrayRad = AreaArray; AreaArrayRad(5) = 2 * AreaArray(5);
 TransmissionArray = [0; 1; 1; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass]; %0 for air, 1 for glass wall and roof, tau for everything underneath glass
 
