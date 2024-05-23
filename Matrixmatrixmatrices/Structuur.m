@@ -116,9 +116,9 @@ function DryWeightDot = DryWeight(GH, DryMassPlant, C_trans, T_air)
 end
 
 
-function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeed, T_out, OpenWindowAngle)
+function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeedkph, T_out, OpenWindowAngle)
     p = GH.p ; 
-
+    WindSpeed = WindSpeedkph / 3.6 ; %m/s
     G_l = 2.29e2 * (1 - exp(-OpenWindowAngle/21.1)) ; % leeside
     G_w = 1.2e-3 * OpenWindowAngle * exp(OpenWindowAngle/211) ; % windward side
     v_wind = (G_l + G_w) * p.WindowArea * WindSpeed ;
@@ -145,7 +145,8 @@ function [integral, error, ControllerOutput, OpenWindowAngle] = ControllerInput(
     % Calculate control output
     proportional = kp * error;
     integral_component = ki * integral;
-    ControllerOutput = max(0, k * (proportional + integral_component));
+    Unlim_ControllerOutput = max(0, k * (proportional + integral_component));
+    ControllerOutput = min(99, Unlim_ControllerOutput);
     OpenWindowAngle = max(0, kpv*error);
 end
 
@@ -157,17 +158,18 @@ for i = 1:length(t) - 1
     % else
     %     OpenWindowAngle(i) = 1 ;
     % end
-
-     
+    [integral(i+1), error(i), T_water(i), OpenwindowAngle(i)] = ControllerInput(GH, T(1,i), price_per_kWh(i), setpoint(i), dt, integral(i)) ;
+    
     %Variable parameter functions (+ convection rate, ventilation rate...)
     VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i), OpenWindowAngle(i)) ;
+    %[Q_pipes(i+1), Q_pipeout(i), Q_pipein(i), T_pipes(i+1), T_pipeout(i)] = heating_pipe(GH, T_water(i), T(1, i), T(6, i), Q_pipes(i), dt) ;
     ConvectionCoefficientsOut(:,i) = (ConvCoefficients(GH, T(3, i), OutsideTemperature(i), WindSpeed(i), OutsideHumidity(i), OutsideCO2)).' ;
     ConvectionCoefficientsIn(4,i) = ConvFloor(T(4, i), T(1, i)) ;
     ConvectionCoefficientsIn(2,i) = h_ac ;
     ConvectionCoefficientsIn(3,i) = h_ac ;
     ConvectionCoefficientsIn(5,i) = h_ap ;
     ConvectionCoefficientsIn(6,i) = h_ah ;
-
+    
     % Vapor flows and balance
     [W_trans(i), W_cond(i), W_vent(i)] = vaporflows(GH, T(1, i), T(3, i), OutsideTemperature(1,i), AddStates(1, i), OutsideHumidity(i), DryMassPlant, VentilationRate(i));
     HumidityDot = HumidityBalance(GH, W_trans(i), W_cond(i), W_vent(i));
@@ -191,14 +193,12 @@ for i = 1:length(t) - 1
     J_sky(i) = SkyEmit(DewPoint(i),OutsideTemperature(i));
     Q_sky(2:3,i) = FQ_sky(AreaArray(2:3), FIRAbsorbanceArray(2:3), EmmitanceArray(2:3), SkyTemperature(i), T(2:3,i));
     Q_conv(:,i) = convection(ConvectionCoefficientsIn(:,i), ConvectionCoefficientsOut(:, i), T(:,i), OutsideTemperature(i), ConvAreaArray);
-    Q_conv(6,i) = Q_pipe(i) ;
     Q_vent(1, i) = HeatByVentilation(GH, T(1, i), OutsideTemperature(i), VentilationRate(i)) ; 
     Q_vent(2: height(T), i) = zeros(height(T)-1, 1) ;
     Q_latent(5, i) = LatentHeat(-W_trans(i)) ;
     Q_latent(1: height(T)-1, i) = zeros(height(T)-1, 1) ;
-    [integral(i+1), error(i), Q_heat(1,i)] = ControllerInput(GH, T(1,i), price_per_kWh(i), setpoint(i), dt, integral(i)) ;
     %Total heat transfer 
-    Q_tot(:,i) = Q_heat(:,i) + Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) +  Q_rad_in(:,i) - AreaArrayRad .* q_rad_out(:,i);
+    Q_tot(:,i) = Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) +  Q_rad_in(:,i) - AreaArrayRad .* q_rad_out(:,i);
 
     % Temperature Change
     T(:,i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
@@ -216,7 +216,7 @@ plot(t/3600, setpoint, 'r--')
 title("Temperatures in the greenhouse")
 xlabel("Time (h)")
 ylabel("Temperature (°C)")
-legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Outside', 'Setpoint')
+legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Heatpipe','Outside', 'Setpoint')
 hold off
 
 figure("WindowStyle", "docked");

@@ -83,7 +83,7 @@ GH.p.           r_2 = 0.137; % outside radius of the fin in meters
 GH.p.           pipeL = 50 ; % length of the pipe in meters
 GH.p.           pipeF = 80; % Fins per meter of pipe %!!!!keep the thickness in mind not more fins then fit on the pipe!!!!
 GH.p.           pipet = 0.001; % half of the thickness of one fin in meters 
-GH.p.           PipeArea = GH.p.pipeL*pi*GH.p.r_2^2 ;
+GH.p.           PipeArea = GH.p.pipeL*2*pi*GH.p.r_2 ;
 
 % Humidity equations parameters
 
@@ -124,54 +124,25 @@ FIRAbsorbanceArray = [0; GH.p.FIRAbsorbanceGlass; GH.p.FIRAbsorbanceGlass; GH.p.
 SOLARDiffuseArray = [0; GH.p.SOLARDiffuseGlass; GH.p.SOLARDiffuseGlass; GH.p.SOLARDiffuseFloor; GH.p.SOLARDiffusePlant; GH.p.SOLARDiffusePipe];
 FIRDiffuseArray = [0; GH.p.FIRDiffuseGlass; GH.p.FIRDiffuseGlass; GH.p.FIRDiffuseFloor; GH.p.FIRDiffusePlant; GH.p.FIRDiffusePipe];
 AreaArray = [0; GH.p.GHFloorArea; GH.p.GHTotalArea- GH.p.GHFloorArea; GH.p.GHFloorArea; GH.p.GHPlantArea; GH.p.PipeArea];
-AreaSunArray = [0; GH.p.GHFloorArea; 0; ((1-GH.p.LAI)*GH.p.GHFloorArea); GH.p.GHPlantArea; GH.p.PipeArea];
-AreaArrayRad = AreaArray; AreaArrayRad(5) = 2 * AreaArray(5);
-TransmissionArray = [0; 1; 1; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass]; %0 for air, 1 for glass wall and roof, tau for everything underneath glass
+AreaSunArray = [0; GH.p.GHFloorArea; 0; ((1-GH.p.LAI)*GH.p.GHFloorArea - 0.5 * GH.p.PipeArea); GH.p.GHPlantArea; 0.5 *GH.p.PipeArea];
+AreaArrayRad = AreaArray; AreaArrayRad(5) = 2 * AreaArray(5); AreaArrayRad(6) = GH.p.pipeL*2*pi*GH.p.r_2;
+TransmissionArray = [0; 1; 1; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass]; %0 for air, 1 for glass wall and roof, tau for everything underneath glass
 
 ConvAreaArray = AreaArray ;
 MassPlant = GH.p.GHPlantArea*GH.p.rho_lettuce*0.01 ;
 ConvAreaArray(5) = MassPlant * GH.p.C_pld  ; % Effect plant surface
 
-% Viewing vectors and Areas
-
-% F_pc=0.6; F_pf=0.1; F_wc=0.2; F_fc= 0.4; F_pw = 0.3; F_fw=0.4; F_ww = 0.4;
-% F_cp = F_pc * GH.p.GHPlantArea / GH.p.GHCoverArea; 
-% F_fp = F_pf * GH.p.GHPlantArea / GH.p.GHFloorArea;
-% F_cf = F_fc * GH.p.GHFloorArea / GH.p.GHCoverArea;
-% F_cw = F_wc * GH.p.GHWallArea / GH.p.GHCoverArea;
-% F_wp = F_pw * GH.p.GHPlantArea / GH.p.GHWallArea;
-% F_wf = F_fw * GH.p.GHFloorArea / GH.p.GHWallArea;
-
-% display(F_cp; F_fp; F_cf; F_cw; F_wp; F_wf)
 
 
-% F_pc=0.35; F_pf=0.4; F_wc=0.2
+F_hc = 1/12; F_hf = 0.6; F_hw = 0; F_hh = 0.15 ;F_hp = 1 - F_hc - F_hf - F_hw - F_hh;
 
-% syms F_cw F_cf F_cp F_ww F_wf F_wp F_fc F_fw F_fp F_pw
+F_ch = F_hc * AreaArrayRad(6) / AreaArrayRad(2); F_cc =0; F_cw = 0.42; F_cf = (1-GH.p.LAI) * 0.58 - F_ch; F_cp = GH.p.LAI * 0.58;
 
-% F_wc = 0.1 ;
+F_wh = F_hw * AreaArrayRad(6) / AreaArrayRad(3); F_ww = 0.3; F_wc = F_cw * AreaArrayRad(2) / AreaArrayRad(3); F_wf = (1-GH.p.LAI) * F_wc; F_wp = GH.p.LAI * F_wc;
 
-% vars = [F_cw F_cf F_cp F_ww F_wf F_wp F_fc F_fw F_fp F_pw];
-% eqns = [F_cw + F_cf + F_cp == 1, F_wc + F_ww + F_wf + F_wp == 1, F_fc + F_fw + F_fp == 1, F_pc + F_pw + F_pf == 1, ...
-%     F_cp == F_pc * GH.p.GHPlantArea / GH.p.GHCoverArea, F_fp == F_pf * GH.p.GHPlantArea / GH.p.GHFloorArea, ...
-%     F_cf == F_fc * GH.p.GHFloorArea / GH.p.GHCoverArea, F_cw == F_wc * GH.p.GHWallArea / GH.p.GHCoverArea, ...
-%     F_wp == F_pw * GH.p.GHPlantArea / GH.p.GHWallArea, F_wf == F_fw * GH.p.GHFloorArea / GH.p.GHWallArea];
+F_fh = F_hf * AreaArrayRad(6) / AreaArrayRad(4); F_fc = F_cf * AreaArrayRad(2) / AreaArrayRad(4); F_fw = F_wf * AreaArrayRad(3) / AreaArrayRad(4); F_ff = 0; F_fp = 1 - F_fw - F_fc - F_fh - F_ff;
 
-% size(vars)
-% size(eqns)
-
-% [F_cw, F_cf, F_cp, F_ww, F_wf, F_wp, F_fc, F_fw, F_fp, F_pw] = solve(eqns, vars)
-
-F_cc =0; F_cw = 0.42; F_cf = (1-GH.p.LAI) * 0.58; F_cp = GH.p.LAI * 0.58; F_ch = 0;
-
-F_ww = 0.3; F_wc=0.35; F_wf = (1-GH.p.LAI) * F_wc; F_wp = GH.p.LAI * F_wc; F_wh = 0;
-
-F_fc = (1-GH.p.LAI) * 0.58; F_fw = (1-GH.p.LAI) * 0.42; F_ff = 0; F_fp = 1 - F_fw - F_fc; F_fh = 0;
-
-F_pc = F_cp * AreaArrayRad(2) / AreaArrayRad(5); F_pw = F_wp * AreaArrayRad(3) / AreaArrayRad(5);  ...
-F_pf = F_fp * AreaArrayRad(4) / AreaArrayRad(5); F_pp = 0; F_ph = 0;
-
-F_hc = 0; F_hw = 0; F_hf = 0; F_hp = 0; F_hh = 0;
+F_ph = F_hp * AreaArrayRad(6) / AreaArrayRad(5); F_pc = F_cp * AreaArrayRad(2) / AreaArrayRad(5); F_pw = F_wp * AreaArrayRad(3) / AreaArrayRad(5);  F_pf = F_fp * AreaArrayRad(4) / AreaArrayRad(5); F_pp = 0;
 
 ViewMatrix = [0,     0,      0,      0,      0,      0;
              0,     F_cc,   F_cw,   F_cf,   F_cp,   F_ch;

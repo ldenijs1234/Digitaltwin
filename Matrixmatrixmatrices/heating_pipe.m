@@ -1,7 +1,7 @@
 %% The heating pipe is modeled to be made out of aluminum and to be a pipe with annular parabolic fins
 % most of the formulas can be found in "Basic heat and mass transfer" writen by A.F. Mills and C.F.M Coimbra, Third edition
-[a,b,c,d] = Pipe_heating(0,20,20,0,5)
-function [Q_pipe,Q_out,Q_in,T_pipes,T_out]  = Pipe_heating(GH, T_in,T_air,T_pipe,Q_pipes,dt)
+
+function [Q_pipe,Q_out,Q_in,T_pipes,T_out]  = heating_pipe(GH, T_in,T_air,T_pipe,Q_pipes,dt)
      %%inputs
 
     %% Geometric inputs for the pipe
