@@ -2,7 +2,6 @@
 
 % User Inputs
 
-Heating = zeros(1, length(t)-1) ;
 CO2_injection = 0 ;
 OpenWindowAngle = 10 * ones(1, length(t)-1) ;
 
@@ -39,11 +38,10 @@ SkyTemperature = (LdCloud/sigma).^(0.25)-273.15 ; % Katzin
 
 
 SolarIntensity =  SolarRadiation .* (1-cloud); % Data already in the form of intensity
-WindSpeed = Windspeed / 3.6 ;
 OutsideHumidity =   rh2vaporDens(OutsideTemperature, OutsideRelhumidity) ; %!!!!
 
-OutsideCO2 = 0.0012 ; %!!!!
+OutsideCO2 = 0.0012 ; %kg/m^3
 GroundTemperature = 10  ; % DUMMY!!!!!!!!!!!    
-
+T_water(1) = 15 ;
 
 % VentilationRate = 5; 

@@ -4,8 +4,8 @@ GroundTemperature = 10 ;
 AirTemperature = 14 ;  % ALL DUMMY VALUES!!!
 CoverTemperature = 15 ;
 WallTemperature = 15 ;
-PlantTemperature = 15;
-PipeTemperature = T_pipes(1) ;
+PlantTemperature = 15 ;
+PipeTemperature = 15 ;
 
 %FloorTemperature initialisation:
 FloorTempIntVar = (AirTemperature - GroundTemperature)/10;
@@ -19,7 +19,7 @@ initial_T(:,1) = [AirTemperature; CoverTemperature; WallTemperature; init_FloorT
 set_FloorTemperature = init_FloorTemperature ;
 
 
-Humidity = 0.012 ; % kg/m^3 air
+Humidity = OutsideHumidity(1) ; % kg/m^3 air
 
 CO2Air = 0.000464 ; % kg/m^3 air
 

@@ -73,10 +73,10 @@ function [W_trans, W_cond, W_vent] = vaporflows(GH, T_air, T_wall, T_out, H_air,
     W_trans = (1 - exp(-GH.p.C_pld * DryMassPlant)) * GH.p.C_vplai * ...
     ((GH.p.C_v1 / (GH.p.GasConstantR * 1e3 * (T_air + 273.15))) ...
     * exp(GH.p.C_v2 * T_air / (T_air + GH.p.C_v3)) ...
-    - H_air)  ;%kg m^-2 s^-1
+    - H_air)   * GH.p.GHFloorArea ;%kg s^-1
     W_cond = (G_c * (0.2522 * exp(0.0485 * T_air) * (T_air ... 
-    - T_out) - ((5.5638 * exp(0.0572 * T_air)) - H_air*1000)))/1000 ; %kg m^-2 s^-1
-    W_vent = VentilationRate * (H_air - H_out) * GH.p.NumberOfWindows*GH.p.WindowArea/GH.p.GHFloorArea ; %kg m^-2 s^-1
+    - T_out) - ((5.5638 * exp(0.0572 * T_air)) - H_air*1000)))/1000 * GH.p.GHFloorArea ; %kg s^-1
+    W_vent = VentilationRate * (H_air - H_out)  ; %kg  s^-1
    
 
 end
@@ -90,10 +90,8 @@ function h_af = ConvFloor(T_floor, T_in)
 end
 
 function HumidityDot = HumidityBalance(GH, W_trans, W_cond, W_vent)
-    CAP_Water = GH.p.GHVolume / GH.p.GHFloorArea; %m
-
-    W = - W_vent - W_cond + W_trans; %kg m^-2 s^-1 
-    HumidityDot = W / CAP_Water ; %kg m^-3 s^-1
+    W = - W_vent - W_cond + W_trans; %kg s^-1 
+    HumidityDot = W / GH.p.GHVolume ; %kg m^-3 s^-1
 end
 
 function [C_trans, C_vent] = CO2flows(GH, DryMassPlant, SolarIntensity, T_air, C_in, C_out, VentilationRate)
@@ -101,14 +99,13 @@ function [C_trans, C_vent] = CO2flows(GH, DryMassPlant, SolarIntensity, T_air, C
     C_trans = (1 - exp(-GH.p.C_pld * DryMassPlant)) * ((GH.p.C_RadPhoto * SolarIntensity * ... 
     (-GH.p.C_CO21 * T_air^2 + GH.p.C_CO22 * T_air - GH.p.C_CO23) * (C_in * GH.p.C_R)) / ... 
     (GH.p.C_RadPhoto * SolarIntensity + (-GH.p.C_CO21 * T_air^2 + GH.p.C_CO22 * T_air - ... 
-    GH.p.C_CO23) * (C_in * GH.p.C_R))) ;
-    C_vent = VentilationRate * (C_in - C_out) ; %kg m^-2 s^-1
+    GH.p.C_CO23) * (C_in * GH.p.C_R))) * GH.p.GHFloorArea; %kg s^-1
+    C_vent = VentilationRate * (C_in - C_out) ; %kg s^-1
 end
 
 function CO2Dot = CO2Balance(GH, C_trans, C_vent, C_inject)
-    CAP_CO2 = GH.p.GHVolume / GH.p.GHFloorArea; %m
-    C = - C_trans - C_vent + C_inject/GH.p.GHFloorArea;
-    CO2Dot = C / CAP_CO2 ; %kg m^-3 s^-1
+    C = - C_trans - C_vent + C_inject;
+    CO2Dot = C / GH.p.GHVolume ; %kg m^-3 s^-1
 end
 
 function DryWeightDot = DryWeight(GH, DryMassPlant, C_trans, T_air)
@@ -119,14 +116,14 @@ end
 function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeedkph, T_out, OpenWindowAngle)
     p = GH.p ; 
     WindSpeed = WindSpeedkph / 3.6 ; %m/s
-    G_l = 2.29e2 * (1 - exp(-OpenWindowAngle/21.1)) ; % leeside
+    G_l = 2.29e-2 * (1 - exp(-OpenWindowAngle/21.1)) ; % leeside
     G_w = 1.2e-3 * OpenWindowAngle * exp(OpenWindowAngle/211) ; % windward side
     v_wind = (G_l + G_w) * p.WindowArea * WindSpeed ;
     H = p.WindowHeight * (sind(p.RoofAngle)- sind(p.RoofAngle - OpenWindowAngle)) ;
     v_temp = p.C_f * p.WindowLength/3 * (abs(p.Gravity*p.BetaAir*(T_air ... 
     - T_out)))^(0.5) * H^(1.5) ;
 
-    VentilationRate = 0.5 * (p.NumberOfWindows/p.GHFloorArea) * (v_wind^2 + v_temp^2)^(0.5) ;
+    VentilationRate = 0.5 * p.NumberOfWindows * (v_wind^2 + v_temp^2)^(0.5) ;
 end
 
 function [integral, error, ControllerOutput, OpenWindowAngle] = ControllerInput(GH, T_air, price, setpoint, dt, integral)
@@ -161,9 +158,9 @@ for i = 1:length(t) - 1
     [integral(i+1), error(i), T_water(i), OpenwindowAngle(i)] = ControllerInput(GH, T(1,i), price_per_kWh(i), setpoint(i), dt, integral(i)) ;
     
     %Variable parameter functions (+ convection rate, ventilation rate...)
-    VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i), OpenWindowAngle(i)) ;
-    [Q_pipes(i+1), h_pipeout(i), Q_pipein(i), T_pipes(i+1), T_pipeout(i)] = heating_pipe(GH, T_water(i), T(1, i), T(6, i), Q_pipes(i), dt) ;
-    ConvectionCoefficientsOut(:,i) = (ConvCoefficients(GH, T(3, i), OutsideTemperature(i), WindSpeed(i), OutsideHumidity(i), OutsideCO2)).' ;
+    VentilationRate(i) = VentilationRatecalc(GH, T(1, i), Windspeed(i), OutsideTemperature(i), OpenWindowAngle(i)) ;
+    [h_pipeout(i), Q_heat(6,i)] = heating_pipe(GH, T_water(i), T(1, i), T(6, i), AddStates(1,i), AddStates(2,i)) ;
+    ConvectionCoefficientsOut(:,i) = (ConvCoefficients(GH, T(3, i), OutsideTemperature(i), Windspeed(i), OutsideHumidity(i), OutsideCO2)).' ;
     ConvectionCoefficientsIn(4,i) = ConvFloor(T(4, i), T(1, i)) ;
     ConvectionCoefficientsIn(2,i) = h_ac ;
     ConvectionCoefficientsIn(3,i) = h_ac ;
@@ -197,13 +194,13 @@ for i = 1:length(t) - 1
     Q_vent(2: height(T), i) = zeros(height(T)-1, 1) ;
     Q_latent(5, i) = LatentHeat(-W_trans(i)) ;
     Q_latent(1: height(T)-1, i) = zeros(height(T)-1, 1) ;
-    %Q_heat(6, i) = Q_pipes(i) ; 
+    
     %Total heat transfer 
     Q_tot(:,i) = Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) +  Q_rad_in(:,i) - AreaArrayRad .* q_rad_out(:,i);
 
     % Temperature Change
     T(:,i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
-    T(6, i+1) = T_pipeout(i) ;
+
     Energy_kWh = Q_heat(1,:) * dt / (1000 * 3600);  % Convert from W to kWh
     sum(Energy_kWh(:)*0.2);
     
@@ -234,25 +231,29 @@ hold off
 % legend( 'trans', 'cond', 'vent')
 
 
-% figure("WindowStyle", "docked")
-% hold on
-% plot(t/3600, FloorTemperature)
-% xlabel("Time (h)")
-% ylabel("Floor layer temperature (°C)")
-% hold off
-
-figure("WindowStyle", "docked");
+figure("WindowStyle", "docked")
 hold on
-plot(t(1:end-1), Q_heat(4,:))
-plot(t(1:end-1), Q_vent(4,:)) 
-plot(t(1:end-1), Q_sky(4,:)) 
-plot(t(1:end-1), Q_conv(4,:))
-plot(t(1:end-1), Q_solar(4,:))
-plot(t(1:end-1), Q_rad_in(4,:) - AreaArrayRad(4) * q_rad_out(4,:))
-plot(t(1:end-1), Q_ground(4,:)) 
-plot(t(1:end-1), Q_tot(4,:))
-legend('Heat','vent', 'sky', 'convection', 'solar','radiation','ground')
+plot(t(1:end-1), Q_heat(6,:))
+plot(t(1:end-1), Q_conv(6,:))
+plot(t(1:end-1), Q_rad_in(6,:) - AreaArrayRad(4) * q_rad_out(6,:))
+plot(t(1:end-1), Q_tot(6,:))
+xlabel("Time (h)")
+ylabel("Heat (W)")
+legend('Q_heat','Convection', 'Radiation', 'total')
 hold off
+
+% figure("WindowStyle", "docked");
+% hold on
+% plot(t(1:end-1), Q_heat(4,:), 'r')
+% plot(t(1:end-1), Q_vent(4,:)) 
+% plot(t(1:end-1), Q_sky(4,:)) 
+% plot(t(1:end-1), Q_conv(4,:))
+% plot(t(1:end-1), Q_solar(4,:))
+% plot(t(1:end-1), Q_rad_in(4,:) - AreaArrayRad(4) * q_rad_out(4,:))
+% plot(t(1:end-1), Q_ground(4,:)) 
+% plot(t(1:end-1), Q_tot(4,:))
+% legend('Heat','vent', 'sky', 'convection', 'solar','radiation','ground', 'total')	
+% hold off
 
 % figure("WindowStyle", "docked");
 % hold on

@@ -44,7 +44,7 @@ GH.p.           GHCoverArea =  GH.p.GHLength * GH.p.GHWidth ;
 
 % Plant parameters
 GH.p.           cp_lettuce = 4020 ;
-GH.p.           rho_lettuce = 240.92 ; 
+GH.p.           rho_lettuce = 240.92 ; %Test with 1000, Should it not be similiar to water?????????? !!!!!!!!!!!
 GH.p.           EmittancePlant = 0.90 ; %DUMMY
 GH.p.           SOLARAbsorbancePlant = 0.65 ; %DUMMY
 GH.p.           FIRAbsorbancePlant = 0.78 ; %DUMMY
