@@ -5,7 +5,7 @@ AirTemperature = 14 ;  % ALL DUMMY VALUES!!!
 CoverTemperature = 15 ;
 WallTemperature = 15 ;
 PlantTemperature = 15;
-PipeTemperature = T_pipes(1) ;
+PipeTemperature = 15 ;
 
 %FloorTemperature initialisation:
 FloorTempIntVar = (AirTemperature - GroundTemperature)/10;

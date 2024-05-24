@@ -20,7 +20,7 @@ Sealevelpressure = SealevelpressureF(SimStart:SimEnd) ; CloudCover = CloudCoverF
 
 run("SetParameters")
 run("SetInputs")
-% Run "initialize.m to initialize or set current set_T to current T
+% Run "initialize.m to initialize or set  set_T to current T
 run("SetStates")
 run("AirProperties")
 run("Structuur")

@@ -30,7 +30,6 @@ q_rad_out = zeros(length(T(:,1)), length(t)-1);
 Q_heat = zeros(length(T(:,1)), length(t)-1);
 Q_heat(1,:) = Heating ;
 Q_pipes(1) = 0 ; %zeros(1,length(t)-1) ;
-T_pipes(1) = 15 ;
 T_water(1) = 15 ;
 
 
