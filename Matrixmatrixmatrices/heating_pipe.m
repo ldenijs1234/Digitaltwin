@@ -1,7 +1,7 @@
-%% The heating pipe is modeled to be made out of aluminum and to be a pipe with annular parabolic fins
+%% The heating pipe is modeled to be made out of steel and to be a pipe with annular parabolic fins
 % most of the formulas can be found in "Basic heat and mass transfer" writen by A.F. Mills and C.F.M Coimbra, Third edition
 
-function [Q_pipe,Q_out,Q_in,T_pipes,T_out]  = heating_pipe(GH, T_in,T_air,T_pipe,Q_pipes,dt)
+function [Q_pipe,h_outside,Q_in,T_pipes,T_out]  = heating_pipe(GH, T_in,T_air,T_pipe,Q_pipes,dt)
      %%inputs
 
     %% Geometric inputs for the pipe
@@ -18,7 +18,7 @@ function [Q_pipe,Q_out,Q_in,T_pipes,T_out]  = heating_pipe(GH, T_in,T_air,T_pipe
     c_alu = GH.p.cp_steel; % in J/(kg*K)
 
     H_out = 0.012; % Kg/m^3
-    C_out = 0.0464; % Kg/m^3
+    C_out = 0.000464; % Kg/m^3
     g = 9.81;
     
     %%Calculated geometrical parameters of the pipe
@@ -26,9 +26,9 @@ function [Q_pipe,Q_out,Q_in,T_pipes,T_out]  = heating_pipe(GH, T_in,T_air,T_pipe
     D = sqrt((r_2^2 /r_1)^2 + t^2);
     S = 2*pi*r_1*(D-B+(t/2)*log(((D-t)*(B+t))/((D+t)*(B-t)))); % surface area of a fin in m^2
     V = 4*pi*t*r_1*(r_2-r_1); %volume of a fin in m^3
-    V_pipe = V*L*F+(r_1^2-r_0^2)*pi*L; %Volume of the material of the pipe
+    V_pipe = GH.p.Vpipe; %Volume of the material of the pipe
     A_in = pi*r_0^2; % Area of inside of the pipe
-    A = L*F*S+(L-L*F*2*t)*2*pi*r_1; % total area of the pipe in m^2
+    A = GH.p.Apipe; % total area of the pipe in m^2
 
     %%thermodynamic properties of the air
     p = 1084; % air pressure in hpa
@@ -108,7 +108,7 @@ function [Q_pipe,Q_out,Q_in,T_pipes,T_out]  = heating_pipe(GH, T_in,T_air,T_pipe
     else
         Q_pipeses = Q_pipes;
     end
-
+    h_outside = h_pipe*Fin_efficiency;
     Q_out = h_pipe*A*(T_pipe-T_air)*Fin_efficiency*dt; % Jules of heat transfer per time step from the pipe to the air 
     Q_pipe = Q_pipeses+Q_in*dt-Q_out; % Heat energy in the mass of the pipe
     T_pipes = Q_pipe/(c_alu*V_pipe*rho_alu)-273.15; % Temperature of the pipe in celsius

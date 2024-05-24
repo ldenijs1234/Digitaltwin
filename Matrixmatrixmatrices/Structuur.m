@@ -131,7 +131,7 @@ end
 
 function [integral, error, ControllerOutput, OpenWindowAngle] = ControllerInput(GH, T_air, price, setpoint, dt, integral)
     %PI controller
-    k = 200000;        % Multiplication
+    k = 2000;        % Multiplication
     kp = 0.5;       % Proportional gain
     ki = 5;       % Integral gain
     kpv = -2 ;
@@ -162,13 +162,13 @@ for i = 1:length(t) - 1
     
     %Variable parameter functions (+ convection rate, ventilation rate...)
     VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i), OpenWindowAngle(i)) ;
-    %[Q_pipes(i+1), Q_pipeout(i), Q_pipein(i), T_pipes(i+1), T_pipeout(i)] = heating_pipe(GH, T_water(i), T(1, i), T(6, i), Q_pipes(i), dt) ;
+    [Q_pipes(i+1), h_pipeout(i), Q_pipein(i), T_pipes(i+1), T_pipeout(i)] = heating_pipe(GH, T_water(i), T(1, i), T(6, i), Q_pipes(i), dt) ;
     ConvectionCoefficientsOut(:,i) = (ConvCoefficients(GH, T(3, i), OutsideTemperature(i), WindSpeed(i), OutsideHumidity(i), OutsideCO2)).' ;
     ConvectionCoefficientsIn(4,i) = ConvFloor(T(4, i), T(1, i)) ;
     ConvectionCoefficientsIn(2,i) = h_ac ;
     ConvectionCoefficientsIn(3,i) = h_ac ;
     ConvectionCoefficientsIn(5,i) = h_ap ;
-    ConvectionCoefficientsIn(6,i) = h_ah ;
+    ConvectionCoefficientsIn(6,i) = h_pipeout(i) ;
     
     % Vapor flows and balance
     [W_trans(i), W_cond(i), W_vent(i)] = vaporflows(GH, T(1, i), T(3, i), OutsideTemperature(1,i), AddStates(1, i), OutsideHumidity(i), DryMassPlant, VentilationRate(i));
@@ -197,12 +197,13 @@ for i = 1:length(t) - 1
     Q_vent(2: height(T), i) = zeros(height(T)-1, 1) ;
     Q_latent(5, i) = LatentHeat(-W_trans(i)) ;
     Q_latent(1: height(T)-1, i) = zeros(height(T)-1, 1) ;
+    %Q_heat(6, i) = Q_pipes(i) ; 
     %Total heat transfer 
     Q_tot(:,i) = Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) +  Q_rad_in(:,i) - AreaArrayRad .* q_rad_out(:,i);
 
     % Temperature Change
     T(:,i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
-
+    T(6, i+1) = T_pipeout(i) ;
     Energy_kWh = Q_heat(1,:) * dt / (1000 * 3600);  % Convert from W to kWh
     sum(Energy_kWh(:)*0.2);
     
@@ -219,11 +220,12 @@ ylabel("Temperature (°C)")
 legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Heatpipe','Outside', 'Setpoint')
 hold off
 
-figure("WindowStyle", "docked");
-hold on 
-plot(t(1:end-1)/3600, Energy_kWh(:))
-hold off
-sum(Energy_kWh(:)*0.2);
+% figure("WindowStyle", "docked");
+% hold on 
+% plot(t(1:end-1)/3600, Energy_kWh(:))
+% hold off
+% sum(Energy_kWh(:)*0.2);
+
 % figure("WindowStyle", "docked");
 % hold on
 % plot(t(1:end-1)/3600, W_trans)
@@ -248,10 +250,11 @@ plot(t(1:end-1), Q_conv(4,:))
 plot(t(1:end-1), Q_solar(4,:))
 plot(t(1:end-1), Q_rad_in(4,:) - AreaArrayRad(4) * q_rad_out(4,:))
 plot(t(1:end-1), Q_ground(4,:)) 
+plot(t(1:end-1), Q_tot(4,:))
 legend('Heat','vent', 'sky', 'convection', 'solar','radiation','ground')
 hold off
 
-figure("WindowStyle", "docked");
-hold on
-plot(t, FloorTemperature)
-hold off
+% figure("WindowStyle", "docked");
+% hold on
+% plot(t, FloorTemperature)
+% hold off
