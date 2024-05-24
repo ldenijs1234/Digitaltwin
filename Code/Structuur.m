@@ -202,8 +202,8 @@ for i = 1:length(t) - 1
     Q_tot(:,i) = Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) +  Q_rad_in(:,i) - AreaArrayRad .* q_rad_out(:,i);
 
     % Temperature Change
-    T(:,i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
-    T(6, i+1) = T_pipeout(i) ;
+    T(:, i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
+    T(6, i + 1) = T_pipeout(i) ;
     Energy_kWh = Q_heat(1,:) * dt / (1000 * 3600);  % Convert from W to kWh
     sum(Energy_kWh(:)*0.2);
     
@@ -254,7 +254,3 @@ plot(t(1:end-1), Q_tot(4,:))
 legend('Heat','vent', 'sky', 'convection', 'solar','radiation','ground')
 hold off
 
-% figure("WindowStyle", "docked");
-% hold on
-% plot(t, FloorTemperature)
-% hold off

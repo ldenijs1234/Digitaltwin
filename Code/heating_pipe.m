@@ -90,7 +90,7 @@ function [Q_pipe,h_outside,Q_in,T_pipes,T_out]  = heating_pipe(GH, T_in,T_air,T_
         Pr = interp1(T_array,Pr_array,T_in); %parental number from table from "Basic heat and mass transfer"
         c_p = interp1(T_array,c_p_array,T_in);
 
-        mu = water.rho(T_in)*water.nu(T_in); %dynamic viscosity
+        mu = water.density(T_in)*water.viscosity(T_in); %dynamic viscosity
         Re = (m/A_in)*2*r_0/mu; %reynolds number
         f = (0.790*log(Re)-1.64)^(-2); % friction factor
 
