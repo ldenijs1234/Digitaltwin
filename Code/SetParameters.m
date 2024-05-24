@@ -136,7 +136,7 @@ TransmissionArray = [0; 1; 1; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass; GH.p.SOLAR
 ConvAreaArray = AreaArray ;
 MassPlant = GH.p.GHPlantArea*GH.p.rho_lettuce*0.01 ;
 ConvAreaArray(5) = MassPlant * GH.p.C_pld  ; % Effect plant surface
-
+ConvAreaArray(6) = GH.p.Apipe ;
 
 
 F_hc = 1/12; F_hf = 0.6; F_hw = 0; F_hh = 0.15 ;F_hp = 1 - F_hc - F_hf - F_hw - F_hh;
