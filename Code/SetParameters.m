@@ -12,14 +12,14 @@ GH.p.           rho_steel = 7850 ; %kg m^-3
 GH.p.           rho_water = 1000 ; %kg m^-3
 GH.p.           GasConstantR = 8.314 ; % J/mol K
 GH.p.           StefBolzConst = 5.670374419e-8 ; % W/m^2 K^4 
-sigma = 5.670374419e-8 ;
+                sigma = 5.670374419e-8 ;
 GH.p.           Gravity = 9.81 ; % m/s^2 ;
 GH.p.           Kelvin = 273.15 ;
 
 % Set variables (for matrices), parameters saved in general field 'GH' under field 'p'
 
 % Greenhouse parameters                 ALL DUMMY!!!!!!!!!!!!!
-GH.p.           LAI = 0.9 ; % Leaf Area Index
+GH.p.           LAI = 0.5 ; % Leaf Area Index
 
 GH.p.           GHWidth = 10 ; %m 
 GH.p.           GHLength = 10 ; %m
@@ -113,10 +113,10 @@ GH.p.           BetaAir = 1/283 ; % Thermal expansion coefficient
 
 % Convection coefficients, can de dynamic
 h_out = 20;  % Convection between outside air and greenhouse
-h_ac = 15;  % Convection between air and cover
-h_af = 15;  % Convection between air and floor  
+h_ac = 5;  % Convection between air and cover
+h_af = 5;  % Convection between air and floor  
 h_ap = 5;  % Convection between air and plant
-h_ah = 15;  % Convection between air and heatpipe
+h_ah = 5;  % Convection between air and heatpipe
 ConvectionCoefficientsIn = [0; h_ac; h_ac; h_af; h_ap; h_ah] ;
 
 % ConvectionCoefficientsOut = [h_out; h_out] ;
@@ -129,7 +129,7 @@ FIRAbsorbanceArray = [0; GH.p.FIRAbsorbanceGlass; GH.p.FIRAbsorbanceGlass; GH.p.
 SOLARDiffuseArray = [0; GH.p.SOLARDiffuseGlass; GH.p.SOLARDiffuseGlass; GH.p.SOLARDiffuseFloor; GH.p.SOLARDiffusePlant; GH.p.SOLARDiffusePipe];
 FIRDiffuseArray = [0; GH.p.FIRDiffuseGlass; GH.p.FIRDiffuseGlass; GH.p.FIRDiffuseFloor; GH.p.FIRDiffusePlant; GH.p.FIRDiffusePipe];
 AreaArray = [0; GH.p.GHFloorArea; GH.p.GHTotalArea- GH.p.GHFloorArea; GH.p.GHFloorArea; GH.p.GHPlantArea; GH.p.PipeArea];
-AreaSunArray = [0; GH.p.GHFloorArea; 0; ((1-GH.p.LAI)*GH.p.GHFloorArea - 0.5 * GH.p.PipeArea); GH.p.GHPlantArea; 0.5 *GH.p.PipeArea];
+AreaSunArray = [0; GH.p.GHFloorArea; 0; ((1-GH.p.LAI)*GH.p.GHFloorArea - 1/pi * GH.p.PipeArea); GH.p.GHPlantArea; 0.25 *GH.p.PipeArea];
 AreaArrayRad = AreaArray; AreaArrayRad(5) = 2 * AreaArray(5); AreaArrayRad(6) = GH.p.pipeL*2*pi*GH.p.r_2;
 TransmissionArray = [0; 1; 1; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass]; %0 for air, 1 for glass wall and roof, tau for everything underneath glass
 

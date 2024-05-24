@@ -29,8 +29,7 @@ Q_rad_in = zeros(length(T(:,1)), length(t)-1);
 q_rad_out = zeros(length(T(:,1)), length(t)-1);
 Q_heat = zeros(length(T(:,1)), length(t)-1);
 
-Q_pipes(1) = 0 ; %zeros(1,length(t)-1) ;
-T_water(1) = 15 ;
+
 
 
   % Humidity = 0.012 ; % kg/m^3 air

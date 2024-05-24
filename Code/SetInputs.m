@@ -3,7 +3,7 @@
 % User Inputs
 
 CO2_injection = 0 ;
-OpenWindowAngle = 10 * ones(1, length(t)-1) ;
+OpenWindowAngle = 30 * ones(1, length(t)-1) ;
 
 function y = bound(min, max, t1, t2, t3, t4, dt, days) %inputs: minimum and maximum, minimum before t1 and after t4, maximum at t2:t3
     time = (0:dt:24*60^2) / 60^2;
@@ -18,7 +18,7 @@ end
 % control inputs
 price_per_kWh = zeros(1, length(t)-1) ; % Price per kWh 
 price_per_kWh = 0.34 + 0.2 * sind(2*pi*(t));  % Euro
-setpoint = bound(18, 22, 6, 10, 18, 22, dt, 1); % Setpoint temperature (°C)
+setpoint = bound(18, 22, 6, 10, 18, 22, dt, 2); % Setpoint temperature (°C)
 error = zeros(1, length(t)-1); % Error array
 integral = zeros(1, length(t)-1); % Integral array
 cloud = CloudCover./100 ; % 0-1 cloud cover
@@ -44,4 +44,3 @@ OutsideCO2 = 0.0012 ; %kg/m^3
 GroundTemperature = 10  ; % DUMMY!!!!!!!!!!!    
 T_water(1) = 15 ;
 
-% VentilationRate = 5; 

@@ -14,8 +14,6 @@ function [h_outside,Q_in]  = heating_pipe(GH, T_in,T_air,T_pipe)
 
     %% Thermodynamic properties of the pipe, material choosen is steel
     k_alu = 15; %conduction coefficient steel for the pipe in W/(m*K)
-    rho_alu = GH.p.rho_steel; %kg/m^3
-    c_alu = GH.p.cp_steel; % in J/(kg*K)
 
     H_out = 0.012; % Kg/m^3
     C_out = 0.000464; % Kg/m^3
@@ -64,6 +62,7 @@ function [h_outside,Q_in]  = heating_pipe(GH, T_in,T_air,T_pipe)
         Nu = 0.36+0.518*Ra^0.25 /(1+(0.559/Pr)^(9/16))^(4/9);
     end
 
+    
     h_pipe = Nu*k_air/(r_2+r_1); % convective heat transfer coefficient of the pipe in W/(m^2*K)
 
     %%Calculation for the fin efficiency, the fins used are annular parabolic fins
@@ -80,7 +79,8 @@ function [h_outside,Q_in]  = heating_pipe(GH, T_in,T_air,T_pipe)
     
     %% thermodynamic properties calculations for the heated water flow
     %% Interpolation in table
-    m = 0.1; %mass flow through the pipe in kg/s
+    Vel_water = 1; %speed of the flow in m/s
+    m = Vel_water*A_in*water.density(T_in); %mass flow through the pipe in kg/s
     T = [275,280,285,290,295,300,310,320,330,340,350,360,370,373.15,380,390,400];
     Pr_array = [12.9,10.7,9,7.8,6.7,5.9,4.6,3.8,3.2,2.7,2.4,2,1.81,1.76,1.65,1.51,1.40];
     T_array = T-273.15;
@@ -98,8 +98,8 @@ function [h_outside,Q_in]  = heating_pipe(GH, T_in,T_air,T_pipe)
     h_inside = k_water*Nu_inside/(2*r_0);
     h_total = 1/((1/(h_inside*2*pi*r_0)) + (log(r_1/r_0)/(2*pi*k_alu)) + (1/(h_pipe*Fin_efficiency*F*S+h_pipe*(1-F*2*t)*2*pi*r_1)));% heat coefficient for the entire pipe in W/(m*K)
     N_tu = h_total*L/(m*c_p);
-    epsi = 1-exp(-N_tu);
-    T_out = T_in - epsi*(T_in-T_air); %Temperature at the outlet
+    epsil = 1-exp(-N_tu);
+    T_out = T_in - epsil*(T_in-T_air); %Temperature at the outlet
     Q_in = (T_in-T_out)*m*c_p; % Watt of the heat transfer from the water to the pipe
     %% Final calculations of the heat transfers and temperatures
 

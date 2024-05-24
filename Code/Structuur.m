@@ -62,7 +62,7 @@ function Q = LatentHeat(mv)    % Latent heat of evaporation of water mass flow m
 end
 
 function Q = HeatByVentilation(GH, T_air, T_out, VentilationRate)
-    massflow = GH.p.rho_air * GH.p.NumberOfWindows*GH.p.WindowArea * VentilationRate ;
+    massflow = GH.p.rho_air *  VentilationRate ;
     Q = (T_out - T_air) * massflow * GH.p.cp_air ;
 end
 
@@ -73,10 +73,10 @@ function [W_trans, W_cond, W_vent] = vaporflows(GH, T_air, T_wall, T_out, H_air,
     W_trans = (1 - exp(-GH.p.C_pld * DryMassPlant)) * GH.p.C_vplai * ...
     ((GH.p.C_v1 / (GH.p.GasConstantR * 1e3 * (T_air + 273.15))) ...
     * exp(GH.p.C_v2 * T_air / (T_air + GH.p.C_v3)) ...
-    - H_air)  ;%kg m^-2 s^-1
+    - H_air) *GH.p.GHFloorArea ;%kg m^-2 s^-1
     W_cond = (G_c * (0.2522 * exp(0.0485 * T_air) * (T_air ... 
-    - T_out) - ((5.5638 * exp(0.0572 * T_air)) - H_air*1000)))/1000 ; %kg m^-2 s^-1
-    W_vent = VentilationRate * (H_air - H_out) * GH.p.NumberOfWindows*GH.p.WindowArea/GH.p.GHFloorArea ; %kg m^-2 s^-1
+    - T_out) - ((5.5638 * exp(0.0572 * T_air)) - H_air*1000)))/1000 * GH.p.GHFloorArea ; %kg m^-2 s^-1
+    W_vent = VentilationRate * (H_air - H_out) ; %kg m^-2 s^-1
    
 
 end
@@ -90,10 +90,8 @@ function h_af = ConvFloor(T_floor, T_in)
 end
 
 function HumidityDot = HumidityBalance(GH, W_trans, W_cond, W_vent)
-    CAP_Water = GH.p.GHVolume / GH.p.GHFloorArea; %m
-
-    W = - W_vent - W_cond + W_trans; %kg m^-2 s^-1 
-    HumidityDot = W / CAP_Water ; %kg m^-3 s^-1
+    W = - W_vent - W_cond + W_trans; %kg s^-1 
+    HumidityDot = W / GH.p.GHVolume ; %kg m^-3 s^-1
 end
 
 function [C_trans, C_vent] = CO2flows(GH, DryMassPlant, SolarIntensity, T_air, C_in, C_out, VentilationRate)
@@ -101,14 +99,13 @@ function [C_trans, C_vent] = CO2flows(GH, DryMassPlant, SolarIntensity, T_air, C
     C_trans = (1 - exp(-GH.p.C_pld * DryMassPlant)) * ((GH.p.C_RadPhoto * SolarIntensity * ... 
     (-GH.p.C_CO21 * T_air^2 + GH.p.C_CO22 * T_air - GH.p.C_CO23) * (C_in * GH.p.C_R)) / ... 
     (GH.p.C_RadPhoto * SolarIntensity + (-GH.p.C_CO21 * T_air^2 + GH.p.C_CO22 * T_air - ... 
-    GH.p.C_CO23) * (C_in * GH.p.C_R))) ;
+    GH.p.C_CO23) * (C_in * GH.p.C_R))) / GH.p.GHFloorArea ;
     C_vent = VentilationRate * (C_in - C_out) ; %kg m^-2 s^-1
 end
 
 function CO2Dot = CO2Balance(GH, C_trans, C_vent, C_inject)
-    CAP_CO2 = GH.p.GHVolume / GH.p.GHFloorArea; %m
-    C = - C_trans - C_vent + C_inject/GH.p.GHFloorArea;
-    CO2Dot = C / CAP_CO2 ; %kg m^-3 s^-1
+    C = - C_trans - C_vent + C_inject;
+    CO2Dot = C / GH.p.GHVolume ; %kg m^-3 s^-1
 end
 
 function DryWeightDot = DryWeight(GH, DryMassPlant, C_trans, T_air)
@@ -119,21 +116,21 @@ end
 function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeedkph, T_out, OpenWindowAngle)
     p = GH.p ; 
     WindSpeed = WindSpeedkph / 3.6 ; %m/s
-    G_l = 2.29e2 * (1 - exp(-OpenWindowAngle/21.1)) ; % leeside
+    G_l = 2.29e-2 * (1 - exp(-OpenWindowAngle/21.1)) ; % leeside
     G_w = 1.2e-3 * OpenWindowAngle * exp(OpenWindowAngle/211) ; % windward side
     v_wind = (G_l + G_w) * p.WindowArea * WindSpeed ;
     H = p.WindowHeight * (sind(p.RoofAngle)- sind(p.RoofAngle - OpenWindowAngle)) ;
     v_temp = p.C_f * p.WindowLength/3 * (abs(p.Gravity*p.BetaAir*(T_air ... 
     - T_out)))^(0.5) * H^(1.5) ;
 
-    VentilationRate = 0.5 * (p.NumberOfWindows/p.GHFloorArea) * (v_wind^2 + v_temp^2)^(0.5) ;
+    VentilationRate = 0.5 * p.NumberOfWindows * (v_wind^2 + v_temp^2)^(0.5) ;
 end
 
 function [integral, error, ControllerOutput, OpenWindowAngle] = ControllerInput(GH, T_air, price, setpoint, dt, integral)
     %PI controller
     k = 2000;        % Multiplication
-    kp = 0.5;       % Proportional gain
-    ki = 5;       % Integral gain
+    kp = 5;       % Proportional gain
+    ki = 0.001;       % Integral gain
     kpv = -2 ;
 
     % Initialize variables
@@ -145,7 +142,7 @@ function [integral, error, ControllerOutput, OpenWindowAngle] = ControllerInput(
     % Calculate control output
     proportional = kp * error;
     integral_component = ki * integral;
-    Unlim_ControllerOutput = max(0, k * (proportional + integral_component));
+    Unlim_ControllerOutput = max(T_air, k * (proportional + integral_component));
     ControllerOutput = min(99, Unlim_ControllerOutput);
     OpenWindowAngle = max(0, kpv*error);
 end
@@ -158,17 +155,17 @@ for i = 1:length(t) - 1
     % else
     %     OpenWindowAngle(i) = 1 ;
     % end
-    [integral(i+1), error(i), T_water(i), OpenwindowAngle(i)] = ControllerInput(GH, T(1,i), price_per_kWh(i), setpoint(i), dt, integral(i)) ;
+    % [integral(i+1), error(i), T_water(i), OpenwindowAngle(i)] = ControllerInput(GH, T(1,i), price_per_kWh(i), setpoint(i), dt, integral(i)) ;
     
     %Variable parameter functions (+ convection rate, ventilation rate...)
     VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i), OpenWindowAngle(i)) ;
-    [h_pipeout(i), Q_heat(6,i)] = heating_pipe(GH, T_water(i), T(1, i), T(6, i)) ;
-    ConvectionCoefficientsOut(:,i) = (ConvCoefficients(GH, T(3, i), OutsideTemperature(i), WindSpeed(i), OutsideHumidity(i), OutsideCO2)).' ;
+    % [h_pipeout(i), Q_heat(6,i)] = heating_pipe(GH, T_water(i), T(1, i), T(6, i)) ;
+    ConvectionCoefficientsOut(:,i) = (ConvCoefficients(GH, T(3, i), OutsideTemperature(i), WindSpeed(i), OutsideHumidity(i), OutsideCO2, Winddirection(i), Sealevelpressure(i))).' ;
     ConvectionCoefficientsIn(4,i) = ConvFloor(T(4, i), T(1, i)) ;
     ConvectionCoefficientsIn(2,i) = h_ac ;
     ConvectionCoefficientsIn(3,i) = h_ac ;
     ConvectionCoefficientsIn(5,i) = h_ap ;
-    ConvectionCoefficientsIn(6,i) = h_pipeout(i) ;
+    % ConvectionCoefficientsIn(6,i) = h_pipeout(i) ;
     
     % Vapor flows and balance
     [W_trans(i), W_cond(i), W_vent(i)] = vaporflows(GH, T(1, i), T(3, i), OutsideTemperature(1,i), AddStates(1, i), OutsideHumidity(i), DryMassPlant, VentilationRate(i));
@@ -199,7 +196,7 @@ for i = 1:length(t) - 1
     Q_latent(1: height(T)-1, i) = zeros(height(T)-1, 1) ;
 
     %Total heat transfer 
-    Q_tot(:,i) = Q_heat(:,i) + Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) +  Q_rad_in(:,i) - AreaArrayRad .* q_rad_out(:,i);
+    Q_tot(:,i) = Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) +  Q_rad_in(:,i) - AreaArrayRad .* q_rad_out(:,i); % Q_heat(:,i) +
 
     % Temperature Change
     T(:, i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
@@ -242,7 +239,6 @@ hold off
 
 figure("WindowStyle", "docked");
 hold on
-plot(t(1:end-1), Q_heat(1,:))
 plot(t(1:end-1), Q_vent(1,:)) 
 plot(t(1:end-1), Q_sky(1,:)) 
 plot(t(1:end-1), Q_conv(1,:))
@@ -250,6 +246,7 @@ plot(t(1:end-1), Q_solar(1,:))
 plot(t(1:end-1), Q_rad_in(1,:) - AreaArrayRad(1) * q_rad_out(1,:))
 plot(t(1:end-1), Q_ground(1,:)) 
 plot(t(1:end-1), Q_tot(1,:))
-legend('Heat','vent', 'sky', 'convection', 'solar','radiation','ground')
+% plot(t(1:end-1), Q_heat(1,:))
+legend('vent', 'sky', 'convection', 'solar','radiation','ground', 'total')
 hold off
 
