@@ -18,6 +18,7 @@ OutsideTemperature = OutsideTemperatureF(SimStart:SimEnd) ; OutsideRelhumidity =
 SolarRadiation = SolarRadiationF(SimStart:SimEnd) ; WindSpeed = WindspeedF(SimStart:SimEnd) ; Winddirection = WinddirectionF(SimStart:SimEnd) ;
 Sealevelpressure = SealevelpressureF(SimStart:SimEnd) ; CloudCover = CloudCoverF(SimStart:SimEnd) ; DewPoint = DewPointF(SimStart:SimEnd) ;
 
+run("Initialize")
 run("SetParameters")
 run("SetInputs")
 % Run "initialize.m to initialize or set  set_T to current T

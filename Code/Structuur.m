@@ -16,9 +16,10 @@ function Q = FQ_rad_in(absorbance, diffuse, Area, Viewf, qrad)      %imput: para
 end
 
 
-function Q = FQ_solar(transmission, diffuse, absorbance, Areasun, Isun)     %input: transmission of the cover, parameter arrays and I_sun(i)
+function Q = FQ_solar(transmission, diffuse, absorbance, Areasun, Isun, Area)     %input: transmission of the cover, parameter arrays and I_sun(i)
     Q = transmission .* absorbance .* Areasun * Isun; %absorbed sun radiation by each object
-    Q(1,:) = sum(diffuse(4:end,:) .* Areasun(4:end,:) * Isun)     ;          %inside air recieves diffused sun radiation of everything except cover
+    dif = sum(diffuse(4:end,:) .* Areasun(4:end,:) * Isun);          %all sun radiation that is diffused
+    Q = [diffuse(2); Area(2) / sum(Area(2:3)) * absorbance(2); Area(3) / sum(Area(2:3)) * absorbance(3); 0; 0; 0] * dif + Q;   %air absorbs diffused radiation thats again diffused by glass, glass absorbs this
 end
 
 function Q = FQ_sky(Area, absorbance, emissivity, TSky, T) %input: parameter arrays, effective sky temperature and Temperature of walls and roof
@@ -131,7 +132,7 @@ function [integral, error, ControllerOutput, OpenWindowAngle] = ControllerInput(
     k = 2000;        % Multiplication
     kp = 5;       % Proportional gain
     ki = 0.001;       % Integral gain
-    kpv = -2 ;
+    kpv = -5 ;
 
     % Initialize variables
     % Calculate error
@@ -144,7 +145,8 @@ function [integral, error, ControllerOutput, OpenWindowAngle] = ControllerInput(
     integral_component = ki * integral;
     Unlim_ControllerOutput = max(T_air, k * (proportional + integral_component));
     ControllerOutput = min(99, Unlim_ControllerOutput);
-    OpenWindowAngle = max(0, kpv*error);
+    WindowAngle = max(45, kpv*error);
+    OpenWindowAngle = min(10, WindowAngle);
 end
 
 for i = 1:length(t) - 1
@@ -155,17 +157,17 @@ for i = 1:length(t) - 1
     % else
     %     OpenWindowAngle(i) = 1 ;
     % end
-    % [integral(i+1), error(i), T_water(i), OpenwindowAngle(i)] = ControllerInput(GH, T(1,i), price_per_kWh(i), setpoint(i), dt, integral(i)) ;
-    
+    [integral(i+1), error(i), T_water(i), OpenwindowAngle(i)] = ControllerInput(GH, T(1,i), price_per_kWh(i), setpoint(i), dt, integral(i)) ;
+    OpenWindowAngle(i) = OpenWindowAngle(i) ; 
     %Variable parameter functions (+ convection rate, ventilation rate...)
     VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i), OpenWindowAngle(i)) ;
-    % [h_pipeout(i), Q_heat(6,i)] = heating_pipe(GH, T_water(i), T(1, i), T(6, i)) ;
+    [h_pipeout(i), Q_heat(6,i)] = heating_pipe(GH, T_water(i), T(1, i), T(6, i)) ;
     ConvectionCoefficientsOut(:,i) = (ConvCoefficients(GH, T(3, i), OutsideTemperature(i), WindSpeed(i), OutsideHumidity(i), OutsideCO2, Winddirection(i), Sealevelpressure(i))).' ;
     ConvectionCoefficientsIn(4,i) = ConvFloor(T(4, i), T(1, i)) ;
     ConvectionCoefficientsIn(2,i) = h_ac ;
     ConvectionCoefficientsIn(3,i) = h_ac ;
     ConvectionCoefficientsIn(5,i) = h_ap ;
-    % ConvectionCoefficientsIn(6,i) = h_pipeout(i) ;
+    ConvectionCoefficientsIn(6,i) = h_pipeout(i) ;
     
     % Vapor flows and balance
     [W_trans(i), W_cond(i), W_vent(i)] = vaporflows(GH, T(1, i), T(3, i), OutsideTemperature(1,i), AddStates(1, i), OutsideHumidity(i), DryMassPlant, VentilationRate(i));
@@ -186,7 +188,7 @@ for i = 1:length(t) - 1
 
     q_rad_out(:,i) = Fq_rad_out(EmmitanceArray, T(:,i));
     Q_rad_in(:,i) = FQ_rad_in(FIRAbsorbanceArray, FIRDiffuseArray, AreaArrayRad, ViewMatrix, q_rad_out(:,i));
-    Q_solar(:,i) = FQ_solar(TransmissionArray, SOLARDiffuseArray, SOLARAbsorbanceArray, AreaSunArray, SolarIntensity(i));
+    Q_solar(:,i) = FQ_solar(TransmissionArray, SOLARDiffuseArray, SOLARAbsorbanceArray, AreaSunArray, SolarIntensity(i), AreaArray);
     J_sky(i) = SkyEmit(DewPoint(i),OutsideTemperature(i));
     Q_sky(2:3,i) = FQ_sky(AreaArray(2:3), FIRAbsorbanceArray(2:3), EmmitanceArray(2:3), SkyTemperature(i), T(2:3,i));
     Q_conv(:,i) = convection(ConvectionCoefficientsIn(:,i), ConvectionCoefficientsOut(:, i), T(:,i), OutsideTemperature(i), ConvAreaArray);
@@ -196,7 +198,7 @@ for i = 1:length(t) - 1
     Q_latent(1: height(T)-1, i) = zeros(height(T)-1, 1) ;
 
     %Total heat transfer 
-    Q_tot(:,i) = Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) +  Q_rad_in(:,i) - AreaArrayRad .* q_rad_out(:,i); % Q_heat(:,i) +
+    Q_tot(:,i) = Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) +  Q_rad_in(:,i) - AreaArrayRad .* q_rad_out(:,i) + Q_heat(:,i);
 
     % Temperature Change
     T(:, i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
@@ -209,7 +211,7 @@ figure("WindowStyle", "docked");
 hold on
 plot(t/3600, T(:,:))
 plot(t/3600, OutsideTemperature, 'b--')
-plot(t/3600, setpoint, 'r--') 
+plot(t(1:end-1)/3600, setpoint, 'r--') 
 title("Temperatures in the greenhouse")
 xlabel("Time (h)")
 ylabel("Temperature (°C)")
@@ -246,7 +248,13 @@ plot(t(1:end-1), Q_solar(1,:))
 plot(t(1:end-1), Q_rad_in(1,:) - AreaArrayRad(1) * q_rad_out(1,:))
 plot(t(1:end-1), Q_ground(1,:)) 
 plot(t(1:end-1), Q_tot(1,:))
-% plot(t(1:end-1), Q_heat(1,:))
 legend('vent', 'sky', 'convection', 'solar','radiation','ground', 'total')
 hold off
 
+figure("WindowStyle", "docked");
+hold on
+plot(t(1:end-1)/3600, Q_heat(6,:))
+xlabel("Time (h)")
+ylabel("Heat from heating pipe (W)")
+legend('Heatpipe')
+hold off

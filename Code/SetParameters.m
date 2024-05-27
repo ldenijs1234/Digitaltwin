@@ -129,7 +129,7 @@ FIRAbsorbanceArray = [0; GH.p.FIRAbsorbanceGlass; GH.p.FIRAbsorbanceGlass; GH.p.
 SOLARDiffuseArray = [0; GH.p.SOLARDiffuseGlass; GH.p.SOLARDiffuseGlass; GH.p.SOLARDiffuseFloor; GH.p.SOLARDiffusePlant; GH.p.SOLARDiffusePipe];
 FIRDiffuseArray = [0; GH.p.FIRDiffuseGlass; GH.p.FIRDiffuseGlass; GH.p.FIRDiffuseFloor; GH.p.FIRDiffusePlant; GH.p.FIRDiffusePipe];
 AreaArray = [0; GH.p.GHFloorArea; GH.p.GHTotalArea- GH.p.GHFloorArea; GH.p.GHFloorArea; GH.p.GHPlantArea; GH.p.PipeArea];
-AreaSunArray = [0; GH.p.GHFloorArea; 0; ((1-GH.p.LAI)*GH.p.GHFloorArea - 1/pi * GH.p.PipeArea); GH.p.GHPlantArea; 0.25 *GH.p.PipeArea];
+AreaSunArray = [0; GH.p.GHFloorArea; 0; GH.p.GHFloorArea - GH.p.GHPlantArea - 2*GH.p.r_2*GH.p.pipeL*0.1 ; GH.p.GHPlantArea; 2*GH.p.r_2*GH.p.pipeL*0.1];
 AreaArrayRad = AreaArray; AreaArrayRad(5) = 2 * AreaArray(5); AreaArrayRad(6) = GH.p.pipeL*2*pi*GH.p.r_2;
 TransmissionArray = [0; 1; 1; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass]; %0 for air, 1 for glass wall and roof, tau for everything underneath glass
 

@@ -12,7 +12,7 @@ function y = bound(min, max, t1, t2, t3, t4, dt, days) %inputs: minimum and maxi
     c = max * ones(1, round(length(time) * (t3 - t2)/ 24));
     d = linspace(max, min, round(length(time) * (t4 - t3) / 24));
     e = min * ones(1, round(length(time) * (24 - t4) /24));
-    y = [min,a, b, c, d, e];
+    y = [a, b, c, d, e];
     y = repmat(y, 1, days);
 end
 % control inputs
