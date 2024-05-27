@@ -1,11 +1,11 @@
 %% The heating pipe is modeled to be made out of steel and to be a pipe with annular parabolic fins
 % most of the formulas can be found in "Basic heat and mass transfer" writen by A.F. Mills and C.F.M Coimbra, Third edition
+array = [20,20,20,20,20,20,20,20,20,20];
+[a,b,c] = hheating_pipe(GH,80,20,30,5,array);
 
-
-
-function [h_outside,Q_in]  = heating_pipe(GH, T_in,T_air,T_pipe)
+function [h_outside,Q_inpipe,water_array]  = hheating_pipe(GH, T_in,T_air,T_pipe,dt,dT_array)
      %%inputs
-
+    
     %% Geometric inputs for the pipe
     r_0 = GH.p.r_0; % inside radius of the pipe in meters
     r_1 = GH.p.r_1; % outside radius of the pipe in meters
@@ -21,7 +21,12 @@ function [h_outside,Q_in]  = heating_pipe(GH, T_in,T_air,T_pipe)
     C_out = 0.000464; % Kg/m^3
     g = 9.81;
     
+    Vel_water = 1; %speed of the flow in m/s
+    dL = Vel_water*dt; %length of pipe traveled by the water per time step
     %%Calculated geometrical parameters of the pipe
+    water_array = zeros(length(dT_array))
+    array = [T_in,dT_array];
+    Q_in_array = zeros(length(dT_array))
 
     S = GH.p.Afin;
     V = 4*pi*t*r_1*(r_2-r_1); %volume of a fin in m^3
@@ -80,29 +85,34 @@ function [h_outside,Q_in]  = heating_pipe(GH, T_in,T_air,T_pipe)
     
     %% thermodynamic properties calculations for the heated water flow
     %% Interpolation in table
-    Vel_water = 1; %speed of the flow in m/s
     m = Vel_water*A_in*water.density(T_in); %mass flow through the pipe in kg/s
     T = [275,280,285,290,295,300,310,320,330,340,350,360,370,373.15,380,390,400];
     Pr_array = [12.9,10.7,9,7.8,6.7,5.9,4.6,3.8,3.2,2.7,2.4,2,1.81,1.76,1.65,1.51,1.40];
     T_array = T-273.15;
     k_array = [0.556,0.568,0.58,0.591,0.602,0.611,0.628,0.641,0.652,0.661,0.669,0.676,0.68,0.681,0.683,0.684,0.685];
     c_p_array = [4217,4203,4192,4186,4181,4178,4174,4174,4178,4184,4190,4200,4209,4212,4220,4234,4250];
-    k_water = interp1(T_array,k_array,T_in); %Conductive heat coefficient of water in W/(m*K)
-    Pr = interp1(T_array,Pr_array,T_in); %parental number from table from "Basic heat and mass transfer"
-    c_p = interp1(T_array,c_p_array,T_in);
 
-    mu = water.density(T_in)*water.viscosity(T_in); %dynamic viscosity
-    Re = (m/A_in)*2*r_0/mu; %reynolds number
-    f = (0.790*log(Re)-1.64)^(-2); % friction factor
-
-    Nu_inside = ((f/8)*(Re-1000)*Pr/(1+(12.7*sqrt(f/8)*(Pr^(2/3) -1)))); %Nusselt number for inside the pipe
-    h_inside = k_water*Nu_inside/(2*r_0);
-    h_total = 1/((1/(h_inside*2*pi*r_0)) + (log(r_1/r_0)/(2*pi*k_alu)) + (1/(h_pipe*Fin_efficiency*F*S+h_pipe*(1-F*2*t)*2*pi*r_1)));% heat coefficient for the entire pipe in W/(m*K)
-    N_tu = h_total*L/(m*c_p);
-    epsil = 1-exp(-N_tu);
-    T_out = T_in - epsil*(T_in-T_air); %Temperature at the outlet
-    Q_in = (T_in-T_out)*m*c_p; % Watt of the heat transfer from the water to the pipe
     %% Final calculations of the heat transfers and temperatures
-
+    for i = 1:length(water_array)
+        T_input = array(i);
+        k_water = interp1(T_array,k_array,T_input); %Conductive heat coefficient of water in W/(m*K)
+        Pr = interp1(T_array,Pr_array,T_input); %parental number from table from "Basic heat and mass transfer"
+        c_p = interp1(T_array,c_p_array,T_input);
+    
+        mu = water.density(T_input)*water.viscosity(T_input); %dynamic viscosity
+        Re = (m/A_in)*2*r_0/mu; %reynolds number
+        f = (0.790*log(Re)-1.64)^(-2); % friction factor
+    
+        Nu_inside = ((f/8)*(Re-1000)*Pr/(1+(12.7*sqrt(f/8)*(Pr^(2/3) -1)))); %Nusselt number for inside the pipe
+        h_inside = k_water*Nu_inside/(2*r_0);
+        h_total = 1/((1/(h_inside*2*pi*r_0)) + (log(r_1/r_0)/(2*pi*k_alu)) + (1/(h_pipe*Fin_efficiency*F*S+h_pipe*(1-F*2*t)*2*pi*r_1)));% heat coefficient for the entire pipe in W/(m*K)
+        N_tu = h_total*dL/(m*c_p);
+        epsil = 1-exp(-N_tu);
+        T_out = T_input - epsil*(T_input-T_air); %Temperature at the outlet
+        Q_in = (T_input-T_out)*m*c_p; % Watt of the heat transfer from the water to the pipe
+        water_array(i) = T_out;
+        Q_in_array(i) = Q_in;
+    end
+    Q_inpipe = sum(Q_in_array);
     h_outside = h_pipe*Fin_efficiency;
 end
