@@ -4,11 +4,11 @@
 GH.p.           cp_air = 1003.5 ; %J kg^-1 K^-1
 GH.p.           cp_glass = 840 ; %J kg^-1 K^-1
 GH.p.           cp_water = 4186 ;%J kg^-1 K^-1
-GH.p.           cp_floor = 10000 ; %DUMMY
+GH.p.           cp_floor = 880 ; %J kg^-1 K^-1
 GH.p.           cp_steel = 640 ; %J kg^-1 K^-1	
 GH.p.           rho_air = 1.2 ; %kg m^-3
 GH.p.           rho_glass = 2500 ; %kg m^-3
-GH.p.           rho_floor = 2000 ; %DUMMY
+GH.p.           rho_floor = 2400 ; %kg m^-3
 GH.p.           rho_steel = 7850 ; %kg m^-3
 GH.p.           rho_water = 1000 ; %kg m^-3
 GH.p.           GasConstantR = 8.314 ; % J/mol K
@@ -28,8 +28,8 @@ GH.p.           GHWallThickness = 3e-3 ; %m
 GH.p.           GHFloorThickness = 1e-2 ;	%m
 
 GH.p.           NumberOfWindows = 15 ; 
-GH.p.           WindowLength = 0.4 ;
-GH.p.           WindowHeight = 0.2 ;
+GH.p.           WindowLength = 0.8 ;
+GH.p.           WindowHeight = 0.4 ;
 GH.p.           RoofAngle = 10 ; % degrees
 
 GH.p.           WindowArea = GH.p.WindowHeight*GH.p.WindowLength ;
@@ -139,7 +139,7 @@ ConvAreaArray(5) = MassPlant * GH.p.C_pld  ; % Effect plant surface
 ConvAreaArray(6) = GH.p.Apipe ;
 
 
-F_hc = 1/12; F_hf = 0.6; F_hw = 0; F_hh = 0.15 ;F_hp = 1 - F_hc - F_hf - F_hw - F_hh;
+F_hc = 1/12; F_hh = 0.15; F_hf = 0.6 - F_hh; F_hw = 0; F_hp = 1 - F_hc - F_hf - F_hw - F_hh;
 
 F_ch = F_hc * AreaArrayRad(6) / AreaArrayRad(2); F_cc =0; F_cw = 0.42; F_cf = (1-GH.p.LAI) * 0.58 - F_ch; F_cp = GH.p.LAI * 0.58;
 
@@ -147,7 +147,7 @@ F_wh = F_hw * AreaArrayRad(6) / AreaArrayRad(3); F_ww = 0.3; F_wc = F_cw * AreaA
 
 F_fh = F_hf * AreaArrayRad(6) / AreaArrayRad(4); F_fc = F_cf * AreaArrayRad(2) / AreaArrayRad(4); F_fw = F_wf * AreaArrayRad(3) / AreaArrayRad(4); F_ff = 0; F_fp = 1 - F_fw - F_fc - F_fh - F_ff;
 
-F_ph = F_hp * AreaArrayRad(6) / AreaArrayRad(5); F_pc = F_cp * AreaArrayRad(2) / AreaArrayRad(5); F_pw = F_wp * AreaArrayRad(3) / AreaArrayRad(5);  F_pf = F_fp * AreaArrayRad(4) / AreaArrayRad(5); F_pp = 0;
+F_ph = F_hp * AreaArrayRad(6) / AreaArrayRad(5); F_pc = F_cp * AreaArrayRad(2) / AreaArrayRad(5); F_pw = F_wp * AreaArrayRad(3) / AreaArrayRad(5);  F_pf = F_fp * AreaArrayRad(4) / AreaArrayRad(5); F_pp = 1 - F_pc - F_pw - F_pf - F_ph;
 
 ViewMatrix = [0,     0,      0,      0,      0,      0;
              0,     F_cc,   F_cw,   F_cf,   F_cp,   F_ch;

@@ -2,7 +2,7 @@ run("SetModel")
 time_steps = simulation_time/dt+1 ;
 
 filename = 'Delft21-5.csv'; % File name of the weather data CSV file 
-[time_vec, OutsideTemperatureF, OutsideRelhumidityF, SolarRadiationF, WindspeedF, WinddirectionF, SealevelpressureF, CloudCoverF, DewPointF] = Weather2Arrays(filename, dt) ;
+[time_vec, OutsideTemperatureF, OutsideRelhumidityF, SolarRadiationF, WindspeedF, WinddirectionF, SealevelpressureF, CloudCoverF, DewPointF] = Weather2Arrays(filename, dt, total_time) ;
 
 % if islogical(SimulationCount) 
 %     SimCount = SimCount ;

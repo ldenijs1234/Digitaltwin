@@ -11,8 +11,8 @@ end                                                             %q(:,i) = F
 
 
 function Q = FQ_rad_in(absorbance, diffuse, Area, Viewf, qrad)      %imput: parameter arrays, viewfactor matrix and q radiance array(:,i)
-    Q = absorbance .* (Area .* Viewf * qrad);                       %how much each object absorbs
-    Q(1,:) = sum(diffuse .* Area .* Viewf * qrad);                   %inside air recieves diffused radiation
+    Q = (Area .* Viewf * qrad);                       %how much each object absorbs
+    %Q(1,:) = sum(diffuse .* Area .* Viewf * qrad);                   %inside air recieves diffused radiation
 end
 
 
@@ -54,7 +54,7 @@ function [Q, QFloor] = FGroundConduction(GH, FloorTemperature, T)
     QFloor = matrix * FloorTemperature / GH.p.GHFloorThickness * GH.p.KFloor ;
 
     Q = zeros(height(T), 1) ;
-    Q(4) = QFloor(1) ;
+    Q(4) = QFloor(1) * GH.p.GHFloorArea ;
 
 end
 
@@ -162,10 +162,11 @@ for i = 1:length(t) - 1
     %Variable parameter functions (+ convection rate, ventilation rate...)
     VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i), OpenWindowAngle(i)) ;
     [h_pipeout(i), Q_heat(6,i)] = heating_pipe(GH, T_water(i), T(1, i), T(6, i)) ;
+    [h_insidewall(i), h_ceiling(i)] = inside_convection(GH, T(3, i), T(2, i), T(1, i));
     ConvectionCoefficientsOut(:,i) = (ConvCoefficients(GH, T(3, i), OutsideTemperature(i), WindSpeed(i), OutsideHumidity(i), OutsideCO2, Winddirection(i), Sealevelpressure(i))).' ;
     ConvectionCoefficientsIn(4,i) = ConvFloor(T(4, i), T(1, i)) ;
-    ConvectionCoefficientsIn(2,i) = h_ac ;
-    ConvectionCoefficientsIn(3,i) = h_ac ;
+    ConvectionCoefficientsIn(2,i) = h_ceiling(i) ; %h_ac ; 
+    ConvectionCoefficientsIn(3,i) = h_insidewall(i) ; %h_ac ; 
     ConvectionCoefficientsIn(5,i) = h_ap ;
     ConvectionCoefficientsIn(6,i) = h_pipeout(i) ;
     
@@ -198,13 +199,13 @@ for i = 1:length(t) - 1
     Q_latent(1: height(T)-1, i) = zeros(height(T)-1, 1) ;
 
     %Total heat transfer 
-    Q_tot(:,i) = Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) +  Q_rad_in(:,i) - AreaArrayRad .* q_rad_out(:,i) + Q_heat(:,i);
+    Q_tot(:,i) = Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) + Q_rad_in(:,i) - AreaArrayRad .* q_rad_out(:,i) + Q_heat(:,i);
 
     % Temperature Change
     T(:, i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
-    Energy_kWh = Q_heat(1,:) * dt / (1000 * 3600);  % Convert from W to kWh
+    Energy_kWh = Q_heat(6,:) * dt / (1000 * 3600);  % Convert from W to kWh
     sum(Energy_kWh(:)*0.2);
-    
+
 end
 
 figure("WindowStyle", "docked");
@@ -258,3 +259,8 @@ xlabel("Time (h)")
 ylabel("Heat from heating pipe (W)")
 legend('Heatpipe')
 hold off
+
+
+
+
+

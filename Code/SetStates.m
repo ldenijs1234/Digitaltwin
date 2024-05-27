@@ -13,9 +13,11 @@
 % AirTemperature-FloorTempIntVar*5; AirTemperature-FloorTempIntVar*6; AirTemperature-FloorTempIntVar*7; AirTemperature-FloorTempIntVar*8;...
 %   AirTemperature-FloorTempIntVar*9; GroundTemperature] ;
 
-T = set_T;
+T = zeros(length(set_T), length(t)) ;
+T(:,1) = set_T;
 
-FloorTemperature = set_FloorTemperature ;
+FloorTemperature = zeros(length(set_FloorTemperature), length(t)) ;
+FloorTemperature(:,1) = set_FloorTemperature ;
 
 
 %Define size
@@ -38,7 +40,8 @@ Q_heat = zeros(length(T(:,1)), length(t)-1);
   % MassPlant = GH.p.GHPlantArea*GH.p.rho_lettuce*0.01 ; % Dry Mass plant (CO2)
   % DryMassPlant = MassPlant / 20 ; % Assume plant = ~95% water, (5% Dry Mass)
 
-AddStates = set_AddStates ;   % additional states
+AddStates = zeros(length(set_AddStates), length(t)) ;
+AddStates(:,1) = set_AddStates ;   % additional states
 
 
 MassPlant = AddStates(4,1) ; 
@@ -47,5 +50,6 @@ CAPArray = [GH.p.cp_air * GH.p.rho_air * GH.p.GHVolume;
             GH.p.cp_glass * GH.p.rho_glass * GH.p.GHWallThickness * AreaArray(3);
             GH.p.cp_floor * GH.p.rho_floor * GH.p.GHFloorArea * GH.p.GHFloorThickness;
             GH.p.cp_lettuce * MassPlant;
-            0.25*pi*GH.p.pipeL*((GH.p.r_1^2-GH.p.r_0^2)*GH.p.rho_steel*...
-        GH.p.cp_steel+GH.p.r_1^2*GH.p.rho_water*GH.p.cp_water)]; %variable if plant grows
+            GH.p.Vpipe*GH.p.rho_steel*...
+        GH.p.cp_steel+pi*GH.p.pipeL*GH.p.r_0^2*GH.p.rho_water*GH.p.cp_water]; %variable if plant grows
+      

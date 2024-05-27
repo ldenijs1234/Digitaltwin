@@ -1,5 +1,5 @@
 
-function [time_vec, OutsideTemperature, OutsideRelhumidity, SolarRadiation, Windspeed, Winddirection, Sealevelpressure, CloudCover, DewPoint] = Weather2Arrays(filename, dt)
+function [time_vec, OutsideTemperature, OutsideRelhumidity, SolarRadiation, Windspeed, Winddirection, Sealevelpressure, CloudCover, DewPoint] = Weather2Arrays(filename, dt, total_time)
     % Read the data using readtable
     tbl = readtable(filename);
     
@@ -17,7 +17,7 @@ function [time_vec, OutsideTemperature, OutsideRelhumidity, SolarRadiation, Wind
     time_hours = 0:1:((height(tbl) - 1) * 1);
 
     % Time vector for interpolation
-    new_time_hours = 0:dt/3600:48;
+    new_time_hours = 0:dt/3600:total_time;
 
     % Perform interpolation
     temp_interp = interp1(time_hours, temp_out, new_time_hours, 'linear', 'extrap');

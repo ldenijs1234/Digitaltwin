@@ -1,6 +1,8 @@
 %% The heating pipe is modeled to be made out of steel and to be a pipe with annular parabolic fins
 % most of the formulas can be found in "Basic heat and mass transfer" writen by A.F. Mills and C.F.M Coimbra, Third edition
 
+
+
 function [h_outside,Q_in]  = heating_pipe(GH, T_in,T_air,T_pipe)
      %%inputs
 
@@ -20,9 +22,8 @@ function [h_outside,Q_in]  = heating_pipe(GH, T_in,T_air,T_pipe)
     g = 9.81;
     
     %%Calculated geometrical parameters of the pipe
-    B = sqrt(r_1^2+t^2);
-    D = sqrt((r_2^2 /r_1)^2 + t^2);
-    S = 2*pi*r_1*(D-B+(t/2)*log(((D-t)*(B+t))/((D+t)*(B-t)))); % surface area of a fin in m^2
+
+    S = GH.p.Afin;
     V = 4*pi*t*r_1*(r_2-r_1); %volume of a fin in m^3
     V_pipe = GH.p.Vpipe; %Volume of the material of the pipe
     A_in = pi*r_0^2; % Area of inside of the pipe
