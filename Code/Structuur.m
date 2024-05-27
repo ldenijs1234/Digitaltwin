@@ -252,25 +252,8 @@ hold off
 % ylabel("Floor layer temperature (°C)")
 % hold off
 
-figure("WindowStyle", "docked");
-hold on
-plot(t(1:end-1), Q_vent(4,:)) 
-plot(t(1:end-1), Q_sky(4,:)) 
-plot(t(1:end-1), Q_conv(4,:))
-plot(t(1:end-1), Q_solar(4,:))
-plot(t(1:end-1), Q_rad_in(4,:) - AreaArrayRad(4) * q_rad_out(4,:))
-plot(t(1:end-1), Q_ground(4,:)) 
-plot(t(1:end-1), Q_tot(4,:))
-legend('vent', 'sky', 'convection', 'solar','radiation','ground', 'total')
-hold off
 
-figure("WindowStyle", "docked");
-hold on
-plot(t(1:end-1)/3600, ControllerOutputWatt)
-xlabel("Time (h)")
-ylabel("Boiler input (W)")
-legend('Heatpipe')
-hold off
+
 
 
 

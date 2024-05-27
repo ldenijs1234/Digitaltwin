@@ -12,11 +12,12 @@
 
 
 % Extract final states 
-set_T = T(:,end) ;
+set_T = T(:, end) ;
 set_AddStates = AddStates(:, end) ;
 set_FloorTemperature = FloorTemperature(:, end) ;
 
-run("RunFullSim")    % Run a single simulation
+run("SetStates")
+% run("RunFullSim")    % Run a single simulation
 
 % User Inputs
 % Usercontrol = 0 ;

@@ -140,9 +140,18 @@ ConvAreaArray(5) = MassPlant * GH.p.C_pld  ; % Effect plant surface
 ConvAreaArray(6) = GH.p.Apipe ;
 
 
+function F_12 = F_rect_perp(h, w, l)   %input :length of object 2, w length of object 1, l lenght of intersection
+    H = h/l;                                    %calculates shapefector of two perpendicular rectangles
+    W = w/l;
+    F_12 = (1/(pi*W)) * (W * atan(1/W) + H * atan(1/H) - sqrt(H^2 + W^2) * atan(1/sqrt(H^2 + W^2))...
+        + 0.25 * log(  ((1 + W^2) * (1 + H^2)) / (1 + W^2 + H^2) * ( W^2 * (1 + W^2 + H^2)/ ((1 + W^2) * (W^2 + H^2)) )^(W^2) * (H^2 * (1 + W^2 + H^2) / ((1 + H^2) * (W^2 + H^2)) )^(H^2) ));
+end
+
+
 F_hc = 1/12; F_hh = 0.15; F_hf = 0.6 - F_hh; F_hw = 0; F_hp = 1 - F_hc - F_hf - F_hw - F_hh;
 
-F_ch = F_hc * AreaArrayRad(6) / AreaArrayRad(2); F_cc =0; F_cw = 0.42; F_cf = (1-GH.p.LAI) * 0.58 - F_ch; F_cp = GH.p.LAI * 0.58;
+F_ch = F_hc * AreaArrayRad(6) / AreaArrayRad(2); F_cc =0; F_cw = F_rect_perp(GH.p.GHHeight, GH.p.GHWidth, GH.p.GHLength); 
+F_cf = (1-GH.p.LAI) * 0.58 - F_ch; F_cp = GH.p.LAI * 0.58;
 
 F_wh = F_hw * AreaArrayRad(6) / AreaArrayRad(3); F_ww = 0.3; F_wc = F_cw * AreaArrayRad(2) / AreaArrayRad(3); F_wf = (1-GH.p.LAI) * F_wc; F_wp = GH.p.LAI * F_wc;
 
