@@ -8,6 +8,8 @@
 
 % run("RunFullSim")    % Run a single simulation
 
+integral = zeros(1, length(t))
+
 
 % Extract final states 
 set_T = T(:,end) ;
@@ -23,4 +25,9 @@ Heating = 0 ;
 CO2_injection = 0 ;
 OpenWindowAngle = 15 ;
 
+<<<<<<< Updated upstream
 % UserControlVector = [ Heating*ones(1, length(t)-1); CO2_injection; OpenWindowAngle * ones(1, length(t)-1)] ;
+=======
+
+UserControlVector = [ Heating*ones(1, length(t)-1); CO2_injection; OpenWindowAngle * ones(1, length(t)-1)] ;
+>>>>>>> Stashed changes
