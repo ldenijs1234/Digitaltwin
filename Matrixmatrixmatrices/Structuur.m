@@ -130,23 +130,34 @@ function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeed, T_out, Open
 end
 
 function [integral, error, ControllerOutput, OpenWindowAngle] = ControllerInput(GH, T_air, price, setpoint, dt, integral)
+%initialise integral
+integral = zeros(1, length(t));
+
+function [error, ControllerOutput] = ControllerInput(GH, T_air, price, setpoint, dt, i, integral)
     %PI controller
     k = 200000;        % Multiplication
     kp = 0.5;       % Proportional gain
     ki = 5;       % Integral gain
     kpv = -2 ;
 
+    k = 100000;        % Multiplication
+    kp = 5;       % Proportional gain
+    ki = 0.00005;       % Integral gain
+    
     % Initialize variables
+    integral(1,1) = 0;   % Integral term
     % Calculate error
-    error = setpoint - T_air; 
+    error = setpoint - T_air;
+    positive_error = max(0, (setpoint - T_air));
     % Update integral term
-    integral = max(0, integral + error * dt);
+    %integral(1, i+1) = integral(1, i) + error * dt;
     
     % Calculate control output
-    proportional = kp * error;
-    integral_component = ki * integral;
-    ControllerOutput = max(0, k * (proportional + integral_component));
-    OpenWindowAngle = max(0, kpv*error);
+    proportional = kp * positive_error;
+    integral_component = ki * integral(i);
+    ControllerOutput = k * (proportional + integral_component);
+    
+    
 end
 
 for i = 1:length(t) - 1
@@ -198,6 +209,9 @@ for i = 1:length(t) - 1
     Q_latent(1: height(T)-1, i) = zeros(height(T)-1, 1) ;
     [integral(i+1), error(i), Q_heat(1,i)] = ControllerInput(GH, T(1,i), price_per_kWh(i), setpoint(i), dt, integral(i)) ;
     %Total heat transfer 
+    [error(i), Q_heat(1,i)] = ControllerInput(GH, T(1,i), price_per_kWh(i), setpoint, dt, i, integral) ;
+    integral(1, i+1) = integral(1, i) + error(i) * dt;
+    %Total heat transfer
     Q_tot(:,i) = Q_heat(:,i) + Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) +  Q_rad_in(:,i) - AreaArrayRad .* q_rad_out(:,i);
 
     % Temperature Change
@@ -254,4 +268,18 @@ hold off
 figure("WindowStyle", "docked");
 hold on
 plot(t, FloorTemperature)
+plot(t(1:end-1), Q_vent(1,:)) 
+plot(t(1:end-1), Q_sky(1,:)) 
+plot(t(1:end-1), Q_conv(1,:))
+plot(t(1:end-1), Q_solar(1,:))
+plot(t(1:end-1), Q_rad_in(1,:) - AreaArrayRad(1) * q_rad_out(1,:))
+plot(t(1:end-1), Q_ground(1,:)) 
+plot(t(1:end-1), Q_heat(1,:))
+legend('vent', 'sky', 'convection', 'solar','radiation','ground', 'heating')
+hold off
+
+figure("WindowStyle", "docked")
+hold on
+plot(t(1:end-1), integral(1:end-1))
+legend("error integral")
 hold off
