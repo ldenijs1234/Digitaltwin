@@ -150,8 +150,8 @@ end
 
 F_hc = 1/12; F_hh = 0.15; F_hf = 0.6 - F_hh; F_hw = 0; F_hp = 1 - F_hc - F_hf - F_hw - F_hh;
 
-F_ch = F_hc * AreaArrayRad(6) / AreaArrayRad(2); F_cc =0; F_cw = F_rect_perp(GH.p.GHHeight, GH.p.GHWidth, GH.p.GHLength); 
-F_cf = (1-GH.p.LAI) * 0.58 - F_ch; F_cp = GH.p.LAI * 0.58;
+F_ch = F_hc * AreaArrayRad(6) / AreaArrayRad(2); F_cc =0; F_cw = 2 * F_rect_perp(GH.p.GHHeight, GH.p.GHWidth, GH.p.GHLength) + 2 * F_rect_perp(GH.p.GHHeight, GH.p.GHLength, GH.p.GHWidth); 
+F_cf = (1-GH.p.LAI) * (1 - F_cw) - F_ch; F_cp = GH.p.LAI * (1 - F_cw);
 
 F_wh = F_hw * AreaArrayRad(6) / AreaArrayRad(3); F_ww = 0.3; F_wc = F_cw * AreaArrayRad(2) / AreaArrayRad(3); F_wf = (1-GH.p.LAI) * F_wc; F_wp = GH.p.LAI * F_wc;
 

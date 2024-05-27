@@ -1,38 +1,10 @@
-function q = Fq_rad_out(emissivity, T)                          %imput: emissivity array and T(:,i)
-    q = 5.670374419*10^-8 * emissivity .* ((T + 273.15).^4);    %emittance of components
-end                                                             %q(:,i) = F
+
+%Testin script
+
+Simstart = time_steps*1 + 1 ;
+Simend = time_steps *2 ;
 
 
-function Q = FQ_rad_in(absorbance, diffuse, Area, Viewf, qrad)      %imput: parameter arrays, viewfactor matrix and q radiance array(:,i)
-    Q = absorbance .* (Area .* Viewf * qrad);                       %how much each object absorbs
-    Q(1,:) = sum(diffuse .* Area .* Viewf * qrad);                   %inside air recieves diffused radiation
-end
-
-
-function Q = FQ_solar(transmission, diffuse, absorbance, Areasun, Isun)     %input: transmission of the cover, parameter arrays and I_sun(i)
-    Q = transmission .* absorbance .* Areasun * Isun; %absorbed sun radiation by each object
-    Q(1,:) = sum(diffuse(3:end,:) .* Areasun(3:end,:) * Isun)     ;          %inside air recieves diffused sun radiation of everything except cover
-end
-
-
-function epsilon = SkyEmit(T_dew, t)
-    epsilon = 0.734 + 0.0061 * T_dew;
-end
-
-
-function Q = convection(hin, hout, T, T_out, Area)   % Convective heat flow array from with coefficient h with dt-matrix
-    Convection_matrix = - eye(length(T));
-    Convection_matrix(:, 1) = 1;
-    Convection_matrix(1,1) = 0;
-    dT = Convection_matrix * T ;
-    Q  = Area .* hin .* dT ;
-    Q(1) = -sum(Q) ;                                % Convective heat flow to air
-    Q(2) = Q(2) + Area(2) * hout * (T_out - T(2)) ; 
-end
-
-
-function Q = LatentHeat(mv)    % Latent heat of evaporation of water mass flow mv
-    Q = 2.45e6 * mv ;
-end
-
-%function Q = FQ_sky()
+OutsideTemperatureT = OutsideTemperatureF(Simstart:Simend) ; OutsideRelhumidity = OutsideRelhumidityF(Simstart:Simend) ;
+SolarRadiation = SolarRadiationF(Simstart:Simend) ; WindSpeed = WindspeedF(Simstart:Simend) ; Winddirection = WinddirectionF(Simstart:Simend) ;
+Sealevelpressure = SealevelpressureF(Simstart:Simend) ; CloudCover = CloudCoverF(Simstart:Simend) ; DewPoint = DewPointF(Simstart:Simend) ;
