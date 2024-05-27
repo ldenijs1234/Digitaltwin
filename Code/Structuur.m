@@ -144,7 +144,7 @@ function [integral, error, ControllerOutputWatt, OpenWindowAngle] = ControllerIn
     % Calculate control output
     proportional = kp * error;
     integral_component = ki * integral;
-    BoilerMaxWatt = 1500 ; %DUMMY
+    BoilerMaxWatt = 1000 ; %DUMMY
 
     Watt_Controller = k * (proportional + integral_component);
     Unlim_ControllerOutput = max(-BoilerMaxWatt, Watt_Controller);
@@ -166,8 +166,8 @@ for i = 1:length(t) - 1
     %Variable parameter functions (+ convection rate, ventilation rate...)
     VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i), OpenWindowAngle(i)) ;
 
-    T_water(i) = T_WaterOut + ControllerOutputWatt(i) / (GH.p.cp_water*MassFlowPipe) ;  % T_water going in pipe
-    [h_pipeout(i), Q_heat(6,i), T_WaterOut, MassFlowPipe] = heating_pipe(GH, T_water(i), T(1, i), T(6, i)) ;
+    T_water(i) = T_WaterOut(i) + ControllerOutputWatt(i) / (GH.p.cp_water*MassFlowPipe) ;  % T_water going in pipe
+    [h_pipeout(i), Q_heat(6,i), T_WaterOut(i+1), MassFlowPipe] = heating_pipe(GH, T_water(i), T(1, i), T(6, i)) ;
     
 
     [h_insidewall(i), h_ceiling(i)] = inside_convection(GH, T(3, i), T(2, i), T(1, i));
@@ -251,21 +251,21 @@ hold off
 
 figure("WindowStyle", "docked");
 hold on
-plot(t(1:end-1), Q_vent(1,:)) 
-plot(t(1:end-1), Q_sky(1,:)) 
-plot(t(1:end-1), Q_conv(1,:))
-plot(t(1:end-1), Q_solar(1,:))
-plot(t(1:end-1), Q_rad_in(1,:) - AreaArrayRad(1) * q_rad_out(1,:))
-plot(t(1:end-1), Q_ground(1,:)) 
-plot(t(1:end-1), Q_tot(1,:))
+plot(t(1:end-1), Q_vent(4,:)) 
+plot(t(1:end-1), Q_sky(4,:)) 
+plot(t(1:end-1), Q_conv(4,:))
+plot(t(1:end-1), Q_solar(4,:))
+plot(t(1:end-1), Q_rad_in(4,:) - AreaArrayRad(4) * q_rad_out(4,:))
+plot(t(1:end-1), Q_ground(4,:)) 
+plot(t(1:end-1), Q_tot(4,:))
 legend('vent', 'sky', 'convection', 'solar','radiation','ground', 'total')
 hold off
 
 figure("WindowStyle", "docked");
 hold on
-plot(t(1:end-1)/3600, Q_heat(6,:))
+plot(t(1:end-1)/3600, ControllerOutputWatt)
 xlabel("Time (h)")
-ylabel("Heat from heating pipe (W)")
+ylabel("Boiler input (W)")
 legend('Heatpipe')
 hold off
 

@@ -22,4 +22,4 @@ xunit = [-1:pi/50:1];
 yunit = -8 * xunit.^2 + 8;
 h = plot(xunit, yunit);
 title('Gijs pipi laten zien')
-hold off
+hold off

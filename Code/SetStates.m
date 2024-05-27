@@ -54,4 +54,4 @@ CAPArray = [GH.p.cp_air * GH.p.rho_air * GH.p.GHVolume;
         GH.p.cp_steel+pi*GH.p.pipeL*GH.p.r_0^2*GH.p.rho_water*GH.p.cp_water]; %variable if plant grows
       
 MassFlowPipe = 19.1 ;
-T_WaterOut = 15 ;
+T_WaterOut(1) = 15 ;
