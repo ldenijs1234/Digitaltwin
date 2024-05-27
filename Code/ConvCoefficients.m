@@ -1,8 +1,8 @@
 
 
-    function [h_top, h_wall] = ConvCoefficients(GH, T_wall, T_out, Windspeed, H_out, C_out)
+    function [h_top, h_wall] = ConvCoefficients(GH, T_wall, T_out, Windspeed, H_out, C_out, W_angle, p)
     %inputs from outside this code block
-    W_angle = 0; % angle of the wind in degrees
+
     W = GH.p.GHWidth; % width of the building in meters
     L = GH.p.GHLength; % length of the building in meters
     H = GH.p.GHHeight; % height of the building in meters
@@ -10,7 +10,7 @@
 
     T_wall = T_wall; % temperature of the outside wall
     T = T_out; % air temperature in celsius
-    p = 1084; % air pressure in hpa
+    %p = 1084; % air pressure in hpa
     V = Windspeed; % wind speed in m/s
     h_abs = H_out*1000; % absolute humidity of the outside air in g/m^3
     C = 2.16679; % constant in gK/J

@@ -12,14 +12,14 @@ GH.p.           rho_steel = 7850 ; %kg m^-3
 GH.p.           rho_water = 1000 ; %kg m^-3
 GH.p.           GasConstantR = 8.314 ; % J/mol K
 GH.p.           StefBolzConst = 5.670374419e-8 ; % W/m^2 K^4 
-sigma = 5.670374419e-8 ;
+                sigma = 5.670374419e-8 ;
 GH.p.           Gravity = 9.81 ; % m/s^2 ;
 GH.p.           Kelvin = 273.15 ;
 
 % Set variables (for matrices), parameters saved in general field 'GH' under field 'p'
 
 % Greenhouse parameters                 ALL DUMMY!!!!!!!!!!!!!
-GH.p.           LAI = 0.9 ; % Leaf Area Index
+GH.p.           LAI = 0.5 ; % Leaf Area Index
 
 GH.p.           GHWidth = 10 ; %m 
 GH.p.           GHLength = 10 ; %m
@@ -28,8 +28,8 @@ GH.p.           GHWallThickness = 3e-3 ; %m
 GH.p.           GHFloorThickness = 1e-2 ;	%m
 
 GH.p.           NumberOfWindows = 15 ; 
-GH.p.           WindowLength = 0.2 ;
-GH.p.           WindowHeight = 0.4 ;
+GH.p.           WindowLength = 0.4 ;
+GH.p.           WindowHeight = 0.2 ;
 GH.p.           RoofAngle = 10 ; % degrees
 
 GH.p.           WindowArea = GH.p.WindowHeight*GH.p.WindowLength ;
@@ -44,7 +44,7 @@ GH.p.           GHCoverArea =  GH.p.GHLength * GH.p.GHWidth ;
 
 % Plant parameters
 GH.p.           cp_lettuce = 4020 ;
-GH.p.           rho_lettuce = 240.92 ; 
+GH.p.           rho_lettuce = 240.92 ; %Test with 1000, Should it not be similiar to water?????????? !!!!!!!!!!!
 GH.p.           EmittancePlant = 0.90 ; %DUMMY
 GH.p.           SOLARAbsorbancePlant = 0.65 ; %DUMMY
 GH.p.           FIRAbsorbancePlant = 0.78 ; %DUMMY
@@ -73,13 +73,23 @@ GH.p.           LFloorGround = 19e-2 ; % meter
 
 % Heatingpipe parameters
 GH.p.           EmittancePipe = 0.88; 
+GH.p.           SOLARAbsorbancePipe = 0.95;
+GH.p.           FIRAbsorbancePipe = 0.95;
+GH.p.           SOLARDiffusePipe = 1 - GH.p.SOLARAbsorbancePipe ;
+GH.p.           FIRDiffusePipe = 1 - GH.p.FIRAbsorbancePipe ;
 GH.p.           r_0 = 0.078; % inside radius of the pipe in meters
 GH.p.           r_1 = 0.08; % outside radius of the pipe in meters  
 GH.p.           r_2 = 0.137; % outside radius of the fin in meters  
 GH.p.           pipeL = 50 ; % length of the pipe in meters
 GH.p.           pipeF = 80; % Fins per meter of pipe %!!!!keep the thickness in mind not more fins then fit on the pipe!!!!
 GH.p.           pipet = 0.001; % half of the thickness of one fin in meters 
-
+GH.p.           PipeArea = GH.p.pipeL*2*pi*GH.p.r_2 ;
+GH.p.           Bpipe = sqrt(GH.p.r_1^2+GH.p.pipet^2);
+GH.p.           Dpipe = sqrt((GH.p.r_2^2 /GH.p.r_1)^2 + GH.p.pipet^2);
+GH.p.           Afin =  2*pi*GH.p.r_1*(GH.p.Dpipe-GH.p.Bpipe+(GH.p.pipet/2)*log(((GH.p.Dpipe-GH.p.pipet)*(GH.p.Bpipe+GH.p.pipet))/((GH.p.Dpipe+GH.p.pipet)*(GH.p.Bpipe-GH.p.pipet)))); % surface area of a fin in m^2
+GH.p.           Vfin = 4*pi*GH.p.pipet*GH.p.r_1*(GH.p.r_2-GH.p.r_1); %volume of a fin in m^3
+GH.p.           Vpipe = GH.p.Vfin*GH.p.pipeL*GH.p.pipeF+(GH.p.r_1^2-GH.p.r_0^2)*pi*GH.p.pipeL; %Volume of the material of the pipe
+GH.p.           Apipe = GH.p.pipeL*GH.p.pipeF*GH.p.Afin+(GH.p.pipeL-GH.p.pipeL*GH.p.pipeF*2*GH.p.pipet)*2*pi*GH.p.r_1; % total area of the pipe in m^2
 % Humidity equations parameters
 
 GH.p.           C_pld = 1/3* GH.p.rho_lettuce* 0.1 ;%53 ; %m^2 kg^-1 (effective canopy surface)
@@ -103,10 +113,10 @@ GH.p.           BetaAir = 1/283 ; % Thermal expansion coefficient
 
 % Convection coefficients, can de dynamic
 h_out = 20;  % Convection between outside air and greenhouse
-h_ac = 15;  % Convection between air and cover
-h_af = 15;  % Convection between air and floor  
+h_ac = 5;  % Convection between air and cover
+h_af = 5;  % Convection between air and floor  
 h_ap = 5;  % Convection between air and plant
-h_ah = 15;  % Convection between air and heatpipe
+h_ah = 5;  % Convection between air and heatpipe
 ConvectionCoefficientsIn = [0; h_ac; h_ac; h_af; h_ap; h_ah] ;
 
 % ConvectionCoefficientsOut = [h_out; h_out] ;
@@ -119,56 +129,30 @@ FIRAbsorbanceArray = [0; GH.p.FIRAbsorbanceGlass; GH.p.FIRAbsorbanceGlass; GH.p.
 SOLARDiffuseArray = [0; GH.p.SOLARDiffuseGlass; GH.p.SOLARDiffuseGlass; GH.p.SOLARDiffuseFloor; GH.p.SOLARDiffusePlant; GH.p.SOLARDiffusePipe];
 FIRDiffuseArray = [0; GH.p.FIRDiffuseGlass; GH.p.FIRDiffuseGlass; GH.p.FIRDiffuseFloor; GH.p.FIRDiffusePlant; GH.p.FIRDiffusePipe];
 AreaArray = [0; GH.p.GHFloorArea; GH.p.GHTotalArea- GH.p.GHFloorArea; GH.p.GHFloorArea; GH.p.GHPlantArea; GH.p.PipeArea];
-AreaSunArray = [0; GH.p.GHFloorArea; 0; ((1-GH.p.LAI)*GH.p.GHFloorArea); GH.p.GHPlantArea];
-AreaArrayRad = AreaArray; AreaArrayRad(5) = 2 * AreaArray(5);
-TransmissionArray = [0; 1; 1; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass]; %0 for air, 1 for glass wall and roof, tau for everything underneath glass
+AreaSunArray = [0; GH.p.GHFloorArea; 0; ((1-GH.p.LAI)*GH.p.GHFloorArea - 1/pi * GH.p.PipeArea); GH.p.GHPlantArea; 0.25 *GH.p.PipeArea];
+AreaArrayRad = AreaArray; AreaArrayRad(5) = 2 * AreaArray(5); AreaArrayRad(6) = GH.p.pipeL*2*pi*GH.p.r_2;
+TransmissionArray = [0; 1; 1; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass]; %0 for air, 1 for glass wall and roof, tau for everything underneath glass
 
 ConvAreaArray = AreaArray ;
 MassPlant = GH.p.GHPlantArea*GH.p.rho_lettuce*0.01 ;
 ConvAreaArray(5) = MassPlant * GH.p.C_pld  ; % Effect plant surface
-
-% Viewing vectors and Areas
-
-% F_pc=0.6; F_pf=0.1; F_wc=0.2; F_fc= 0.4; F_pw = 0.3; F_fw=0.4; F_ww = 0.4;
-% F_cp = F_pc * GH.p.GHPlantArea / GH.p.GHCoverArea; 
-% F_fp = F_pf * GH.p.GHPlantArea / GH.p.GHFloorArea;
-% F_cf = F_fc * GH.p.GHFloorArea / GH.p.GHCoverArea;
-% F_cw = F_wc * GH.p.GHWallArea / GH.p.GHCoverArea;
-% F_wp = F_pw * GH.p.GHPlantArea / GH.p.GHWallArea;
-% F_wf = F_fw * GH.p.GHFloorArea / GH.p.GHWallArea;
-
-% display(F_cp; F_fp; F_cf; F_cw; F_wp; F_wf)
+ConvAreaArray(6) = GH.p.Apipe ;
 
 
-% F_pc=0.35; F_pf=0.4; F_wc=0.2
+F_hc = 1/12; F_hf = 0.6; F_hw = 0; F_hh = 0.15 ;F_hp = 1 - F_hc - F_hf - F_hw - F_hh;
 
-% syms F_cw F_cf F_cp F_ww F_wf F_wp F_fc F_fw F_fp F_pw
+F_ch = F_hc * AreaArrayRad(6) / AreaArrayRad(2); F_cc =0; F_cw = 0.42; F_cf = (1-GH.p.LAI) * 0.58 - F_ch; F_cp = GH.p.LAI * 0.58;
 
-% F_wc = 0.1 ;
+F_wh = F_hw * AreaArrayRad(6) / AreaArrayRad(3); F_ww = 0.3; F_wc = F_cw * AreaArrayRad(2) / AreaArrayRad(3); F_wf = (1-GH.p.LAI) * F_wc; F_wp = GH.p.LAI * F_wc;
 
-% vars = [F_cw F_cf F_cp F_ww F_wf F_wp F_fc F_fw F_fp F_pw];
-% eqns = [F_cw + F_cf + F_cp == 1, F_wc + F_ww + F_wf + F_wp == 1, F_fc + F_fw + F_fp == 1, F_pc + F_pw + F_pf == 1, ...
-%     F_cp == F_pc * GH.p.GHPlantArea / GH.p.GHCoverArea, F_fp == F_pf * GH.p.GHPlantArea / GH.p.GHFloorArea, ...
-%     F_cf == F_fc * GH.p.GHFloorArea / GH.p.GHCoverArea, F_cw == F_wc * GH.p.GHWallArea / GH.p.GHCoverArea, ...
-%     F_wp == F_pw * GH.p.GHPlantArea / GH.p.GHWallArea, F_wf == F_fw * GH.p.GHFloorArea / GH.p.GHWallArea];
+F_fh = F_hf * AreaArrayRad(6) / AreaArrayRad(4); F_fc = F_cf * AreaArrayRad(2) / AreaArrayRad(4); F_fw = F_wf * AreaArrayRad(3) / AreaArrayRad(4); F_ff = 0; F_fp = 1 - F_fw - F_fc - F_fh - F_ff;
 
-% size(vars)
-% size(eqns)
+F_ph = F_hp * AreaArrayRad(6) / AreaArrayRad(5); F_pc = F_cp * AreaArrayRad(2) / AreaArrayRad(5); F_pw = F_wp * AreaArrayRad(3) / AreaArrayRad(5);  F_pf = F_fp * AreaArrayRad(4) / AreaArrayRad(5); F_pp = 0;
 
-% [F_cw, F_cf, F_cp, F_ww, F_wf, F_wp, F_fc, F_fw, F_fp, F_pw] = solve(eqns, vars)
-
-F_cc =0; F_cw = 0.42; F_cf = (1-GH.p.LAI) * 0.58; F_cp = GH.p.LAI * 0.58;
-
-F_ww = 0.3; F_wc=0.35; F_wf = (1-GH.p.LAI) * F_wc; F_wp = GH.p.LAI * F_wc;
-
-F_fc = (1-GH.p.LAI) * 0.58; F_fw = (1-GH.p.LAI) * 0.42; F_ff = 0; F_fp = 1 - F_fw - F_fc;
-
-F_pc = F_cp * AreaArrayRad(2) / AreaArrayRad(5); F_pw = F_wp * AreaArrayRad(3) / AreaArrayRad(5);  F_pf = F_fp * AreaArrayRad(4) / AreaArrayRad(5); F_pp = 0;
-
-
-ViewMatrix = [0,     0,      0,      0,      0;
-             0,     F_cc,      F_cw,   F_cf,   F_cp;
-             0,     F_wc,   F_ww,   F_wf,   F_wp;
-             0,     F_fc,   F_fw,   F_ff,      F_fp;
-             0,     F_pc,   F_pw,   F_pf,      F_pp];
+ViewMatrix = [0,     0,      0,      0,      0,      0;
+             0,     F_cc,   F_cw,   F_cf,   F_cp,   F_ch;
+             0,     F_wc,   F_ww,   F_wf,   F_wp,   F_wh;   
+             0,     F_fc,   F_fw,   F_ff,   F_fp,   F_fh;
+             0,     F_pc,   F_pw,   F_pf,   F_pp,   F_ph;
+             0,     F_hc,   F_hw,   F_hf,   F_hp,   F_hh];
 
