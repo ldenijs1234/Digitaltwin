@@ -22,7 +22,7 @@ GH.p.           Kelvin = 273.15 ;
 GH.p.           LAI = 0.5 ; % Leaf Area Index
 
 GH.p.           GHWidth = 10 ; %m 
-GH.p.           GHLength = 10 ; %m
+GH.p.           GHLength = 20 ; %m
 GH.p.           GHHeight = 3 ; %m
 GH.p.           GHWallThickness = 3e-3 ; %m
 GH.p.           GHFloorThickness = 1e-2 ;	%m
@@ -153,13 +153,13 @@ F_hc = 1/12; F_hh = 0.15; F_hf = 0.6 - F_hh; F_hw = 0; F_hp = 1 - F_hc - F_hf - 
 F_ch = F_hc * AreaArrayRad(6) / AreaArrayRad(2); F_cc =0; F_cw = 2 * F_rect_perp(GH.p.GHHeight, GH.p.GHWidth, GH.p.GHLength) + 2 * F_rect_perp(GH.p.GHHeight, GH.p.GHLength, GH.p.GHWidth); 
 F_cf = (1-GH.p.LAI) * (1 - F_cw) - F_ch; F_cp = GH.p.LAI * (1 - F_cw);
 
-F_wh = F_hw * AreaArrayRad(6) / AreaArrayRad(3); F_ww = 0.3; F_wc = F_cw * AreaArrayRad(2) / AreaArrayRad(3); F_wf = (1-GH.p.LAI) * F_wc; F_wp = GH.p.LAI * F_wc;
+F_wh = F_hw * AreaArrayRad(6) / AreaArrayRad(3); F_wc = F_cw * AreaArrayRad(2) / AreaArrayRad(3); F_wf = (1-GH.p.LAI) * F_wc; F_wp = GH.p.LAI * F_wc; F_ww = 1 - F_wc - F_wf - F_wp - F_wh
 
 F_fh = F_hf * AreaArrayRad(6) / AreaArrayRad(4); F_fc = F_cf * AreaArrayRad(2) / AreaArrayRad(4); F_fw = F_wf * AreaArrayRad(3) / AreaArrayRad(4); F_ff = 0; F_fp = 1 - F_fw - F_fc - F_fh - F_ff;
 
 F_ph = F_hp * AreaArrayRad(6) / AreaArrayRad(5); F_pc = F_cp * AreaArrayRad(2) / AreaArrayRad(5); F_pw = F_wp * AreaArrayRad(3) / AreaArrayRad(5);  F_pf = F_fp * AreaArrayRad(4) / AreaArrayRad(5); F_pp = 1 - F_pc - F_pw - F_pf - F_ph;
 
-ViewMatrix = [0,     0,      0,      0,      0,      0;
+ViewMatrix = [0,     0,      0,      0,      0,      0;   %check if sum(ViewMatrix,2) = [0; ones(height(ViewMatrix) - 1, 1)] & AreaArrayRad .* ViewMatrix - (AreaArrayRad .* ViewMatrix)' = ones(size(ViewMatrix))
              0,     F_cc,   F_cw,   F_cf,   F_cp,   F_ch;
              0,     F_wc,   F_ww,   F_wf,   F_wp,   F_wh;   
              0,     F_fc,   F_fw,   F_ff,   F_fp,   F_fh;
