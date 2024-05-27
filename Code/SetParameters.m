@@ -1,4 +1,5 @@
-% Bro gun parameters
+% Set variables (for matrices), parameters saved in general field 'GH' under field 'p'
+
 % General parameters
 GH.p.           cp_air = 1003.5 ; %J kg^-1 K^-1
 GH.p.           cp_glass = 840 ; %J kg^-1 K^-1
@@ -16,7 +17,6 @@ GH.p.           StefBolzConst = 5.670374419e-8 ; % W/m^2 K^4
 GH.p.           Gravity = 9.81 ; % m/s^2 ;
 GH.p.           Kelvin = 273.15 ;
 
-% Set variables (for matrices), parameters saved in general field 'GH' under field 'p'
 
 % Greenhouse parameters                 ALL DUMMY!!!!!!!!!!!!!
 GH.p.           LAI = 0.5 ; % Leaf Area Index
