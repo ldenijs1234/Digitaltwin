@@ -48,7 +48,7 @@ function [h_insidewall,h_ceiling] = inside_convection(GH, T_wall,T_ceiling,T_in)
     elseif H <= x_tr
         h_insidewall = (1/H)*(1.07*4*abs(dT).^0.25 * H^(1/3)) /3;
     end
-    disp(h_insidewall)
+    
     if T_ceiling < T
         if Ra <= 10^7
             h_ceiling = k.*0.54.*Ra.^0.25 ./CL_r;
