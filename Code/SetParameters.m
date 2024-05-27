@@ -41,6 +41,7 @@ GH.p.           GHTotalArea = GH.p.GHFloorArea + 2* GH.p.GHSideArea1 + 2* GH.p.G
 GH.p.           GHPlantArea = GH.p.LAI * GH.p.GHFloorArea ; %DUMMY
 GH.p.           GHWallArea = GH.p.GHLength * GH.p.GHHeight * 2 + GH.p.GHWidth * GH.p.GHHeight * 2 ;
 GH.p.           GHCoverArea =  GH.p.GHLength * GH.p.GHWidth ;
+GH.p.           Boilervolume = 100 ; % 
 
 % Plant parameters
 GH.p.           cp_lettuce = 4020 ;

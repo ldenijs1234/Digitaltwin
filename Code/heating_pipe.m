@@ -3,8 +3,8 @@
 
 
 
-function [h_outside,Q_in]  = heating_pipe(GH, T_in,T_air,T_pipe)
-     %%inputs
+function [h_outside, Q_in, T_out, m]  = heating_pipe(GH, T_in,T_air,T_pipe)
+     %%inputs 
 
     %% Geometric inputs for the pipe
     r_0 = GH.p.r_0; % inside radius of the pipe in meters
