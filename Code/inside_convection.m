@@ -1,5 +1,5 @@
 
-function [h_insidewall,h_ceiling] = inside_convection(GH, T_wall,T_ceiling,T_in)
+%function [h_insidewall,h_ceiling] = inside_convection(GH, T_wall,T_ceiling,T_in)
 function [h_insidewall,h_ceiling] = inside_convection(GH, T_wall,T_ceiling,T_in)
     W = GH.p.GHWidth; % width of the building in meters
     L = GH.p.GHLength; % length of the building in meters
