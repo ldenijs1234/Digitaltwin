@@ -2,7 +2,7 @@
 
 % User Inputs
 
-CO2_injection = 0 ;
+CO2_injection = 0 ;   % kg/s
 OpenWindowAngle = 30 * ones(1, length(t)-1) ;
 
 function y = bound(min, max, t1, t2, t3, t4, dt, days) %inputs: minimum and maximum, minimum before t1 and after t4, maximum at t2:t3

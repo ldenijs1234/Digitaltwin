@@ -1,4 +1,5 @@
-% Bro gun parameters
+% Set variables (for matrices), parameters saved in general field 'GH' under field 'p'
+
 % General parameters
 GH.p.           cp_air = 1003.5 ; %J kg^-1 K^-1
 GH.p.           cp_glass = 840 ; %J kg^-1 K^-1
@@ -16,7 +17,6 @@ GH.p.           StefBolzConst = 5.670374419e-8 ; % W/m^2 K^4
 GH.p.           Gravity = 9.81 ; % m/s^2 ;
 GH.p.           Kelvin = 273.15 ;
 
-% Set variables (for matrices), parameters saved in general field 'GH' under field 'p'
 
 % Greenhouse parameters                 ALL DUMMY!!!!!!!!!!!!!
 GH.p.           LAI = 0.5 ; % Leaf Area Index
@@ -90,8 +90,8 @@ GH.p.           Afin =  2*pi*GH.p.r_1*(GH.p.Dpipe-GH.p.Bpipe+(GH.p.pipet/2)*log(
 GH.p.           Vfin = 4*pi*GH.p.pipet*GH.p.r_1*(GH.p.r_2-GH.p.r_1); %volume of a fin in m^3
 GH.p.           Vpipe = GH.p.Vfin*GH.p.pipeL*GH.p.pipeF+(GH.p.r_1^2-GH.p.r_0^2)*pi*GH.p.pipeL; %Volume of the material of the pipe
 GH.p.           Apipe = GH.p.pipeL*GH.p.pipeF*GH.p.Afin+(GH.p.pipeL-GH.p.pipeL*GH.p.pipeF*2*GH.p.pipet)*2*pi*GH.p.r_1; % total area of the pipe in m^2
-% Humidity equations parameters
 
+% Humidity equations parameters
 GH.p.           C_pld = 1/3* GH.p.rho_lettuce* 0.1 ;%53 ; %m^2 kg^-1 (effective canopy surface)
 GH.p.           C_vplai = 3.6e-3 ; %m s^-1 (canopy transpiration mass transfer coefficient)
 GH.p.           C_v1 = 9348 ; %J m^-3 (parameter defining saturation water vapor pressure)
