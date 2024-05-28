@@ -30,7 +30,7 @@ GH.p.           GHFloorThickness = 1e-2 ;	%m
 GH.p.           NumberOfWindows = 15 ; 
 GH.p.           WindowLength = 0.8 ;
 GH.p.           WindowHeight = 0.4 ;
-GH.p.           RoofAngle = 10 ; % degrees
+GH.p.           RoofAngle = 26 ; % degrees, same as Venlo type
 
 GH.p.           WindowArea = GH.p.WindowHeight*GH.p.WindowLength ;
 GH.p.           GHVolume = GH.p.GHLength*GH.p.GHWidth*GH.p.GHHeight ;
@@ -94,6 +94,8 @@ GH.p.           Apipe = GH.p.pipeL*GH.p.pipeF*GH.p.Afin+(GH.p.pipeL-GH.p.pipeL*G
 GH.p.           Vel_water = 1; %speed of the water through the pipe
 GH.p.           dL = dt*GH.p.Vel_water; %distance 
 GH.p.           dPipe = GH.p.pipeL/GH.p.dL; % number of pipe pieces for numerical calculation
+GH.p.           m_flow = GH.p.rho_water*GH.p.Vel_water*pi*GH.p.r_0^2; % mass flow through pipe
+GH.p.           APipeIn = pi*GH.p.r_0^2; %Area inside crossection pipe
 
 % Humidity equations parameters
 GH.p.           C_pld = 1/3* GH.p.rho_lettuce* 0.1 ;%53 ; %m^2 kg^-1 (effective canopy surface)
@@ -103,11 +105,12 @@ GH.p.           C_v2 = 17.4 ; %K (parameter defining saturation water vapor pres
 GH.p.           C_v3 = 239 ; %K (parameter defining saturation water vapor pressure)  
 
 % CO2 equations parameters
-GH.p.           C_RadPhoto = 3.55e10-9 ; %kg J^-1 (light use efficiency)
+GH.p.           C_RadPhoto = 3.55e-9 ; %kg J^-1 (light use efficiency)
 GH.p.           C_R = 5.2e-5 ; %kg m^-3 (CO2 compensation point)
 GH.p.           C_CO21 = 5.11e-6 ; %m s^-1 K^-1 (temperature effect on CO2 diffiusion in leaves)
 GH.p.           C_CO22 = 2.3e-4 ; %m s^-1 K^-1 (temperature effect on CO2 diffiusion in leaves)
 GH.p.           C_CO23 = 6.29e-4 ; %m s^-1 K^-1 (temperature effect on CO2 diffiusion in leaves)
+GH.p.           C_respC = 4.87e-7 ; % s^-1 (respiration rate in terms of produced carbon dioxide)
 
 % Ventilation parameters
 GH.p.           C_f = 0.6 ; % Discharge of energy by friction
@@ -143,26 +146,57 @@ ConvAreaArray(5) = MassPlant * GH.p.C_pld  ; % Effect plant surface
 ConvAreaArray(6) = GH.p.Apipe ;
 
 
-function F_12 = F_rect_perp(h, w, l)   %input :length of object 2, w length of object 1, l lenght of intersection
-    H = h/l;                                    %calculates shapefector of two perpendicular rectangles
+
+function F_12 = F_rect_perp(h, w, l)   %inputs: h length of object 2, w length of object 1, l lenght of intersection
+    H = h/l;                                    %calculates shapefactor of two perpendicular adjecent rectangles
     W = w/l;
     F_12 = (1/(pi*W)) * (W * atan(1/W) + H * atan(1/H) - sqrt(H^2 + W^2) * atan(1/sqrt(H^2 + W^2))...
         + 0.25 * log(  ((1 + W^2) * (1 + H^2)) / (1 + W^2 + H^2) * ( W^2 * (1 + W^2 + H^2)/ ((1 + W^2) * (W^2 + H^2)) )^(W^2) * (H^2 * (1 + W^2 + H^2) / ((1 + H^2) * (W^2 + H^2)) )^(H^2) ));
 end
 
+function F_12 = F_para_cyl(s, d)    %inputs: s the distance between cylinders, d the diameter of the cylinders
+    X = 1 + s/d;                                %calculates shapefactor of two parallel cylinders with equal cylinders
+    F_12 = 1/pi * (sqrt(X^2 -1) + asin(1/X) - X);
+end
 
-F_hc = 1/12; F_hh = 0.15; F_hf = 0.6 - F_hh; F_hw = 0; F_hp = 1 - F_hc - F_hf - F_hw - F_hh;
+function F_mn = F_reciprocal(F_nm, AreaRad, n, m)   %inputs: F_nm shape factor object n to m, AreaRad area area of all objects, n nth object, m mth object
+    F_mn = F_nm * AreaRad(n) / AreaRad(m);                    %calculates shapefactor object 2 to object 1
+end
 
-F_ch = F_hc * AreaArrayRad(6) / AreaArrayRad(2); F_cc =0; F_cw = 2 * F_rect_perp(GH.p.GHHeight, GH.p.GHWidth, GH.p.GHLength) + 2 * F_rect_perp(GH.p.GHHeight, GH.p.GHLength, GH.p.GHWidth); 
-F_cf = (1-GH.p.LAI) * (1 - F_cw) - F_ch; F_cp = GH.p.LAI * (1 - F_cw);
 
-F_wh = F_hw * AreaArrayRad(6) / AreaArrayRad(3); F_wc = F_cw * AreaArrayRad(2) / AreaArrayRad(3); F_wf = (1-GH.p.LAI) * F_wc; F_wp = GH.p.LAI * F_wc; F_ww = 1 - F_wc - F_wf - F_wp - F_wh
+%%shapefactors, cover:c, walls: w, floor: f, plant: p, heatingpipe: h
 
-F_fh = F_hf * AreaArrayRad(6) / AreaArrayRad(4); F_fc = F_cf * AreaArrayRad(2) / AreaArrayRad(4); F_fw = F_wf * AreaArrayRad(3) / AreaArrayRad(4); F_ff = 0; F_fp = 1 - F_fw - F_fc - F_fh - F_ff;
+F_hc = 1/12; 
+F_hh = 2 * F_para_cyl((GH.p.GHFloorArea/GH.p.pipeL), GH.p.r_2); 
+F_hf = 0.6 - F_hh; 
+F_hw = 0; 
+F_hp = 1 - F_hc - F_hf - F_hw - F_hh;
 
-F_ph = F_hp * AreaArrayRad(6) / AreaArrayRad(5); F_pc = F_cp * AreaArrayRad(2) / AreaArrayRad(5); F_pw = F_wp * AreaArrayRad(3) / AreaArrayRad(5);  F_pf = F_fp * AreaArrayRad(4) / AreaArrayRad(5); F_pp = 1 - F_pc - F_pw - F_pf - F_ph;
+F_ch = F_reciprocal(F_hc, AreaArrayRad, 6, 2); 
+F_cc =0; 
+F_cw = 2 * F_rect_perp(GH.p.GHHeight, GH.p.GHWidth, GH.p.GHLength) + 2 * F_rect_perp(GH.p.GHHeight, GH.p.GHLength, GH.p.GHWidth); 
+F_cf = (1-GH.p.LAI) * (1 - F_cw) - F_ch; 
+F_cp = GH.p.LAI * (1 - F_cw);
 
-ViewMatrix = [0,     0,      0,      0,      0,      0;   %check if sum(ViewMatrix,2) = [0; ones(height(ViewMatrix) - 1, 1)] & AreaArrayRad .* ViewMatrix - (AreaArrayRad .* ViewMatrix)' = ones(size(ViewMatrix))
+F_wh = F_reciprocal(F_hw, AreaArrayRad, 6, 3); 
+F_wc = F_reciprocal(F_cw, AreaArrayRad, 2, 3); 
+F_wf = (1-GH.p.LAI) * F_wc; 
+F_wp = GH.p.LAI * F_wc; 
+F_ww = 1 - F_wc - F_wf - F_wp - F_wh;
+
+F_fh = F_reciprocal(F_hf, AreaArrayRad, 6, 4); 
+F_fc = F_reciprocal(F_cf, AreaArrayRad, 2, 4); 
+F_fw = F_reciprocal(F_wf, AreaArrayRad, 3, 4); 
+F_ff = 0; 
+F_fp = 1 - F_fw - F_fc - F_fh - F_ff;
+
+F_ph = F_reciprocal(F_hp, AreaArrayRad, 6, 5); 
+F_pc = F_reciprocal(F_cp, AreaArrayRad, 2, 5); 
+F_pw = F_reciprocal(F_wp, AreaArrayRad, 3 ,5);  
+F_pf = F_reciprocal(F_fp, AreaArrayRad, 4, 5); 
+F_pp = 1 - F_pc - F_pw - F_pf - F_ph; 
+
+ViewMatrix = [0,     0,      0,      0,      0,      0;   %check if sum(ViewMatrix,2) = [0; ones(height(ViewMatrix) - 1, 1)] & AreaArrayRad .* ViewMatrix - (AreaArrayRad .* ViewMatrix)' = zeros(size(ViewMatrix))
              0,     F_cc,   F_cw,   F_cf,   F_cp,   F_ch;
              0,     F_wc,   F_ww,   F_wf,   F_wp,   F_wh;   
              0,     F_fc,   F_fw,   F_ff,   F_fp,   F_fh;

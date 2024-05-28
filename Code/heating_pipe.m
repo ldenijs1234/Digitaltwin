@@ -29,7 +29,7 @@ function [h_outside,Q_inpipe,water_array, m]  = heating_pipe(GH, T_in,T_air,T_pi
     S = GH.p.Afin;
     V = 4*pi*t*r_1*(r_2-r_1); %volume of a fin in m^3
     V_pipe = GH.p.Vpipe; %Volume of the material of the pipe
-    A_in = pi*r_0^2; % Area of inside of the pipe
+    A_in = GH.p.APipeIn ; % Area of inside of the pipe
     A = GH.p.Apipe; % total area of the pipe in m^2
 
     %%thermodynamic properties of the air
@@ -83,7 +83,7 @@ function [h_outside,Q_inpipe,water_array, m]  = heating_pipe(GH, T_in,T_air,T_pi
     
     %% thermodynamic properties calculations for the heated water flow
     %% Interpolation in table
-    m = Vel_water*A_in*water.density(T_in); %mass flow through the pipe in kg/s
+    m = GH.p.m_flow; %mass flow through the pipe in kg/s
     T = [275,280,285,290,295,300,310,320,330,340,350,360,370,373.15,380,390,400];
     Pr_array = [12.9,10.7,9,7.8,6.7,5.9,4.6,3.8,3.2,2.7,2.4,2,1.81,1.76,1.65,1.51,1.40];
     T_array = T-273.15;

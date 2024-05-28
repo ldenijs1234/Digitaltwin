@@ -71,13 +71,13 @@ function [W_trans, W_cond, W_vent] = vaporflows(GH, T_air, T_wall, T_out, H_air,
     
     G_c = 1.8e-3 * (max(0, (T_air - T_wall)))^(1/3) ; %m/s
 
-    W_trans = (1 - exp(-GH.p.C_pld * DryMassPlant)) * GH.p.C_vplai * ...
+    W_trans = (1 - exp(-GH.p.C_pld * DryMassPlant / GH.p.GHFloorArea)) * GH.p.C_vplai * ...
     ((GH.p.C_v1 / (GH.p.GasConstantR * 1e3 * (T_air + 273.15))) ...
     * exp(GH.p.C_v2 * T_air / (T_air + GH.p.C_v3)) ...
-    - H_air) *GH.p.GHFloorArea ;%kg m^-2 s^-1
+    - H_air) * GH.p.GHFloorArea ;%kg s^-1
     W_cond = (G_c * (0.2522 * exp(0.0485 * T_air) * (T_air ... 
-    - T_out) - ((5.5638 * exp(0.0572 * T_air)) - H_air*1000)))/1000 * GH.p.GHFloorArea ; %kg m^-2 s^-1
-    W_vent = VentilationRate * (H_air - H_out) ; %kg m^-2 s^-1
+    - T_out) - ((5.5638 * exp(0.0572 * T_air)) - H_air*1000)))/1000 * GH.p.GHFloorArea ; %kg s^-1
+    W_vent = VentilationRate * (H_air - H_out) ; %kg s^-1
    
 
 end
@@ -95,22 +95,24 @@ function HumidityDot = HumidityBalance(GH, W_trans, W_cond, W_vent)
     HumidityDot = W / GH.p.GHVolume ; %kg m^-3 s^-1
 end
 
-function [C_trans, C_vent] = CO2flows(GH, DryMassPlant, SolarIntensity, T_air, C_in, C_out, VentilationRate)
+function [C_trans, C_vent, C_respD, C_respC] = CO2flows(GH, DryMassPlant, SolarIntensity, T_air, C_in, C_out, VentilationRate)
     
-    C_trans = (1 - exp(-GH.p.C_pld * DryMassPlant)) * ((GH.p.C_RadPhoto * SolarIntensity * ... 
-    (-GH.p.C_CO21 * T_air^2 + GH.p.C_CO22 * T_air - GH.p.C_CO23) * (C_in * GH.p.C_R)) / ... 
+    C_trans = (1 - exp(-GH.p.C_pld * DryMassPlant/GH.p.GHFloorArea)) * ((GH.p.C_RadPhoto * SolarIntensity * ... 
+    (-GH.p.C_CO21 * T_air^2 + GH.p.C_CO22 * T_air - GH.p.C_CO23) * (C_in - GH.p.C_R)) / ... 
     (GH.p.C_RadPhoto * SolarIntensity + (-GH.p.C_CO21 * T_air^2 + GH.p.C_CO22 * T_air - ... 
-    GH.p.C_CO23) * (C_in * GH.p.C_R))) / GH.p.GHFloorArea ;
-    C_vent = VentilationRate * (C_in - C_out) ; %kg m^-2 s^-1
+    GH.p.C_CO23) * (C_in - GH.p.C_R))) * GH.p.GHFloorArea ;
+    C_vent = VentilationRate * (C_in - C_out) ; %kg s^-1
+    C_respD = GH.p.C_resp*(DryMassPlant / GH.p.GHFloorArea) * 2^(0.1*T_air- 2.5) ;
+    C_respC = GH.p.C_respC*(DryMassPlant / GH.p.GHFloorArea) * 2^(0.1*T_air- 2.5) ;
 end
 
-function CO2Dot = CO2Balance(GH, C_trans, C_vent, C_inject)
-    C = - C_trans - C_vent + C_inject;
+function CO2Dot = CO2Balance(GH, C_trans, C_vent, C_inject, C_respC)
+    C = - C_trans - C_vent + C_inject + C_respC;
     CO2Dot = C / GH.p.GHVolume ; %kg m^-3 s^-1
 end
 
-function DryWeightDot = DryWeight(GH, DryMassPlant, C_trans, T_air)
-    DryWeightDot = GH.p.YieldFactor*C_trans - GH.p.C_resp*DryMassPlant * 2^(0.1*T_air- 2.5) ;
+function DryWeightDot = DryWeight(GH, C_trans, C_respD)
+    DryWeightDot = GH.p.YieldFactor*C_trans - C_respD ;
 end
 
 
@@ -161,14 +163,14 @@ for i = 1:length(t) - 1
     % else
     %     OpenWindowAngle(i) = 1 ;
     % end
-    [integral(i+1), error(i), ControllerOutputWatt(i), OpenwindowAngle(i)] = PIControllerInput(GH, T(1,i), price_per_kWh(i), setpoint(i), dt, integral(i)) ;
-    OpenWindowAngle(i) = OpenwindowAngle(i) ; 
+    [h_pipeout(i), Q_heat(6,i), water_arrayOut, MassFlowPipe] = heating_pipe(GH, T_water(i), T(1,i), T(6,i), dt, water_array) ;
+    T_WaterOut(i) = water_arrayOut(end) ; water_array = water_arrayOut ;
+
+    [integral(i+1), error(i), ControllerOutputWatt(i), OpenwindowAngle(i)] = PIControllerInput(GH, T_WaterOut(i), T(1,i), setpoint(i), dt, integral(i)) ;
+    T_WaterIn(i) = T_WaterOut(i) + ControllerOutputWatt(i) / (GH.p.m_flow * GH.p.cp_water) ;
+    OpenWindowAngle(i) = OpenwindowAngle(i) ;
     %Variable parameter functions (+ convection rate, ventilation rate...)
     VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i), OpenWindowAngle(i)) ;
-
-    T_water(i) = T_WaterOut(i) + ControllerOutputWatt(i) / (GH.p.cp_water*MassFlowPipe) ;  % T_water going in pipe
-    [h_pipeout(i), Q_heat(6,i), water_array, MassFlowPipe] = heating_pipe(GH, T_water(i), T(1, i), T(6, i), dt, water_array) ;
-    T_WaterOut(i+1) = water_array(end) ;
 
     [h_insidewall(i), h_ceiling(i)] = inside_convection(GH, T(3, i), T(2, i), T(1, i));
     ConvectionCoefficientsOut(:,i) = (ConvCoefficients(GH, T(3, i), OutsideTemperature(i), WindSpeed(i), OutsideHumidity(i), OutsideCO2, Winddirection(i), Sealevelpressure(i))).' ;
@@ -184,11 +186,12 @@ for i = 1:length(t) - 1
     AddStates(1, i+1) = AddStates(1, i) + HumidityDot*dt ;
 
     % CO2 flows and balance
-    [C_trans(i), C_vent(i)] = CO2flows(GH, AddStates(3,i), SolarIntensity(i), T(1, i), AddStates(2, i), OutsideCO2, VentilationRate(i)) ;
-    CO2Dot = CO2Balance(GH, C_trans(i), C_vent(i), CO2_injection) ;
-    DryWeightDot = DryWeight(GH, AddStates(3,i), C_trans(i), T(1, i)) ;
+    [C_trans(i), C_vent(i), C_respD(i), C_respC(i)] = CO2flows(GH, AddStates(3,i), SolarIntensity(i), T(1, i), AddStates(2, i), OutsideCO2, VentilationRate(i)) ;
+    CO2Dot = CO2Balance(GH, C_trans(i), C_vent(i), CO2_injection, C_respC(i)) ;
+    DryWeightDot = DryWeight(GH, C_trans(i), C_respD(i)) ;
     AddStates(2, i+1) = AddStates(2, i) + CO2Dot*dt ;
     AddStates(3, i+1) = AddStates(3, i) + DryWeightDot*dt ;
+    AddStates(4, i+1 ) = AddStates(3, i+1) / 0.05 ;
 
     %Q functions (+ convection conduction...)
     FloorTemperature(1, i) = T(4, i) ;
@@ -229,6 +232,13 @@ title("Temperatures in the greenhouse")
 xlabel("Time (h)")
 ylabel("Temperature (°C)")
 legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Heatpipe','Outside', 'Setpoint')
+hold off
+
+figure("WindowStyle", "docked")
+hold on
+plot(t/3600, AddStates(1,:))
+plot(t/3600, AddStates(2,:))
+legend("Humidity", "CO2")
 hold off
 
 % figure("WindowStyle", "docked");

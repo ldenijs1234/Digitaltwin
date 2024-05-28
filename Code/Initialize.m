@@ -1,3 +1,6 @@
+run("SetParameters")
+run("SetModel")
+
 %Initial values:
 GroundTemperature = 10 ;
 
@@ -6,6 +9,9 @@ CoverTemperature = 15 ;
 WallTemperature = 15 ;
 PlantTemperature = 15;
 PipeTemperature = 15 ;
+T_water(1) = 15 ;
+
+water_array = T_water(1) * ones(1, GH.p.dPipe) ;
 
 %FloorTemperature initialisation:
 FloorTempIntVar = (AirTemperature - GroundTemperature)/10;
@@ -23,9 +29,8 @@ Humidity = 0.012 ; % kg/m^3 air
 
 CO2Air = 0.000464 ; % kg/m^3 air
 
-run("SetParameters")
-MassPlant = GH.p.GHPlantArea*GH.p.rho_lettuce*0.01 ; % Dry Mass plant (CO2)
-DryMassPlant = MassPlant / 20 ; % Assume plant = ~95% water, (5% Dry Mass)
+MassPlant = GH.p.GHPlantArea*GH.p.rho_lettuce*0.01 ; % Dry Mass plant (CO2), kg
+DryMassPlant = MassPlant / 20 ; % Assume plant = ~95% water, (5% Dry Mass), kg
 
 init_AddStates(:,1) = [Humidity; CO2Air; DryMassPlant; MassPlant] ;   % additional states
 
