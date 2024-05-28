@@ -1,7 +1,7 @@
 %% The heating pipe is modeled to be made out of steel and to be a pipe with annular parabolic fins
 % most of the formulas can be found in "Basic heat and mass transfer" writen by A.F. Mills and C.F.M Coimbra, Third edition
 
-function [h_outside,Q_inpipe,water_array]  = heating_pipe(GH, T_in,T_air,T_pipe,dt,dT_array)
+function [h_outside,Q_inpipe,water_array, m]  = heating_pipe(GH, T_in,T_air,T_pipe,dt,dT_array)
      %%inputs
     
     %% Geometric inputs for the pipe
