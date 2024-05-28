@@ -81,7 +81,7 @@ GH.p.           FIRDiffusePipe = 1 - GH.p.FIRAbsorbancePipe ;
 GH.p.           r_0 = 0.078; % inside radius of the pipe in meters
 GH.p.           r_1 = 0.08; % outside radius of the pipe in meters  
 GH.p.           r_2 = 0.137; % outside radius of the fin in meters  
-GH.p.           pipeL = 50 ; % length of the pipe in meters
+GH.p.           pipeL = 1*GH.p.GHFloorArea ; % length of the pipe in meters
 GH.p.           pipeF = 80; % Fins per meter of pipe %!!!!keep the thickness in mind not more fins then fit on the pipe!!!!
 GH.p.           pipet = 0.001; % half of the thickness of one fin in meters 
 GH.p.           PipeArea = GH.p.pipeL*2*pi*GH.p.r_2 ;
@@ -91,6 +91,9 @@ GH.p.           Afin =  2*pi*GH.p.r_1*(GH.p.Dpipe-GH.p.Bpipe+(GH.p.pipet/2)*log(
 GH.p.           Vfin = 4*pi*GH.p.pipet*GH.p.r_1*(GH.p.r_2-GH.p.r_1); %volume of a fin in m^3
 GH.p.           Vpipe = GH.p.Vfin*GH.p.pipeL*GH.p.pipeF+(GH.p.r_1^2-GH.p.r_0^2)*pi*GH.p.pipeL; %Volume of the material of the pipe
 GH.p.           Apipe = GH.p.pipeL*GH.p.pipeF*GH.p.Afin+(GH.p.pipeL-GH.p.pipeL*GH.p.pipeF*2*GH.p.pipet)*2*pi*GH.p.r_1; % total area of the pipe in m^2
+GH.p.           Vel_water = 1; %speed of the water through the pipe
+GH.p.           dL = dt*GH.p.Vel_water; %distance 
+GH.p.           dPipe = GH.p.pipeL/GH.p.dL; % number of pipe pieces for numerical calculation
 
 % Humidity equations parameters
 GH.p.           C_pld = 1/3* GH.p.rho_lettuce* 0.1 ;%53 ; %m^2 kg^-1 (effective canopy surface)

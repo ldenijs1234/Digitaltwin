@@ -19,12 +19,12 @@ function [h_outside,Q_inpipe,water_array]  = heating_pipe(GH, T_in,T_air,T_pipe,
     C_out = 0.000464; % Kg/m^3
     g = 9.81;
     
-    Vel_water = 1; %speed of the flow in m/s
+    Vel_water = GH.p.Vel_water; %speed of the flow in m/s
     dL = Vel_water*dt; %length of pipe traveled by the water per time step
     %%Calculated geometrical parameters of the pipe
-    water_array = zeros(1,length(dT_array))
+    water_array = zeros(1,L/dL);
     array = [T_in,dT_array];
-    Q_in_array = zeros(1,length(dT_array))
+    Q_in_array = zeros(1,L/dL);
 
     S = GH.p.Afin;
     V = 4*pi*t*r_1*(r_2-r_1); %volume of a fin in m^3
