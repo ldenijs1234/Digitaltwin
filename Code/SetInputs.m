@@ -5,20 +5,11 @@
 CO2_injection = 0 ;   % kg/s
 OpenWindowAngle = 30 * ones(1, length(t)-1) ;
 
-function y = bound(min, max, t1, t2, t3, t4, dt, days) %inputs: minimum and maximum, minimum before t1 and after t4, maximum at t2:t3
-    time = (0:dt:24*60^2) / 60^2;
-    a = min * ones(1,round(length(time) * t1 / 24));
-    b = linspace(min, max, round(length(time) * (t2 - t1) / 24));
-    c = max * ones(1, round(length(time) * (t3 - t2)/ 24));
-    d = linspace(max, min, round(length(time) * (t4 - t3) / 24));
-    e = min * ones(1, round(length(time) * (24 - t4) /24));
-    y = [a, b, c, d, e];
-    y = repmat(y, 1, days);
-end
 % control inputs
 price_per_kWh = zeros(1, length(t)-1) ; % Price per kWh 
 price_per_kWh = 0.34 + 0.2 * sind(2*pi*(t));  % Euro
-setpoint = bound(18, 22, 6, 10, 18, 22, dt, 2); % Setpoint temperature (°C)
+setpoint_total = bound(18, 22, 6, 10, 18, 22, dt, total_time/24); % Setpoint temperature (°C)
+setpoint = setpoint_total(SimStart:SimEnd) ;
 error = zeros(1, length(t)-1); % Error array
 integral = zeros(1, length(t)-1); % Integral array
 cloud = CloudCover./100 ; % 0-1 cloud cover

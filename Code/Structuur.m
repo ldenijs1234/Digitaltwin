@@ -132,8 +132,8 @@ function [integral, error, ControllerOutputWatt, OpenWindowAngle] = ControllerIn
     %PI controller
     k = 2000;        % Multiplication
     kp = 5;       % Proportional gain
-    ki = 0.001;       % Integral gain
-    kpv = -5 ;
+    ki = 0.000001;       % Integral gain
+    kpv = 10 ;
 
     % Initialize variables
     % Calculate error
@@ -144,12 +144,12 @@ function [integral, error, ControllerOutputWatt, OpenWindowAngle] = ControllerIn
     % Calculate control output
     proportional = kp * error;
     integral_component = ki * integral;
-    BoilerMaxWatt = 1500 ; %DUMMY
+    BoilerMaxWatt = 5000 ; %DUMMY
 
     Watt_Controller = k * (proportional + integral_component);
     Unlim_ControllerOutput = max(0, Watt_Controller);
     ControllerOutputWatt = min(BoilerMaxWatt, Unlim_ControllerOutput);
-    WindowAngle = min(45, kpv*error);
+    WindowAngle = min(45, -kpv*error);
     OpenWindowAngle = max(10, WindowAngle);
 end
 
@@ -166,8 +166,8 @@ for i = 1:length(t) - 1
     %Variable parameter functions (+ convection rate, ventilation rate...)
     VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i), OpenWindowAngle(i)) ;
 
-    T_water(i) = T_WaterOut + ControllerOutputWatt(i) / (GH.p.cp_water*MassFlowPipe) ;  % T_water going in pipe
-    [h_pipeout(i), Q_heat(6,i), T_WaterOut, MassFlowPipe] = heating_pipe(GH, T_water(i), T(1, i), T(6, i)) ;
+    T_water(i) = T_WaterOut(i) + ControllerOutputWatt(i) / (GH.p.cp_water*MassFlowPipe) ;  % T_water going in pipe
+    [h_pipeout(i), Q_heat(6,i), T_WaterOut(i+1), MassFlowPipe] = heating_pipe(GH, T_water(i), T(1, i), T(6, i)) ;
     
 
     [h_insidewall(i), h_ceiling(i)] = inside_convection(GH, T(3, i), T(2, i), T(1, i));
@@ -212,16 +212,19 @@ for i = 1:length(t) - 1
     % Temperature Change
     T(:, i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
     FloorTemperature(1, i) = T(4,i) ;
-    Energy_kWh = Q_heat(6,:) * dt / (1000 * 3600);  % Convert from W to kWh
-    sum(Energy_kWh(:)*0.2);
+    Energy_kWh(i) = ControllerOutputWatt(i) * dt / (1000 * 3600);  % Convert from W to kWh
+    
 
 end
+
+disp(sum(Energy_kWh(:)*0.2))
+
 
 figure("WindowStyle", "docked");
 hold on
 plot(t/3600, T(:,:))
 plot(t/3600, OutsideTemperature, 'b--')
-plot(t(1:end-1)/3600, setpoint, 'r--') 
+plot(t/3600, setpoint, 'r--') 
 title("Temperatures in the greenhouse")
 xlabel("Time (h)")
 ylabel("Temperature (°C)")
@@ -249,25 +252,8 @@ hold off
 % ylabel("Floor layer temperature (°C)")
 % hold off
 
-figure("WindowStyle", "docked");
-hold on
-plot(t(1:end-1), Q_vent(1,:)) 
-plot(t(1:end-1), Q_sky(1,:)) 
-plot(t(1:end-1), Q_conv(1,:))
-plot(t(1:end-1), Q_solar(1,:))
-plot(t(1:end-1), Q_rad_in(1,:) - AreaArrayRad(1) * q_rad_out(1,:))
-plot(t(1:end-1), Q_ground(1,:)) 
-plot(t(1:end-1), Q_tot(1,:))
-legend('vent', 'sky', 'convection', 'solar','radiation','ground', 'total')
-hold off
 
-figure("WindowStyle", "docked");
-hold on
-plot(t(1:end-1)/3600, Q_heat(6,:))
-xlabel("Time (h)")
-ylabel("Heat from heating pipe (W)")
-legend('Heatpipe')
-hold off
+
 
 
 

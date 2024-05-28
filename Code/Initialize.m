@@ -32,4 +32,4 @@ init_AddStates(:,1) = [Humidity; CO2Air; DryMassPlant; MassPlant] ;   % addition
 set_T = initial_T ;
 set_AddStates = init_AddStates ;
 
-SimCount = 1 ;
+SimCount = 0 ;

@@ -10,7 +10,7 @@ filename = 'Delft21-5.csv'; % File name of the weather data CSV file
 %     SimCount = 1 ;
 % end
 
-SimCount = 1 ;
+SimCount = SimCount + 1 ;
 SimStart = time_steps*(SimCount-1) + 1 ;
 SimEnd = time_steps*SimCount ;
 
@@ -18,7 +18,6 @@ OutsideTemperature = OutsideTemperatureF(SimStart:SimEnd) ; OutsideRelhumidity =
 SolarRadiation = SolarRadiationF(SimStart:SimEnd) ; WindSpeed = WindspeedF(SimStart:SimEnd) ; Winddirection = WinddirectionF(SimStart:SimEnd) ;
 Sealevelpressure = SealevelpressureF(SimStart:SimEnd) ; CloudCover = CloudCoverF(SimStart:SimEnd) ; DewPoint = DewPointF(SimStart:SimEnd) ;
 
-run("Initialize")
 run("SetParameters")
 run("SetInputs")
 % Run "initialize.m to initialize or set  set_T to current T
