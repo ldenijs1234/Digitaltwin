@@ -127,7 +127,7 @@ function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeedkph, T_out, O
     VentilationRate = 0.5 * p.NumberOfWindows * (v_wind^2 + v_temp^2)^(0.5) ;
 end
 
-function [integral, error, ControllerOutputWatt, OpenWindowAngle] = ControllerInput(GH, T_air, price, setpoint, dt, integral)
+function [integral, error, ControllerOutputWatt, OpenWindowAngle] = PIControllerInput(GH, T_air, price, setpoint, dt, integral)
 
     %PI controller
     k = 2000;        % Multiplication
@@ -161,14 +161,14 @@ for i = 1:length(t) - 1
     % else
     %     OpenWindowAngle(i) = 1 ;
     % end
-    [integral(i+1), error(i), ControllerOutputWatt(i), OpenwindowAngle(i)] = ControllerInput(GH, T(1,i), price_per_kWh(i), setpoint(i), dt, integral(i)) ;
+    [integral(i+1), error(i), ControllerOutputWatt(i), OpenwindowAngle(i)] = PIControllerInput(GH, T(1,i), price_per_kWh(i), setpoint(i), dt, integral(i)) ;
     OpenWindowAngle(i) = OpenwindowAngle(i) ; 
     %Variable parameter functions (+ convection rate, ventilation rate...)
     VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i), OpenWindowAngle(i)) ;
 
     T_water(i) = T_WaterOut(i) + ControllerOutputWatt(i) / (GH.p.cp_water*MassFlowPipe) ;  % T_water going in pipe
-    [h_pipeout(i), Q_heat(6,i), T_WaterOut(i+1), MassFlowPipe] = heating_pipe(GH, T_water(i), T(1, i), T(6, i)) ;
-    
+    [h_pipeout(i), Q_heat(6,i), water_array, MassFlowPipe] = heating_pipe(GH, T_water(i), T(1, i), T(6, i), dt, water_array) ;
+    T_WaterOut(i+1) = water_array(end) ;
 
     [h_insidewall(i), h_ceiling(i)] = inside_convection(GH, T(3, i), T(2, i), T(1, i));
     ConvectionCoefficientsOut(:,i) = (ConvCoefficients(GH, T(3, i), OutsideTemperature(i), WindSpeed(i), OutsideHumidity(i), OutsideCO2, Winddirection(i), Sealevelpressure(i))).' ;

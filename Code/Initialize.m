@@ -14,7 +14,7 @@ init_FloorTemperature = [AirTemperature; AirTemperature-FloorTempIntVar*1; AirTe
 AirTemperature-FloorTempIntVar*5; AirTemperature-FloorTempIntVar*6; AirTemperature-FloorTempIntVar*7; AirTemperature-FloorTempIntVar*8;...
 AirTemperature-FloorTempIntVar*9; GroundTemperature] ;
 
-initial_T(:,1) = [AirTemperature; CoverTemperature; WallTemperature; init_FloorTemperature(1,1); PlantTemperature; PipeTemperature] ;
+initial_T = [AirTemperature; CoverTemperature; WallTemperature; init_FloorTemperature(1,1); PlantTemperature; PipeTemperature] ;
 
 set_FloorTemperature = init_FloorTemperature ;
 

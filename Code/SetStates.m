@@ -43,6 +43,8 @@ Q_heat = zeros(length(T(:,1)), length(t)-1);
 AddStates = zeros(length(set_AddStates), length(t)) ;
 AddStates(:,1) = set_AddStates ;   % additional states
 
+W_trans = zeros(length(t)) ; W_cond = zeros(length(t)) ; W_vent = zeros(length(t)) ;
+C_trans = zeros(length(t)) ; C_vent = zeros(length(t)) ;
 
 MassPlant = AddStates(4,1) ; 
 CAPArray = [GH.p.cp_air * GH.p.rho_air * GH.p.GHVolume; 
