@@ -147,7 +147,7 @@ function [integral, error, ControllerOutputWatt, OpenWindowAngle] = ControllerIn
     BoilerMaxWatt = 1500 ; %DUMMY
 
     Watt_Controller = k * (proportional + integral_component);
-    Unlim_ControllerOutput = max(-BoilerMaxWatt, Watt_Controller);
+    Unlim_ControllerOutput = max(0, Watt_Controller);
     ControllerOutputWatt = min(BoilerMaxWatt, Unlim_ControllerOutput);
     WindowAngle = min(45, kpv*error);
     OpenWindowAngle = max(10, WindowAngle);
