@@ -43,8 +43,8 @@ Q_heat = zeros(length(T(:,1)), length(t)-1);
 AddStates = zeros(length(set_AddStates), length(t)) ;
 AddStates(:,1) = set_AddStates ;   % additional states
 
-W_trans = zeros(length(t)) ; W_cond = zeros(length(t)) ; W_vent = zeros(length(t)) ;
-C_trans = zeros(length(t)) ; C_vent = zeros(length(t)) ; C_resp = zeros(length(t)) ;
+W_trans = zeros(1, length(t)) ; W_cond = zeros(1, length(t)) ; W_vent = zeros(1, length(t)) ;
+C_trans = zeros(1, length(t)) ; C_vent = zeros(1, length(t)) ; C_resp = zeros(1, length(t)) ;
 
 MassPlant = AddStates(4,1) ; 
 CAPArray = [GH.p.cp_air * GH.p.rho_air * GH.p.GHVolume; 
@@ -55,5 +55,3 @@ CAPArray = [GH.p.cp_air * GH.p.rho_air * GH.p.GHVolume;
             GH.p.Vpipe*GH.p.rho_steel*...
         GH.p.cp_steel+pi*GH.p.pipeL*GH.p.r_0^2*GH.p.rho_water*GH.p.cp_water]; %variable if plant grows
       
-MassFlowPipe = 19.1 ;
-T_WaterOut(1) = 15 ;

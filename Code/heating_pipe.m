@@ -1,7 +1,7 @@
 %% The heating pipe is modeled to be made out of steel and to be a pipe with annular parabolic fins
 % most of the formulas can be found in "Basic heat and mass transfer" writen by A.F. Mills and C.F.M Coimbra, Third edition
 
-function [h_outside,Q_inpipe,water_array, m]  = heating_pipe(GH, T_in,T_air,T_pipe,dt,dT_array)
+function [h_outside,Q_inpipe,water_array]  = heating_pipe(GH, T_in,T_air,T_pipe,dt,dT_array)
      %%inputs
     
     %% Geometric inputs for the pipe
@@ -106,7 +106,7 @@ function [h_outside,Q_inpipe,water_array, m]  = heating_pipe(GH, T_in,T_air,T_pi
         h_total = 1/((1/(h_inside*2*pi*r_0)) + (log(r_1/r_0)/(2*pi*k_alu)) + (1/(h_pipe*Fin_efficiency*F*S+h_pipe*(1-F*2*t)*2*pi*r_1)));% heat coefficient for the entire pipe in W/(m*K)
         N_tu = h_total*dL/(m*c_p);
         epsil = 1-exp(-N_tu);
-        T_out = T_input - epsil*(T_input-T_air); %Temperature at the outlet
+        T_out = T_input - epsil*(T_input-T_pipe); %Temperature at the outlet
         Q_in = (T_input-T_out)*m*c_p; % Watt of the heat transfer from the water to the pipe
         water_array(i) = T_out;
         Q_in_array(i) = Q_in;

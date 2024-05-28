@@ -9,7 +9,7 @@ function [time_vec, OutsideTemperature, OutsideRelhumidity, SolarRadiation, Wind
     wind_speed = table2array(tbl(:,13));
     wind_dir = table2array(tbl(:,14));  
     sealevel_pressure = table2array(tbl(:,15));
-    cloud_cover = table2array(tbl(:,17));
+    cloud_cover = table2array(tbl(:,16));
     solar_rad = table2array(tbl(:,18)); 
     dew_point = table2array(tbl(:,5)); 
 

@@ -13,6 +13,13 @@ setpoint = setpoint_total(SimStart:SimEnd) ;
 error = zeros(1, length(t)-1); % Error array
 integral = zeros(1, length(t)-1); % Integral array
 
+heatingline_total = bound(18, 22, 6, 10, 18, 22, dt, total_time/24); % Setpoint temperature (°C)
+heatingline = heatingline_total(SimStart:SimEnd) ;
+heatingerror = zeros(1, length(t)-1); % Error array
+heatingintegral = zeros(1, length(t)-1); % Integral array
+
+coolingline_total = heatingline + 4;
+coolingerror = zeros(1, length(t)-1); % Error array
 
 % SolarRadiation = 100 + 100*sin(2*pi * t/(24*60*60)) ; 
 % cloud = 0.7
