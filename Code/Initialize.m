@@ -29,10 +29,10 @@ Humidity = 0.012 ; % kg/m^3 air
 
 CO2Air = 0.000464 ; % kg/m^3 air
 
-MassPlant = GH.p.GHPlantArea*GH.p.rho_lettuce*0.01 ; % Dry Mass plant (CO2), kg
-DryMassPlant = MassPlant / 20 ; % Assume plant = ~95% water, (5% Dry Mass), kg
+MassPlantInit = GH.p.GHPlantArea*GH.p.rho_lettuce*0.01 ; % Dry Mass plant (CO2), kg
+DryMassPlantInit = MassPlantInit / 20 ; % Assume plant = ~95% water, (5% Dry Mass), kg
 
-init_AddStates(:,1) = [Humidity; CO2Air; DryMassPlant; MassPlant] ;   % additional states
+init_AddStates(:,1) = [Humidity; CO2Air; DryMassPlantInit; MassPlantInit] ;   % additional states
 
 set_T = initial_T ;
 set_AddStates = init_AddStates ;

@@ -67,7 +67,7 @@ function Q = HeatByVentilation(GH, T_air, T_out, VentilationRate)
     Q = (T_out - T_air) * massflow * GH.p.cp_air ;
 end
 
-function [W_trans, W_cond, W_vent] = vaporflows(GH, T_air, T_wall, T_out, H_air, H_out, DryMassPlant, VentilationRate)
+function [W_trans, W_cond, W_vent, W_fog] = vaporflows(GH, T_air, T_wall, T_out, H_air, H_out, DryMassPlant, VentilationRate, U_fog)
     
     G_c = 1.8e-3 * (max(0, (T_air - T_wall)))^(1/3) ; %m/s
 
@@ -78,7 +78,7 @@ function [W_trans, W_cond, W_vent] = vaporflows(GH, T_air, T_wall, T_out, H_air,
     W_cond = max(0, (G_c * (0.2522 * exp(0.0485 * T_air) * (T_air ... 
     - T_out) - ((5.5638 * exp(0.0572 * T_air)) - H_air*1000)))/1000 * GH.p.GHFloorArea) ; %kg s^-1
     W_vent = VentilationRate * (H_air - H_out) ; %kg s^-1
-   
+    W_fog = GH.p.phi_fog * U_fog ; %kg s^-1
 
 end
 
@@ -90,8 +90,8 @@ function h_af = ConvFloor(T_floor, T_in)
     end
 end
 
-function HumidityDot = HumidityBalance(GH, W_trans, W_cond, W_vent)
-    W = - W_vent - W_cond + W_trans; %kg s^-1 
+function HumidityDot = HumidityBalance(GH, W_trans, W_cond, W_vent, W_fog)
+    W = - W_vent - W_cond + W_trans + W_fog; %kg s^-1 
     HumidityDot = W / GH.p.GHVolume ; %kg m^-3 s^-1
 end
 
@@ -172,7 +172,7 @@ for i = 1:length(t) - 1
     T_WaterOut(i) = water_arrayOut(end) ; water_array = water_arrayOut ;
 
     [integral(i+1), heatingerror(i), ControllerOutputWatt(i), OpenwindowAngle(i)] = PIController(T_WaterOut(i) ,T(1,i), heatingline(i), dt, integral(i)) ;
-    [coolingerror(i), OpenWindowAngle(i)] = WindowController(T(1,i), coolingline(i), dt);
+    [coolingerror(i), OpenWindowAngle(i), U_fog(i)] = WindowController(T(1,i), coolingline(i), dt);
     
     T_WaterIn(i+1) = min(99,T_WaterOut(i) + ControllerOutputWatt(i) / (GH.p.m_flow * GH.p.cp_water)) ;
 
@@ -190,8 +190,8 @@ for i = 1:length(t) - 1
     ConvectionCoefficientsIn(6,i) = h_pipeout(i) ;
     
     % Vapor flows and balance
-    [W_trans(i), W_cond(i), W_vent(i)] = vaporflows(GH, T(1, i), T(2, i), OutsideTemperature(1,i), AddStates(1, i), OutsideHumidity(i), DryMassPlant, VentilationRate(i));
-    HumidityDot = HumidityBalance(GH, W_trans(i), W_cond(i), W_vent(i));
+    [W_trans(i), W_cond(i), W_vent(i), W_fog(i)] = vaporflows(GH, T(1, i), T(2, i), OutsideTemperature(1,i), AddStates(1, i), OutsideHumidity(i), AddStates(3,i), VentilationRate(i),  U_fog(i));
+    HumidityDot = HumidityBalance(GH, W_trans(i), W_cond(i), W_vent(i), W_fog(i));
     AddStates(1, i+1) = AddStates(1, i) + HumidityDot*dt ;
 
     % CO2 flows and balance
@@ -216,7 +216,7 @@ for i = 1:length(t) - 1
     Q_vent(1, i) = HeatByVentilation(GH, T(1, i), OutsideTemperature(i), VentilationRate(i)) ; 
     Q_vent(2: height(T), i) = zeros(height(T)-1, 1) ;
     % Q_latent(5, i) = LatentHeat(-W_trans(i)) ; Q_latent(2, i) = LatentHeat(W_cond(i)) ;
-    Q_latent(1, i) = LatentHeat(-W_vent(i)) + LatentHeat(-W_cond(i)) ;%+ LatentHeat(W_trans(i)) ;
+    Q_latent(1, i) = LatentHeat(-W_vent(i)) + LatentHeat(-W_cond(i)) + LatentHeat(-W_fog(i));%+ LatentHeat(W_trans(i)) ;
 
     %Total heat transfer 
     Q_tot(:,i) = Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) + Q_rad_in(:,i) - q_rad_out(:,i) .* AreaArrayRad + Q_heat(:,i) + Q_latent(:, i);
@@ -252,6 +252,12 @@ hold on
 plot(t/3600, AddStates(1,:))
 plot(t/3600, AddStates(2,:))
 legend("Humidity", "CO2")
+hold off
+
+figure("WindowStyle", "docked")
+hold on
+plot(t/3600, AddStates(3,:))
+legend("Dry Mass Plant")
 hold off
 
 % figure("WindowStyle", "docked");

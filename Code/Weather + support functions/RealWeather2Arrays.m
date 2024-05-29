@@ -13,6 +13,17 @@ function [time_vec, OutsideTemperature, OutsideRelhumidity, SolarRadiation, Wind
     solar_rad = table2array(tbl(:,18)); 
     dew_point = table2array(tbl(:,5)); 
 
+    % Randomize the data
+    temp_out = temp_out *(0.95 + 0.1 * rand(length(temp_out)));
+    rel_hum = rel_hum *(0.95 + 0.1 * rand(length(rel_hum)));
+    wind_speed = wind_speed *(0.95 + 0.1 * rand(length(wind_speed)));
+    wind_dir = wind_dir *(0.95 + 0.1 * rand(length(wind_dir)));
+    sealevel_pressure = sealevel_pressure *(0.95 + 0.1 * rand(length(sealevel_pressure)));
+    cloud_cover = cloud_cover *(0.95 + 0.1 * rand(length(cloud_cover)));
+    solar_rad = solar_rad *(0.95 + 0.1 * rand(length(solar_rad)));
+    dew_point = dew_point *(0.95 + 0.1 * rand(length(dew_point)));
+
+
     % Generate a time vector for data points (modify as per actual data timing)
     time_hours = 0:1:((height(tbl) - 1) * 1);
 

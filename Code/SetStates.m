@@ -44,10 +44,16 @@ Q_latent = zeros(length(T(:,1)), length(t)-1);
 AddStates = zeros(length(set_AddStates), length(t)) ;
 AddStates(:,1) = set_AddStates ;   % additional states
 
-W_trans = zeros(1, length(t)) ; W_cond = zeros(1, length(t)) ; W_vent = zeros(1, length(t)) ;
+W_trans = zeros(1, length(t)) ; W_cond = zeros(1, length(t)) ; W_vent = zeros(1, length(t)) ; W_fog = zeros(1, length(t)) ;
 C_trans = zeros(1, length(t)) ; C_vent = zeros(1, length(t)) ; C_resp = zeros(1, length(t)) ;
 
-MassPlant = AddStates(4,1) ; 
+if AddStates(4,1) == 0
+  MassPlant = MassPlanInit ;
+else
+  MassPlant = AddStates(4,1) ; 
+end
+
+
 CAPArray = [GH.p.cp_air * GH.p.rho_air * GH.p.GHVolume; 
             GH.p.cp_glass * GH.p.rho_glass * GH.p.GHWallThickness * AreaArray(2);
             GH.p.cp_glass * GH.p.rho_glass * GH.p.GHWallThickness * AreaArray(3);

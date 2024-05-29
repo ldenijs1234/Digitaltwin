@@ -17,7 +17,7 @@ set_AddStates = AddStates(:, end) ;
 set_FloorTemperature = FloorTemperature(:, end) ;
 
 run("SetStates")
-% run("RunFullSim")    % Run a single simulation
+run("RunFullSim")    % Run a single simulation
 
 % User Inputs
 % Usercontrol = 0 ;
