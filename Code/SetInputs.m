@@ -18,7 +18,8 @@ heatingline = heatingline_total(SimStart:SimEnd) ;
 heatingerror = zeros(1, length(t)-1); % Error array
 heatingintegral = zeros(1, length(t)-1); % Integral array
 
-coolingline_total = heatingline + 4;
+coolingline_total = heatingline_total + 4;
+coolingline = heatingline_total(SimStart:SimEnd) ;
 coolingerror = zeros(1, length(t)-1); % Error array
 
 % SolarRadiation = 100 + 100*sin(2*pi * t/(24*60*60)) ; 

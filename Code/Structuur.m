@@ -6,13 +6,13 @@
 %state 6: heatpipe
 
 function q = Fq_rad_out(emissivity, T, Area)                          %imput: emissivity array and T(:,i)
-    q = 5.670374419e-8 * emissivity .* Area .* ((T + 273.15).^4);    %emittance of components
+    q = 5.670374419e-8 * emissivity .* ((T + 273.15).^4);    %emittance of components
 end                                                             %q(:,i) = F
 
 
 function Q = FQ_rad_in(absorbance, diffuse, Area, Viewf, qrad)      %imput: parameter arrays, viewfactor matrix and q radiance array(:,i)
-    Q =(Area .* Viewf * qrad);                       %how much each object absorbs
-    %Q(1,:) = sum(diffuse .* Area .* Viewf * qrad);                   %inside air recieves diffused radiation
+    Q =(absorbance .* Area .* Viewf * qrad);                       %how much each object absorbs
+    Q(1,:) = sum(diffuse .* Area .* Viewf * qrad);                   %inside air recieves diffused radiation
 end
 
 
@@ -224,7 +224,7 @@ end
     Q_latent(1, i) = LatentHeat(-W_vent(i)) + LatentHeat(W_trans(i)) ;
 
     %Total heat transfer 
-    Q_tot(:,i) = Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) + Q_rad_in(:,i) - q_rad_out(:,i) + Q_heat(:,i) + Q_latent(:, i);
+    Q_tot(:,i) = Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) + Q_rad_in(:,i) - q_rad_out(:,i) .* AreaArrayRad + Q_heat(:,i) + Q_latent(:, i);
 
     % Temperature Change
     T(:, i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
