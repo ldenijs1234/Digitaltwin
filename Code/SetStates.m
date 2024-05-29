@@ -30,7 +30,8 @@ Q_ground = zeros(length(T(:,1)), length(t)-1);
 Q_rad_in = zeros(length(T(:,1)), length(t)-1);
 q_rad_out = zeros(length(T(:,1)), length(t)-1);
 Q_heat = zeros(length(T(:,1)), length(t)-1);
-
+Q_latent = zeros(length(T(:,1)), length(t)-1);
+ 
 
 
 

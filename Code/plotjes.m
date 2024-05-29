@@ -17,13 +17,11 @@ hold off
 figure("WindowStyle", "docked");
 hold on
 plot(t(1:end-1), Q_vent(1,:)) 
-plot(t(1:end-1), Q_sky(1,:)) 
 plot(t(1:end-1), Q_conv(1,:))
 plot(t(1:end-1), Q_solar(1,:))
 plot(t(1:end-1), Q_rad_in(1,:) - AreaArrayRad(1) * q_rad_out(1,:))
-plot(t(1:end-1), Q_ground(1,:)) 
 plot(t(1:end-1), Q_tot(1,:))
-legend('vent', 'sky', 'convection', 'solar','radiation','ground', 'total')
+legend('vent', 'convection', 'solar','radiation', 'total')
 title('Air Heat Flows')
 hold off
 
