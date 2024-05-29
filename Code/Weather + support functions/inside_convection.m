@@ -1,13 +1,13 @@
 
 %function [h_insidewall,h_ceiling] = inside_convection(GH, T_wall,T_ceiling,T_in)
-function [h_insidewall,h_ceiling] = inside_convection(GH, T_wall,T_ceiling,T_in)
+function [h_insidewall,h_ceiling] = inside_convection(GH, T_wall,T_ceiling,T_in,humidity,co_2)
     W = GH.p.GHWidth; % width of the building in meters
     L = GH.p.GHLength; % length of the building in meters
     H = GH.p.GHHeight; % height of the building in meters
     g = 9.81; % gravitational constant
 
-    co_2 = 0.000464;
-    humidity = 0.012;
+    %co_2 = 0.000464;
+    %humidity = 0.012;
     T = T_in; % air temperature in celsius
     p = 1084; % air pressure in hpa
     h_abs = humidity*1000; % absolute humidity of the outside air in g/m^3

@@ -71,12 +71,12 @@ function [W_trans, W_cond, W_vent] = vaporflows(GH, T_air, T_wall, T_out, H_air,
     
     G_c = 1.8e-3 * (max(0, (T_air - T_wall)))^(1/3) ; %m/s
 
-    W_trans = (1 - exp(-GH.p.C_pld * DryMassPlant / GH.p.GHFloorArea)) * GH.p.C_vplai * ...
+    W_trans = max(0, (1 - exp(-GH.p.C_pld * DryMassPlant / GH.p.GHFloorArea)) * GH.p.C_vplai * ...
     ((GH.p.C_v1 / (GH.p.GasConstantR * 1e3 * (T_air + 273.15))) ...
     * exp(GH.p.C_v2 * T_air / (T_air + GH.p.C_v3)) ...
-    - H_air) * GH.p.GHFloorArea ;%kg s^-1
-    W_cond = (G_c * (0.2522 * exp(0.0485 * T_air) * (T_air ... 
-    - T_out) - ((5.5638 * exp(0.0572 * T_air)) - H_air*1000)))/1000 * GH.p.GHFloorArea ; %kg s^-1
+    - H_air) * GH.p.GHFloorArea );%kg s^-1
+    W_cond = max(0, (G_c * (0.2522 * exp(0.0485 * T_air) * (T_air ... 
+    - T_out) - ((5.5638 * exp(0.0572 * T_air)) - H_air*1000)))/1000 * GH.p.GHFloorArea) ; %kg s^-1
     W_vent = VentilationRate * (H_air - H_out) ; %kg s^-1
    
 
@@ -129,38 +129,38 @@ function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeedkph, T_out, O
     VentilationRate = 0.5 * p.NumberOfWindows * (v_wind^2 + v_temp^2)^(0.5) ;
 end
 
-function [integral, error, ControllerOutputWatt, OpenWindowAngle] = PIControllerInput(GH, T_out, T_air, setpoint, dt, integral)
+% function [integral, error, ControllerOutputWatt, OpenWindowAngle] = PIControllerInput(GH, T_out, T_air, setpoint, dt, integral)
 
-    %PI controller
-    k = 2000;        % Multiplication
-    kp = 5;       % Proportional gain
-    ki = 0.000001;       % Integral gain
-    kpv = 10 ;
+%     %PI controller
+%     k = 2000;        % Multiplication
+%     kp = 5;       % Proportional gain
+%     ki = 0.000001;       % Integral gain
+%     kpv = 10 ;
 
-    % Initialize variables
-    % Calculate error
-    error = setpoint - T_air;
-    % Update integral term
-    integral = max(0, integral + error * dt);
+%     % Initialize variables
+%     % Calculate error
+%     error = setpoint - T_air;
+%     % Update integral term
+%     integral = max(0, integral + error * dt);
     
-    % Calculate control output
-    proportional = kp * error;
-    integral_component = ki * integral;
-    BoilerMaxWatt = 50000 ; %DUMMY
+%     % Calculate control output
+%     proportional = kp * error;
+%     integral_component = ki * integral;
+%     BoilerMaxWatt = 50000 ; %DUMMY
 
-    T_max = 99;
-    max_heating = T_max-T_out;
-    max_heatingWatt = max_heating*GH.p.m_flow*GH.p.cp_water;
+%     T_max = 99;
+%     max_heating = T_max-T_out;
+%     max_heatingWatt = max_heating*GH.p.m_flow*GH.p.cp_water;
 
 
-    Watt_Controller = k * (proportional + integral_component);
-    Unlim_ControllerOutput = max(0, Watt_Controller);
-    ControllerOutputWatt = min(BoilerMaxWatt, min(Unlim_ControllerOutput,max_heatingWatt));
-    WindowAngle = min(45, -kpv*error);
-    OpenWindowAngle = max(0, WindowAngle);
-end
+%     Watt_Controller = k * (proportional + integral_component);
+%     Unlim_ControllerOutput = max(0, Watt_Controller);
+%     ControllerOutputWatt = min(BoilerMaxWatt, min(Unlim_ControllerOutput,max_heatingWatt));
+%     WindowAngle = min(45, -kpv*error);
+%     OpenWindowAngle = max(0, WindowAngle);
+% end
 
-    for i = 1:length(t) - 1
+for i = 1:length(t) - 1
         
 
     % if T(1, i) > 20
@@ -171,17 +171,17 @@ end
     [h_pipeout(i), Q_heat(6,i), water_arrayOut] = heating_pipe(GH, T_WaterIn(i), T(1,i), T(6,i), dt, water_array) ;
     T_WaterOut(i) = water_arrayOut(end) ; water_array = water_arrayOut ;
 
-    [integral(i+1), error(i), ControllerOutputWatt(i), OpenwindowAngle(i)] = PIControllerInput(GH, T(1,i), setpoint(i), dt, integral(i)) ;
-    %[integral(i+1), error(i), ControllerOutputWatt(i)] = PIControllerInput(GH, T(1,i), heatingline(i), dt, heatingintegral(i)) ;
+    [integral(i+1), heatingerror(i), ControllerOutputWatt(i), OpenwindowAngle(i)] = PIController(T_WaterOut(i) ,T(1,i), heatingline(i), dt, integral(i)) ;
+    [coolingerror(i), OpenWindowAngle(i)] = WindowController(T(1,i), coolingline(i), dt);
     
     T_WaterIn(i+1) = min(99,T_WaterOut(i) + ControllerOutputWatt(i) / (GH.p.m_flow * GH.p.cp_water)) ;
 
     %[coolingerror(i), OpenWindowAngle(i)] = WindowController(T_air(1,i), coolingline(i), dt)
-    OpenWindowAngle(i) = OpenwindowAngle(i) ;
+    % OpenWindowAngle(i) = OpenwindowAngle(i) ;
     %Variable parameter functions (+ convection rate, ventilation rate...)
     VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i), OpenWindowAngle(i)) ;
 
-    [h_insidewall(i), h_ceiling(i)] = inside_convection(GH, T(3, i), T(2, i), T(1, i));
+    [h_insidewall(i), h_ceiling(i)] = inside_convection(GH, T(3, i), T(2, i), T(1, i),AddStates(1,i),AddStates(2,i));
     ConvectionCoefficientsOut(:,i) = (ConvCoefficients(GH, T(3, i), OutsideTemperature(i), WindSpeed(i), OutsideHumidity(i), OutsideCO2, Winddirection(i), Sealevelpressure(i))).' ;
     ConvectionCoefficientsIn(4,i) = ConvFloor(T(4, i), T(1, i)) ;
     ConvectionCoefficientsIn(2,i) = h_ceiling(i) ; %h_ac ;
@@ -190,7 +190,7 @@ end
     ConvectionCoefficientsIn(6,i) = h_pipeout(i) ;
     
     % Vapor flows and balance
-    [W_trans(i), W_cond(i), W_vent(i)] = vaporflows(GH, T(1, i), T(3, i), OutsideTemperature(1,i), AddStates(1, i), OutsideHumidity(i), DryMassPlant, VentilationRate(i));
+    [W_trans(i), W_cond(i), W_vent(i)] = vaporflows(GH, T(1, i), T(2, i), OutsideTemperature(1,i), AddStates(1, i), OutsideHumidity(i), DryMassPlant, VentilationRate(i));
     HumidityDot = HumidityBalance(GH, W_trans(i), W_cond(i), W_vent(i));
     AddStates(1, i+1) = AddStates(1, i) + HumidityDot*dt ;
 
@@ -215,7 +215,8 @@ end
     Q_conv(:,i) = convection(ConvectionCoefficientsIn(:,i), ConvectionCoefficientsOut(:, i), T(:,i), OutsideTemperature(i), ConvAreaArray);
     Q_vent(1, i) = HeatByVentilation(GH, T(1, i), OutsideTemperature(i), VentilationRate(i)) ; 
     Q_vent(2: height(T), i) = zeros(height(T)-1, 1) ;
-    Q_latent(5, i) = LatentHeat(-W_trans(i)) ;
+    % Q_latent(5, i) = LatentHeat(-W_trans(i)) ; Q_latent(2, i) = LatentHeat(W_cond(i)) ;
+    Q_latent(1, i) = LatentHeat(-W_vent(i)) + LatentHeat(-W_cond(i)) ;%+ LatentHeat(W_trans(i)) ;
 
     %Total heat transfer 
     Q_tot(:,i) = Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) + Q_rad_in(:,i) - q_rad_out(:,i) .* AreaArrayRad + Q_heat(:,i) + Q_latent(:, i);
@@ -225,24 +226,25 @@ end
     FloorTemperature(1, i) = T(4,i) ;
     Energy_kWh(i) = ControllerOutputWatt(i) * dt / (1000 * 3600);  % Convert from W to kWh
     
-    if rem(i*dt/3600, 60) == 0 
-        disp('hour:', i*dt/3600)
+    if rem(i*dt/3600, 1) == 0 
+        disp('hour:')
+        disp(i*dt/3600)
     end
 
 end
 
-disp(sum(Energy_kWh(:)*0.2))
 
 
 figure("WindowStyle", "docked");
 hold on
 plot(t/3600, T(:,:))
 plot(t/3600, OutsideTemperature, 'b--')
-plot(t/3600, setpoint, 'r--') 
+plot(t/3600, heatingline, 'r--') 
+plot(t/3600, coolingline, 'c--')
 title("Temperatures in the greenhouse")
 xlabel("Time (h)")
 ylabel("Temperature (°C)")
-legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Heatpipe','Outside', 'Setpoint')
+legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Heatpipe','Outside', 'Heating Line', 'Cooling Line')
 hold off
 
 figure("WindowStyle", "docked")

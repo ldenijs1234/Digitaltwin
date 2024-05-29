@@ -3,7 +3,7 @@
 % User Inputs
 
 CO2_injection = 0 ;   % kg/s
-OpenWindowAngle = 30 * ones(1, length(t)-1) ;
+OpenWindowAngle = 30 * ones(1, length(t)-1) ; %in degrees
 
 % control inputs
 price_per_kWh = zeros(1, length(t)-1) ; % Price per kWh 
@@ -19,7 +19,7 @@ heatingerror = zeros(1, length(t)-1); % Error array
 heatingintegral = zeros(1, length(t)-1); % Integral array
 
 coolingline_total = heatingline_total + 4;
-coolingline = heatingline_total(SimStart:SimEnd) ;
+coolingline = coolingline_total(SimStart:SimEnd) ;
 coolingerror = zeros(1, length(t)-1); % Error array
 
 % SolarRadiation = 100 + 100*sin(2*pi * t/(24*60*60)) ; 
@@ -37,8 +37,8 @@ LdCloud = epsCloud.*sigma.*(OutsideTemperature+273.15).^4;    % Equation 5.22
 SkyTemperature = (LdCloud/sigma).^(0.25)-273.15 ; % Katzin
 
 
-SolarIntensity =  SolarRadiation .* (1-0.5*cloud); 
-OutsideHumidity =   rh2vaporDens(OutsideTemperature, OutsideRelhumidity) ; %!!!!
+SolarIntensity =  SolarRadiation .* (1-0.5*cloud); %W/m^2
+OutsideHumidity =   rh2vaporDens(OutsideTemperature, OutsideRelhumidity) ; %kg/m^3
 
 OutsideCO2 = 0.0012 ; %kg/m^3
 GroundTemperature = 10  ; % DUMMY!!!!!!!!!!!    

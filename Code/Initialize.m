@@ -2,7 +2,7 @@ run("SetModel")
 run("SetParameters")
 
 %Initial values:
-GroundTemperature = 10 ;
+GroundTemperature = 10 ; %in celcius
 
 AirTemperature = 10 ;  % ALL DUMMY VALUES!!!
 CoverTemperature = 10 ;

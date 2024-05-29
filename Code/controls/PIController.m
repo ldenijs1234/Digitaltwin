@@ -16,13 +16,13 @@ function [integral, error, ControllerOutputWatt, OpenWindowAngle] = PIController
     % Calculate control output
     proportional = kp * error;
     integral_component = ki * integral;
-    BoilerMaxWatt = 50000; % Dummy
+    BoilerMaxWatt = 10000; % Dummy
 
     Watt_Controller = k * (proportional + integral_component);
     Unlim_ControllerOutput = max(0, Watt_Controller);
     ControllerOutputWatt = min(BoilerMaxWatt, Unlim_ControllerOutput);
     WindowAngle = min(45, -kpv*error);
-    OpenWindowAngle = max(10, WindowAngle);
+    OpenWindowAngle = max(0, WindowAngle);
     
     
 end
@@ -52,13 +52,3 @@ end
 % end
 
 
-function [error, OpenWindowAngle] = WindowController(T_air, setpoint, dt)
-    k = 10 ;
-    % Calculate error
-    error = setpoint - T_air;
-
-    % Calculate control output
-  
-    WindowAngle = min(45, -k * error);
-    OpenWindowAngle = max(10, WindowAngle);   
-end
