@@ -4,9 +4,8 @@ figure("WindowStyle", "docked");
 hold on
 plot(t/3600, T(:,:))
 plot(t/3600, OutsideTemperature, 'b--')
-plot(t/3600, setpoint, 'r--') 
-%plot(t/3600, heatingline, 'r--')
-%plot(t/3600, coolingline, 'r--') 
+plot(t/3600, heatingline, 'r--')
+plot(t/3600, coolingline, 'r--') 
 % plot(t(1:end-1)/3600, error)
 title("Temperatures in the greenhouse")
 xlabel("Time (h)")

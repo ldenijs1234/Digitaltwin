@@ -6,7 +6,7 @@ function [integral, error, ControllerOutputWatt, OpenWindowAngle] = PIController
     kp = 5;       % Proportional gain
     ki = 0.000001;       % Integral gain
     kpv = 10 ;
-
+    
     % Initialize variables
     % Calculate error
     error = setpoint - T_air;
@@ -16,14 +16,14 @@ function [integral, error, ControllerOutputWatt, OpenWindowAngle] = PIController
     % Calculate control output
     proportional = kp * error;
     integral_component = ki * integral;
-    BoilerMaxWatt = 5000 ; %DUMMY
+    BoilerMaxWatt = 50000; % Dummy
 
     Watt_Controller = k * (proportional + integral_component);
     Unlim_ControllerOutput = max(0, Watt_Controller);
     ControllerOutputWatt = min(BoilerMaxWatt, Unlim_ControllerOutput);
     WindowAngle = min(45, -kpv*error);
     OpenWindowAngle = max(10, WindowAngle);
-
+    
     
 end
 

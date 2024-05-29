@@ -11,8 +11,8 @@ end                                                             %q(:,i) = F
 
 
 function Q = FQ_rad_in(absorbance, diffuse, Area, Viewf, qrad)      %imput: parameter arrays, viewfactor matrix and q radiance array(:,i)
-    Q = (absorbance .* Viewf * qrad);                       %how much each object absorbs
-    Q(1,:) = sum(0.5 * diffuse .* Viewf * qrad);                   %inside air recieves diffused radiation
+    Q =(Area .* Viewf * qrad);                       %how much each object absorbs
+    %Q(1,:) = sum(diffuse .* Area .* Viewf * qrad);                   %inside air recieves diffused radiation
 end
 
 
@@ -129,13 +129,12 @@ function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeedkph, T_out, O
     VentilationRate = 0.5 * p.NumberOfWindows * (v_wind^2 + v_temp^2)^(0.5) ;
 end
 
-function [integral, error, ControllerOutputWatt, OpenWindowAngle] = PIControllerInput(GH, T_air, setpoint, dt, integral)
 
+function [integral, error, ControllerOutputWatt] = PIController(T_WaterOut, T_air, setpoint, dt, integral)
     %PI controller
     k = 2000;        % Multiplication
     kp = 5;       % Proportional gain
     ki = 0.000001;       % Integral gain
-    kpv = 10 ;
 
     % Initialize variables
     % Calculate error
@@ -150,10 +149,21 @@ function [integral, error, ControllerOutputWatt, OpenWindowAngle] = PIController
 
     Watt_Controller = k * (proportional + integral_component);
     Unlim_ControllerOutput = max(0, Watt_Controller);
-    ControllerOutputWatt = min(BoilerMaxWatt, Unlim_ControllerOutput);
-    WindowAngle = min(45, -kpv*error);
-    OpenWindowAngle = max(0, WindowAngle);
+    ControllerOutputWatt = min(BoilerMaxWatt, Unlim_ControllerOutput);  
 end
+
+
+function [error, OpenWindowAngle] = WindowController(T_air, setpoint, dt)
+    k = 10 ;
+    % Calculate error
+    error = setpoint - T_air;
+
+    % Calculate control output
+  
+    WindowAngle = min(45, -k * error);
+    OpenWindowAngle = max(10, WindowAngle);   
+end
+
 
     for i = 1:length(t) - 1
         
@@ -166,13 +176,13 @@ end
     [h_pipeout(i), Q_heat(6,i), water_arrayOut] = heating_pipe(GH, T_WaterIn(i), T(1,i), T(6,i), dt, water_array) ;
     T_WaterOut(i) = water_arrayOut(end) ; water_array = water_arrayOut ;
 
-    [integral(i+1), error(i), ControllerOutputWatt(i), OpenwindowAngle(i)] = PIControllerInput(GH, T(1,i), setpoint(i), dt, integral(i)) ;
-    %[integral(i+1), error(i), ControllerOutputWatt(i)] = PIControllerInput(GH, T(1,i), heatingline(i), dt, heatingintegral(i)) ;
+    
+    [integral(i+1), error(i), ControllerOutputWatt(i)] = PIController(GH, T(1,i), heatingline(i), dt, heatingintegral(i)) ;
     
     T_WaterIn(i+1) = min(99, T_WaterOut(i) + ControllerOutputWatt(i) / (GH.p.m_flow * GH.p.cp_water)) ;
 
-    %[coolingerror(i), OpenWindowAngle(i)] = WindowController(T_air(1,i), coolingline(i), dt)
-    OpenWindowAngle(i) = OpenwindowAngle(i) ;
+    [coolingerror(i), OpenWindowAngle(i)] = WindowController(T(1,i), coolingline(i), dt);
+
     %Variable parameter functions (+ convection rate, ventilation rate...)
     VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i), OpenWindowAngle(i)) ;
 
@@ -234,11 +244,12 @@ figure("WindowStyle", "docked");
 hold on
 plot(t/3600, T(:,:))
 plot(t/3600, OutsideTemperature, 'b--')
-plot(t/3600, setpoint, 'r--') 
+plot(t/3600, heatingline, 'r--') 
+plot(t/3600, coolingline, 'r--') 
 title("Temperatures in the greenhouse")
 xlabel("Time (h)")
 ylabel("Temperature (°C)")
-legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Heatpipe','Outside', 'Setpoint')
+legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Heatpipe','Outside', 'heatingline', 'coolingline')
 hold off
 
 figure("WindowStyle", "docked")
