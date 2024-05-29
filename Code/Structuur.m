@@ -5,14 +5,14 @@
 %state 5: plant
 %state 6: heatpipe
 
-function q = Fq_rad_out(emissivity, T)                          %imput: emissivity array and T(:,i)
-    q = 5.670374419*10^-8 * emissivity .* ((T + 273.15).^4);    %emittance of components
+function q = Fq_rad_out(emissivity, T, Area)                          %imput: emissivity array and T(:,i)
+    q = 5.670374419e-8 * emissivity .* Area .* ((T + 273.15).^4);    %emittance of components
 end                                                             %q(:,i) = F
 
 
 function Q = FQ_rad_in(absorbance, diffuse, Area, Viewf, qrad)      %imput: parameter arrays, viewfactor matrix and q radiance array(:,i)
-    Q = (Area .* Viewf * qrad);                       %how much each object absorbs
-    %Q(1,:) = sum(diffuse .* Area .* Viewf * qrad);                   %inside air recieves diffused radiation
+    Q = (absorbance .* Viewf * qrad);                       %how much each object absorbs
+    Q(1,:) = sum(0.5 * diffuse .* Viewf * qrad);                   %inside air recieves diffused radiation
 end
 
 
@@ -59,7 +59,7 @@ function [Q, QFloor] = FGroundConduction(GH, FloorTemperature, T)
 end
 
 function Q = LatentHeat(mv)    % Latent heat of evaporation of water mass flow mv
-    Q = 2.45e6 * mv ;
+    Q = 2.45e6 *  mv ;
 end
 
 function Q = HeatByVentilation(GH, T_air, T_out, VentilationRate)
@@ -71,14 +71,14 @@ function [W_trans, W_cond, W_vent] = vaporflows(GH, T_air, T_wall, T_out, H_air,
     
     G_c = 1.8e-3 * (max(0, (T_air - T_wall)))^(1/3) ; %m/s
 
-    W_trans = (1 - exp(-GH.p.C_pld * DryMassPlant / GH.p.GHFloorArea)) * GH.p.C_vplai * ...
+    W_trans = max(0, (1 - exp(-GH.p.C_pld * DryMassPlant / GH.p.GHFloorArea)) * GH.p.C_vplai * ...
     ((GH.p.C_v1 / (GH.p.GasConstantR * 1e3 * (T_air + 273.15))) ...
     * exp(GH.p.C_v2 * T_air / (T_air + GH.p.C_v3)) ...
-    - H_air) * GH.p.GHFloorArea ;%kg s^-1
+    - H_air)) * GH.p.GHFloorArea ;%kg s^-1
     W_cond = (G_c * (0.2522 * exp(0.0485 * T_air) * (T_air ... 
-    - T_out) - ((5.5638 * exp(0.0572 * T_air)) - H_air*1000)))/1000 * GH.p.GHFloorArea ; %kg s^-1
+    - T_out) - ((5.5638 * exp(0.0572 * T_air))/1000 - H_air)))/1000 * GH.p.GHWallArea ; %kg s^-1
     W_vent = VentilationRate * (H_air - H_out) ; %kg s^-1
-   
+    
 
 end
 
@@ -146,7 +146,7 @@ function [integral, error, ControllerOutputWatt, OpenWindowAngle] = PIController
     % Calculate control output
     proportional = kp * error;
     integral_component = ki * integral;
-    BoilerMaxWatt = 5000 ; %DUMMY
+    BoilerMaxWatt = 10000 ; %DUMMY
 
     Watt_Controller = k * (proportional + integral_component);
     Unlim_ControllerOutput = max(0, Watt_Controller);
@@ -169,7 +169,7 @@ end
     [integral(i+1), error(i), ControllerOutputWatt(i), OpenwindowAngle(i)] = PIControllerInput(GH, T(1,i), setpoint(i), dt, integral(i)) ;
     %[integral(i+1), error(i), ControllerOutputWatt(i)] = PIControllerInput(GH, T(1,i), heatingline(i), dt, heatingintegral(i)) ;
     
-    T_WaterIn(i+1) = T_WaterOut(i) + ControllerOutputWatt(i) / (GH.p.m_flow * GH.p.cp_water) ;
+    T_WaterIn(i+1) = min(99, T_WaterOut(i) + ControllerOutputWatt(i) / (GH.p.m_flow * GH.p.cp_water)) ;
 
     %[coolingerror(i), OpenWindowAngle(i)] = WindowController(T_air(1,i), coolingline(i), dt)
     OpenWindowAngle(i) = OpenwindowAngle(i) ;
@@ -202,7 +202,7 @@ end
     [Q_ground(:, i), QFloor(:, i)] = FGroundConduction(GH, FloorTemperature(:, i), T(:, i)) ;
     FloorTemperature(:, i+1) = FloorTemperature(:, i) + QFloor(:, i) * GH.p.GHFloorArea / CAPArray(4) * dt ;
 
-    q_rad_out(:,i) = Fq_rad_out(EmmitanceArray, T(:,i));
+    q_rad_out(:,i) = Fq_rad_out(EmmitanceArray, T(:,i), AreaArrayRad);
     Q_rad_in(:,i) = FQ_rad_in(FIRAbsorbanceArray, FIRDiffuseArray, AreaArrayRad, ViewMatrix, q_rad_out(:,i));
     Q_solar(:,i) = FQ_solar(TransmissionArray, SOLARDiffuseArray, SOLARAbsorbanceArray, AreaSunArray, SolarIntensity(i), AreaArray);
     J_sky(i) = SkyEmit(DewPoint(i),OutsideTemperature(i));
@@ -211,22 +211,23 @@ end
     Q_vent(1, i) = HeatByVentilation(GH, T(1, i), OutsideTemperature(i), VentilationRate(i)) ; 
     Q_vent(2: height(T), i) = zeros(height(T)-1, 1) ;
     Q_latent(5, i) = LatentHeat(-W_trans(i)) ;
+    Q_latent(1, i) = LatentHeat(-W_vent(i)) + LatentHeat(W_trans(i)) ;
 
     %Total heat transfer 
-    Q_tot(:,i) = Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) + Q_rad_in(:,i) - AreaArrayRad .* q_rad_out(:,i) + Q_heat(:,i);
+    Q_tot(:,i) = Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) + Q_rad_in(:,i) - q_rad_out(:,i) + Q_heat(:,i) + Q_latent(:, i);
 
     % Temperature Change
     T(:, i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
     FloorTemperature(1, i) = T(4,i) ;
     Energy_kWh(i) = ControllerOutputWatt(i) * dt / (1000 * 3600);  % Convert from W to kWh
     
-    if rem(i*dt/3600, 60) == 0 
-        disp('hour:', i*dt/3600)
+    if rem(i*dt/3600, 1) == 0 
+        disp('hour:')
+        disp(i*dt/3600)
     end
 
 end
 
-disp(sum(Energy_kWh(:)*0.2))
 
 
 figure("WindowStyle", "docked");

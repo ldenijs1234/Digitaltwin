@@ -20,32 +20,33 @@ plot(t(1:end-1), Q_vent(1,:))
 plot(t(1:end-1), Q_conv(1,:))
 plot(t(1:end-1), Q_solar(1,:))
 plot(t(1:end-1), Q_rad_in(1,:) - AreaArrayRad(1) * q_rad_out(1,:))
+plot(t(1:end-1), Q_latent(1,:))
 plot(t(1:end-1), Q_tot(1,:))
-legend('vent', 'convection', 'solar','radiation', 'total')
+legend('vent', 'convection', 'solar','radiation', 'latent', 'total')
 title('Air Heat Flows')
 hold off
 
-figure("WindowStyle", "docked");
-hold on
-plot(t(1:end-1), Q_sky(2,:)) 
-plot(t(1:end-1), Q_conv(2,:))
-plot(t(1:end-1), Q_solar(2,:))
-plot(t(1:end-1), Q_rad_in(2,:) - AreaArrayRad(2) * q_rad_out(2,:))
-plot(t(1:end-1), Q_tot(2,:))
-legend('sky', 'convection', 'solar','radiation', 'total')
-title('Cover Heat Flows')
-hold off
+% figure("WindowStyle", "docked");
+% hold on
+% plot(t(1:end-1), Q_sky(2,:)) 
+% plot(t(1:end-1), Q_conv(2,:))
+% plot(t(1:end-1), Q_solar(2,:))
+% plot(t(1:end-1), Q_rad_in(2,:) - AreaArrayRad(2) * q_rad_out(2,:))
+% plot(t(1:end-1), Q_tot(2,:))
+% legend('sky', 'convection', 'solar','radiation', 'total')
+% title('Cover Heat Flows')
+% hold off
 
-figure("WindowStyle", "docked");
-hold on
-plot(t(1:end-1), Q_sky(3,:)) 
-plot(t(1:end-1), Q_conv(3,:))
-plot(t(1:end-1), Q_solar(3,:))
-plot(t(1:end-1), Q_rad_in(3,:) - AreaArrayRad(3) * q_rad_out(3,:))
-plot(t(1:end-1), Q_tot(3,:))
-legend('sky', 'convection', 'solar','radiation', 'total')
-title('Wall Heat Flows')
-hold off
+% figure("WindowStyle", "docked");
+% hold on
+% plot(t(1:end-1), Q_sky(3,:)) 
+% plot(t(1:end-1), Q_conv(3,:))
+% plot(t(1:end-1), Q_solar(3,:))
+% plot(t(1:end-1), Q_rad_in(3,:) - AreaArrayRad(3) * q_rad_out(3,:))
+% plot(t(1:end-1), Q_tot(3,:))
+% legend('sky', 'convection', 'solar','radiation', 'total')
+% title('Wall Heat Flows')
+% hold off
 
 figure("WindowStyle", "docked");
 hold on
@@ -68,24 +69,24 @@ legend('convection', 'solar','radiation', 'total')
 title('Plant Heat Flows')
 hold off
 
-figure("WindowStyle", "docked");
-hold on 
-plot(t(1:end-1), Q_conv(6,:))
-plot(t(1:end-1), Q_solar(6,:))
-plot(t(1:end-1), Q_rad_in(6,:) - AreaArrayRad(6) * q_rad_out(6,:))
-plot(t(1:end-1), Q_heat(6, :))
-plot(t(1:end-1), Q_tot(6,:))
-legend( 'convection', 'solar','radiation','heat', 'total')
-title('Pipe Heat Flows')
-hold off
-
 % figure("WindowStyle", "docked");
 % hold on 
-% plot(t, T_WaterIn)
-% plot(t(1:end-1), T_WaterOut)
-% legend('In', 'Out')
-% title("Temperature water into heating pipe")
+% plot(t(1:end-1), Q_conv(6,:))
+% plot(t(1:end-1), Q_solar(6,:))
+% plot(t(1:end-1), Q_rad_in(6,:) - AreaArrayRad(6) * q_rad_out(6,:))
+% plot(t(1:end-1), Q_heat(6, :))
+% plot(t(1:end-1), Q_tot(6,:))
+% legend( 'convection', 'solar','radiation','heat', 'total')
+% title('Pipe Heat Flows')
 % hold off
+
+figure("WindowStyle", "docked");
+hold on 
+plot(t, T_WaterIn)
+plot(t(1:end-1), T_WaterOut)
+legend('In', 'Out')
+title("Temperature water into heating pipe")
+hold off
 
 % figure("WindowStyle", "docked");
 % hold on
@@ -98,13 +99,13 @@ hold off
 % legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Heatpipe','Outside', 'Setpoint')
 % hold off
 
-% figure("WindowStyle", "docked");
-% hold on
-% plot(t(1:end-1)/3600, ControllerOutputWatt)
-% xlabel("Time (h)")
-% ylabel("Boiler input (W)")
-% legend('Controller Boiler')
-% hold off
+figure("WindowStyle", "docked");
+hold on
+plot(t(1:end-1)/3600, ControllerOutputWatt)
+xlabel("Time (h)")
+ylabel("Boiler input (W)")
+legend('Controller Boiler')
+hold off
 
 % figure("WindowStyle", "docked");
 % hold on
@@ -145,9 +146,9 @@ hold off
 % title("Humidity flows")
 % hold off
 
-figure("WindowStyle", "docked")
-hold on
-plot(t/3600, SolarIntensity)
-plot(t/3600, SolarRadiation)
-title("Solar Intensity")
-hold off
+% figure("WindowStyle", "docked")
+% hold on
+% plot(t/3600, SolarIntensity)
+% plot(t/3600, SolarRadiation)
+% title("Solar Intensity")
+% hold off
