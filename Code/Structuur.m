@@ -129,7 +129,7 @@ function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeedkph, T_out, O
     VentilationRate = 0.5 * p.NumberOfWindows * (v_wind^2 + v_temp^2)^(0.5) ;
 end
 
-function [integral, error, ControllerOutputWatt, OpenWindowAngle] = PIControllerInput(GH, T_air, setpoint, dt, integral)
+function [integral, error, ControllerOutputWatt, OpenWindowAngle] = PIControllerInput(GH, T_out, T_air, setpoint, dt, integral)
 
     %PI controller
     k = 2000;        % Multiplication
@@ -148,9 +148,14 @@ function [integral, error, ControllerOutputWatt, OpenWindowAngle] = PIController
     integral_component = ki * integral;
     BoilerMaxWatt = 50000 ; %DUMMY
 
+    T_max = 99;
+    max_heating = T_max-T_out;
+    max_heatingWatt = max_heating*GH.p.m_flow*GH.p.cp_water;
+
+
     Watt_Controller = k * (proportional + integral_component);
     Unlim_ControllerOutput = max(0, Watt_Controller);
-    ControllerOutputWatt = min(BoilerMaxWatt, Unlim_ControllerOutput);
+    ControllerOutputWatt = min(BoilerMaxWatt, min(Unlim_ControllerOutput,max_heatingWatt));
     WindowAngle = min(45, -kpv*error);
     OpenWindowAngle = max(0, WindowAngle);
 end
