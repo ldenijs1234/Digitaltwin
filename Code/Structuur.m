@@ -11,7 +11,7 @@ end                                                             %q(:,i) = F
 
 
 function Q = FQ_rad_in(absorbance, diffuse, Area, Viewf, qrad)      %imput: parameter arrays, viewfactor matrix and q radiance array(:,i)
-    Q = (Area .* Viewf * qrad);                       %how much each object absorbs
+    Q =(Area .* Viewf * qrad);                       %how much each object absorbs
     %Q(1,:) = sum(diffuse .* Area .* Viewf * qrad);                   %inside air recieves diffused radiation
 end
 
