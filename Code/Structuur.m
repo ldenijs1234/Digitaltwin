@@ -78,7 +78,7 @@ function [W_trans, W_cond, W_vent, W_fog] = vaporflows(GH, T_air, T_wall, T_out,
     W_cond = max(0, (G_c * (0.2522 * exp(0.0485 * T_air) * (T_air ... 
     - T_out) - ((5.5638 * exp(0.0572 * T_air)) - H_air*1000)))/1000 * GH.p.GHFloorArea) ; %kg s^-1
     W_vent = VentilationRate * (H_air - H_out) ; %kg s^-1
-    W_fog = GH.p.phi_fog * U_fog ; %kg s^-1
+    W_fog = GH.p.phi_fog * U_fog ; %kg s^-1, controller input
 
 end
 
