@@ -1,7 +1,8 @@
 % Function to calculate the energy cost for a given week and day
-function [weekcost, simdaycost] = Energycosttt(file, dt, total_time, dayNumber)
+function [weekcost, simdaycost] = Energycost(file, dt, total_time, date)
     
     tbl = readtable(file);
+    dayNumber = weekday(date)-1 ; % Get the day of the week starting from 0 for Sunday
 
     EnergyCost_Euro_per_MWh = table2array(tbl(:,5));
     EnergyCost_Euro_per_kWh = EnergyCost_Euro_per_MWh ./ 1000;
@@ -18,13 +19,10 @@ function [weekcost, simdaycost] = Energycosttt(file, dt, total_time, dayNumber)
 
     % Time vector for interpolation
     new_time_hours = 0:dt/3600:24*7;
-    
+
     % Interpolate the price array for a week
     weekcost = interp1(time_hours, price_forecast, new_time_hours, 'linear', 'extrap');
-    
+    daycost = weekcost(dayNumber*24+1:(dayNumber+1)*24);
     % Give price array for length of simulation
-    simdaycost = weekcost(1:total_time*((length(new_time_hours)-1)/24*7));
+    simdaycost = daycost(1:total_time*((length(new_time_hours)-1)/24*7));
 end
-
-date = '2024-05-30' ; % Date of the simulation 'yyyy-mm-dd'
-dayNumber = weekday(date) ; % Get the day of the week starting from 1 for Sunday
