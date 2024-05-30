@@ -205,8 +205,8 @@ for i = 1:length(t) - 1
     Q_conv(:,i) = convection(ConvectionCoefficientsIn(:,i), ConvectionCoefficientsOut(:, i), T(:,i), OutsideTemperature(i), ConvAreaArray);
     Q_vent(1, i) = HeatByVentilation(GH, T(1, i), OutsideTemperature(i), VentilationRate(i)) ; 
     Q_vent(2: height(T), i) = zeros(height(T)-1, 1) ;
-    % Q_latent(5, i) = LatentHeat(-W_trans(i)) ; Q_latent(2, i) = LatentHeat(W_cond(i)) ;
-    Q_latent(1, i) = LatentHeat(-W_vent(i)) + LatentHeat(-W_cond(i)) + LatentHeat(-W_fog(i));%+ LatentHeat(W_trans(i)) ;
+    Q_latent(5, i) = LatentHeat(-W_trans(i)) ; Q_latent(2, i) = LatentHeat(W_cond(i)) ;
+    Q_latent(1, i) = LatentHeat(-W_vent(i)) + LatentHeat(-W_cond(i)) + LatentHeat(-W_fog(i))+ LatentHeat(W_trans(i)) ;
 
     %Total heat transfer 
     Q_tot(:,i) = Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) + Q_rad_in(:,i) - q_rad_out(:,i) .* AreaArrayRad + Q_heat(:,i) + Q_latent(:, i);
