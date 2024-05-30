@@ -161,23 +161,20 @@ end
 % end
 
 for i = 1:length(t) - 1
-        
+    
+    % Controller inputs
 
-    % if T(1, i) > 20
-    %     OpenWindowAngle(i) = 10 ;
-    % else
-    %     OpenWindowAngle(i) = 1 ;
-    % end
     [h_pipeout(i), Q_heat(6,i), water_arrayOut] = heating_pipe(GH, T_WaterIn(i), T(1,i), T(6,i), dt, water_array) ;
     T_WaterOut(i) = water_arrayOut(end) ; water_array = water_arrayOut ;
 
-    [integral(i+1), heatingerror(i), ControllerOutputWatt(i), OpenwindowAngle(i)] = PIController(T_WaterOut(i) ,T(1,i), heatingline(i), dt, integral(i)) ;
+    [integral(i+1), heatingerror(i + 1), ControllerOutputWatt(i), OpenwindowAngle(i)] = PIController(T_WaterOut(i) ,T(1,i), heatingline(i), dt, integral(i), heatingerror(i)) ;
     [coolingerror(i), OpenWindowAngle(i), U_fog(i)] = WindowController(T(1,i), coolingline(i), dt);
     
     T_WaterIn(i+1) = min(99,T_WaterOut(i) + ControllerOutputWatt(i) / (GH.p.m_flow * GH.p.cp_water)) ;
 
     %[coolingerror(i), OpenWindowAngle(i)] = WindowController(T_air(1,i), coolingline(i), dt)
     % OpenWindowAngle(i) = OpenwindowAngle(i) ;
+    
     %Variable parameter functions (+ convection rate, ventilation rate...)
     VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i), OpenWindowAngle(i)) ;
 
@@ -192,8 +189,11 @@ for i = 1:length(t) - 1
     % Vapor flows and balance
     [W_trans(i), W_cond(i), W_vent(i), W_fog(i)] = vaporflows(GH, T(1, i), T(2, i), OutsideTemperature(1,i), AddStates(1, i), OutsideHumidity(i), AddStates(3,i), VentilationRate(i),  U_fog(i));
     HumidityDot = HumidityBalance(GH, W_trans(i), W_cond(i), W_vent(i), W_fog(i));
-    AddStates(1, i+1) = AddStates(1, i) + HumidityDot*dt ;
-
+    MaxHumidity = rh2vaporDens(T(1,i), 100) ;
+    NewHumidity = AddStates(1, i) + HumidityDot*dt ;
+    AddStates(1, i+1) = min(MaxHumidity, NewHumidity) ;
+   
+    
     % CO2 flows and balance
     [C_trans(i), C_vent(i), C_respD(i), C_respC(i)] = CO2flows(GH, AddStates(3,i), SolarIntensity(i), T(1, i), AddStates(2, i), OutsideCO2, VentilationRate(i)) ;
     CO2Dot = CO2Balance(GH, C_trans(i), C_vent(i), CO2_injection, C_respC(i)) ;
