@@ -38,4 +38,4 @@ OutsideHumidity =   rh2vaporDens(OutsideTemperature, OutsideRelhumidity) ; %kg/m
 OutsideCO2 = 0.0012 ; %kg/m^3
 GroundTemperature = 10  ; % DUMMY!!!!!!!!!!!    
 
-HardPush()
+

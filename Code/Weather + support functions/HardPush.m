@@ -1,6 +1,6 @@
 %Verassing
 
-function HardPush()
+function HardPush(a)
     figure()
     hold on
     th = 0:pi/50:2*pi;
@@ -15,6 +15,7 @@ function HardPush()
 
     yunit = -8 * xunit.^2 + 8;
     h = plot(xunit, yunit);
-    title('Bergs leutertje')
+    b = append(a, ' lul');
+    title(b);
     hold off
 end
