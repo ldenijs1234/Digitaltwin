@@ -25,7 +25,7 @@ initial_T = [AirTemperature; CoverTemperature; WallTemperature; init_FloorTemper
 set_FloorTemperature = init_FloorTemperature ;
 
 
-Humidity = 0.012 ; % kg/m^3 air
+Humidity = 0.009 ; % kg/m^3 air
 
 CO2Air = 0.000464 ; % kg/m^3 air
 
