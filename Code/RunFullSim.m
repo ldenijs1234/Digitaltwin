@@ -4,6 +4,8 @@ time_steps = simulation_time/dt+1 ;
 filename = 'Delft30-5.csv'; % File name of the weather data CSV file 
 [time_vec, OutsideTemperatureF, OutsideRelhumidityF, SolarRadiationF, WindspeedF, WinddirectionF, SealevelpressureF, CloudCoverF, DewPointF] = Weather2Arrays(filename, dt, total_time) ;
 
+file = 'Netherlands.csv'; % File name of the energy cost CSV file
+[weekcost, simdaycost] = Energycost(file, dt, total_time) ;
 
 
 SimCount = SimCount + 1 ;                   % keep count on number of simulations done
