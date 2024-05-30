@@ -36,16 +36,16 @@ hold off
 % title('Cover Heat Flows')
 % hold off
 
-% figure("WindowStyle", "docked");
-% hold on
-% plot(t(1:end-1), Q_sky(3,:)) 
-% plot(t(1:end-1), Q_conv(3,:))
-% plot(t(1:end-1), Q_solar(3,:))
-% plot(t(1:end-1), Q_rad_in(3,:) - AreaArrayRad(3) * q_rad_out(3,:))
-% plot(t(1:end-1), Q_tot(3,:))
-% legend('sky', 'convection', 'solar','radiation', 'total')
-% title('Wall Heat Flows')
-% hold off
+figure("WindowStyle", "docked");
+hold on
+plot(t(1:end-1), Q_sky(3,:)) 
+plot(t(1:end-1), Q_conv(3,:))
+plot(t(1:end-1), Q_solar(3,:))
+plot(t(1:end-1), Q_rad_in(3,:) - AreaArrayRad(3) * q_rad_out(3,:))
+plot(t(1:end-1), Q_tot(3,:))
+legend('sky', 'convection', 'solar','radiation', 'total')
+title('Wall Heat Flows')
+hold off
 
 figure("WindowStyle", "docked");
 hold on
