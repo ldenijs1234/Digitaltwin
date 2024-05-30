@@ -36,16 +36,16 @@
 % title('Cover Heat Flows')
 % hold off
 
-figure("WindowStyle", "docked");
-hold on
-plot(t(1:end-1), Q_sky(3,:)) 
-plot(t(1:end-1), Q_conv(3,:))
-plot(t(1:end-1), Q_solar(3,:))
-plot(t(1:end-1), Q_rad_in(3,:) - AreaArrayRad(3) * q_rad_out(3,:))
-plot(t(1:end-1), Q_tot(3,:))
-legend('sky', 'convection', 'solar','radiation', 'total')
-title('Wall Heat Flows')
-hold off
+% figure("WindowStyle", "docked");
+% hold on
+% plot(t(1:end-1), Q_sky(3,:)) 
+% plot(t(1:end-1), Q_conv(3,:))
+% plot(t(1:end-1), Q_solar(3,:))
+% plot(t(1:end-1), Q_rad_in(3,:) - AreaArrayRad(3) * q_rad_out(3,:))
+% plot(t(1:end-1), Q_tot(3,:))
+% legend('sky', 'convection', 'solar','radiation', 'total')
+% title('Wall Heat Flows')
+% hold off
 
 % figure("WindowStyle", "docked");
 % hold on
@@ -80,13 +80,13 @@ hold off
 % title('Pipe Heat Flows')
 % hold off
 
-% figure("WindowStyle", "docked");
-% hold on 
-% plot(t, T_WaterIn)
-% plot(t(1:end-1), T_WaterOut)
-% legend('In', 'Out')
-% title("Temperature water into heating pipe")
-% hold off
+figure("WindowStyle", "docked");
+hold on 
+plot(t, T_WaterIn)
+plot(t(1:end-1), T_WaterOut)
+legend('In', 'Out')
+title("Temperature water into heating pipe")
+hold off
 
 % figure("WindowStyle", "docked");
 % hold on
@@ -99,18 +99,18 @@ hold off
 % legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Heatpipe','Outside', 'Setpoint')
 % hold off
 
-% figure("WindowStyle", "docked");
-% hold on
-% plot(t(1:end-1)/3600, ControllerOutputWatt)
-% xlabel("Time (h)")
-% ylabel("Boiler input (W)")
-% legend('Controller Boiler')
-% hold off
+figure("WindowStyle", "docked");
+hold on
+plot(t(1:end-1)/3600, ControllerOutputWatt)
+xlabel("Time (h)")
+ylabel("Boiler input (W)")
+legend('Controller Boiler')
+hold off
 
 figure("WindowStyle", "docked");
 hold on
 plot(t(1:end-1)/3600, OpenWindowAngle)
-plot(t(1:end-1)/3600, error)
+plot(t(1:end-1)/3600, coolingerror)
 xlabel("Time (h)")
 ylabel("OpenWindowAngle")
 legend('Controller Window', 'error')
@@ -147,9 +147,9 @@ legend("trans", "cond", "vent", "fog")
 title("Humidity flows")
 hold off
 
-% figure("WindowStyle", "docked")
-% hold on
-% plot(t/3600, SolarIntensity)
-% plot(t/3600, SolarRadiation)
-% title("Solar Intensity")
-% hold off
+figure("WindowStyle", "docked")
+hold on
+plot(t/3600, SolarIntensity)
+plot(t/3600, SolarRadiation)
+title("Solar Intensity")
+hold off

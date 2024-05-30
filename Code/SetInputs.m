@@ -22,25 +22,20 @@ coolingline_total = heatingline_total + 4;
 coolingline = coolingline_total(SimStart:SimEnd) ;
 coolingerror = zeros(1, length(t)-1); % Error array
 
-% SolarRadiation = 100 + 100*sin(2*pi * t/(24*60*60)) ; 
-% cloud = 0.7
-% OutsideTemperature = 15 + 5*sin(2*pi * t/(24*60*60)) ;%OutsideTemperature ;  % Outside temperature as a field of GH.d
-% WindSpeed = 4.5 * ones(1, length(t)) ; %DUMMY !!! (4.5)
-% OutsideHumidity =  0.01* ones(1, length(t)) ;
-
+% Weather conditions
 cloud = CloudCover./100 ; % 0-1 cloud cover
 LdClear = 213+5.5*OutsideTemperature;                      % Equation 5.26
 epsClear = LdClear./(sigma*(OutsideTemperature+273.15).^4);   % Equation 5.22
 epsCloud = (1-0.84*cloud).*epsClear+0.84*cloud;             % Equation 5.32
 LdCloud = epsCloud.*sigma.*(OutsideTemperature+273.15).^4;    % Equation 5.22
 
-SkyTemperature = (LdCloud/sigma).^(0.25)-273.15 ; % Katzin
+SkyTemperature = (LdCloud/sigma).^(0.25)-273.15 ; % (Katzin, 2021)
 
 
-SolarIntensity =  SolarRadiation .* (1-0.5*cloud); %W/m^2
-OutsideHumidity =   rh2vaporDens(OutsideTemperature, OutsideRelhumidity) ; %kg/m^3
+SolarIntensity =  SolarRadiation .* (1-0.5*cloud); %W/m^2  % Radiation gets blocked by clouds, if cloud cover is 1 we assume 50% radiates through
+OutsideHumidity =   rh2vaporDens(OutsideTemperature, OutsideRelhumidity) ; %kg/m^3 
 
 OutsideCO2 = 0.0012 ; %kg/m^3
 GroundTemperature = 10  ; % DUMMY!!!!!!!!!!!    
 
-
+HardPush()

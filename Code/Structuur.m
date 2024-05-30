@@ -5,7 +5,7 @@
 %state 5: plant
 %state 6: heatpipe
 
-function q = Fq_rad_out(emissivity, T, Area)                          %imput: emissivity array and T(:,i)
+function q = Fq_rad_out(emissivity, T)                          %input: emissivity array and T(:,i)
     q = 5.670374419e-8 * emissivity .* ((T + 273.15).^4);    %emittance of components
 end                                                             %q(:,i) = F
 
@@ -82,7 +82,7 @@ function [W_trans, W_cond, W_vent, W_fog] = vaporflows(GH, T_air, T_wall, T_out,
 
 end
 
-function h_af = ConvFloor(T_floor, T_in)
+function h_af = ConvFloor(T_floor, T_in) %convection coefficient between floor and air (De Zwart, 1996)
     if T_floor > T_in
         h_af = 1.7 * (T_floor - T_in)^(1/3);
     else 
@@ -129,37 +129,6 @@ function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeedkph, T_out, O
     VentilationRate = 0.5 * p.NumberOfWindows * (v_wind^2 + v_temp^2)^(0.5) ;
 end
 
-% function [integral, error, ControllerOutputWatt, OpenWindowAngle] = PIControllerInput(GH, T_out, T_air, setpoint, dt, integral)
-
-%     %PI controller
-%     k = 2000;        % Multiplication
-%     kp = 5;       % Proportional gain
-%     ki = 0.000001;       % Integral gain
-%     kpv = 10 ;
-
-%     % Initialize variables
-%     % Calculate error
-%     error = setpoint - T_air;
-%     % Update integral term
-%     integral = max(0, integral + error * dt);
-    
-%     % Calculate control output
-%     proportional = kp * error;
-%     integral_component = ki * integral;
-%     BoilerMaxWatt = 50000 ; %DUMMY
-
-%     T_max = 99;
-%     max_heating = T_max-T_out;
-%     max_heatingWatt = max_heating*GH.p.m_flow*GH.p.cp_water;
-
-
-%     Watt_Controller = k * (proportional + integral_component);
-%     Unlim_ControllerOutput = max(0, Watt_Controller);
-%     ControllerOutputWatt = min(BoilerMaxWatt, min(Unlim_ControllerOutput,max_heatingWatt));
-%     WindowAngle = min(45, -kpv*error);
-%     OpenWindowAngle = max(0, WindowAngle);
-% end
-
 for i = 1:length(t) - 1
     
     % Controller inputs
@@ -172,8 +141,6 @@ for i = 1:length(t) - 1
     
     T_WaterIn(i+1) = min(99,T_WaterOut(i) + ControllerOutputWatt(i) / (GH.p.m_flow * GH.p.cp_water)) ;
 
-    %[coolingerror(i), OpenWindowAngle(i)] = WindowController(T_air(1,i), coolingline(i), dt)
-    % OpenWindowAngle(i) = OpenwindowAngle(i) ;
     
     %Variable parameter functions (+ convection rate, ventilation rate...)
     VentilationRate(i) = VentilationRatecalc(GH, T(1, i), WindSpeed(i), OutsideTemperature(i), OpenWindowAngle(i)) ;
@@ -186,13 +153,34 @@ for i = 1:length(t) - 1
     ConvectionCoefficientsIn(5,i) = h_ap ;
     ConvectionCoefficientsIn(6,i) = h_pipeout(i) ;
     
+    if AddStates(4,1) == 0
+        MassPlant = MassPlanInit ;
+      else
+        MassPlant = AddStates(4,1) ; 
+    end
+
+    RelHumidity(i) = VaporDens2rh(T(1,i), AddStates(1,i)) ;
+
+    cp_airVar = AirProperties(T(1,i), 1084, RelHumidity(i), 'c_p') ;
+    rho_airVar = AirProperties(T(1,i), 1084, RelHumidity(i), 'rho') ;
+
+    % Redefining CAPs for new humidity and plant mass
+    CAPArray = [cp_airVar * rho_airVar * GH.p.GHVolume; 
+                GH.p.cp_glass * GH.p.rho_glass * GH.p.GHWallThickness * AreaArray(2);
+                GH.p.cp_glass * GH.p.rho_glass * GH.p.GHWallThickness * AreaArray(3);
+                GH.p.cp_floor * GH.p.rho_floor * GH.p.GHFloorArea * GH.p.GHFloorThickness;
+                GH.p.cp_lettuce * MassPlant;
+                GH.p.Vpipe*GH.p.rho_steel*...
+            GH.p.cp_steel+pi*GH.p.pipeL*GH.p.r_0^2*GH.p.rho_water*GH.p.cp_water];  
+
+
+    
+
     % Vapor flows and balance
     [W_trans(i), W_cond(i), W_vent(i), W_fog(i)] = vaporflows(GH, T(1, i), T(2, i), OutsideTemperature(1,i), AddStates(1, i), OutsideHumidity(i), AddStates(3,i), VentilationRate(i),  U_fog(i));
     HumidityDot = HumidityBalance(GH, W_trans(i), W_cond(i), W_vent(i), W_fog(i));
-    MaxHumidity = rh2vaporDens(T(1,i), 100) ;
     NewHumidity = AddStates(1, i) + HumidityDot*dt ;
-    AddStates(1, i+1) = min(MaxHumidity, NewHumidity) ;
-   
+    
     
     % CO2 flows and balance
     [C_trans(i), C_vent(i), C_respD(i), C_respC(i)] = CO2flows(GH, AddStates(3,i), SolarIntensity(i), T(1, i), AddStates(2, i), OutsideCO2, VentilationRate(i)) ;
@@ -226,6 +214,12 @@ for i = 1:length(t) - 1
     FloorTemperature(1, i) = T(4,i) ;
     Energy_kWh(i) = ControllerOutputWatt(i) * dt / (1000 * 3600);  % Convert from W to kWh
     
+    % Bound for maximal humidity
+    MaxHumidity = rh2vaporDens(T(1,i+1), 100) ;
+    AddStates(1, i+1) = min(MaxHumidity, NewHumidity) ;
+    W_CondHum(i) = max(0, NewHumidity - MaxHumidity) ;
+
+
     if rem(i*dt/3600, 1) == 0 
         disp('hour:')
         disp(i*dt/3600)
@@ -254,32 +248,7 @@ plot(t/3600, AddStates(2,:))
 legend("Humidity", "CO2")
 hold off
 
-figure("WindowStyle", "docked")
-hold on
-plot(t/3600, AddStates(3,:))
-legend("Dry Mass Plant")
-hold off
 
-% figure("WindowStyle", "docked");
-% hold on 
-% plot(t(1:end-1)/3600, Energy_kWh(:))
-% hold off
-% sum(Energy_kWh(:)*0.2);
-
-% figure("WindowStyle", "docked");
-% hold on
-% plot(t(1:end-1)/3600, W_trans)
-% plot(t(1:end-1)/3600, W_cond)
-% plot(t(1:end-1)/3600, W_vent)
-% legend( 'trans', 'cond', 'vent')
-
-
-% figure("WindowStyle", "docked")
-% hold on
-% plot(t/3600, FloorTemperature)
-% xlabel("Time (h)")
-% ylabel("Floor layer temperature (°C)")
-% hold off
 
 
 
