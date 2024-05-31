@@ -138,8 +138,8 @@ for i = 1:length(t) - 1
     [h_pipeout(i), Q_heat(6,i), water_arrayOut] = heating_pipe(GH, T_WaterIn(i), T(1,i), T(6,i), dt, water_array) ;
     T_WaterOut(i) = water_arrayOut(end) ; water_array = water_arrayOut ;
 
-    [integral(i+1), heatingerror(i + 1), ControllerOutputWatt(i)] = PIController(T_WaterOut(i) ,T(1,i), heatingline(i), dt, integral(i), heatingerror(i)) ;
-    [coolingerror(i), OpenWindowAngle(i), U_fog(i)] = WindowController(T(1,i), coolingline(i), dt);
+    [integral(i+1), heatingerror(i + 1), ControllerOutputWatt(i)] = PIController(T_WaterOut(i) ,T(1,i), meanline(i), dt, integral(i), heatingerror(i)) ;
+    [coolingerror(i), OpenWindowAngle(i), U_fog(i)] = WindowController(T(1,i), meanline(i), dt);
     
     T_WaterIn(i+1) = min(99,T_WaterOut(i) + ControllerOutputWatt(i) / (GH.p.m_flow * GH.p.cp_water)) ;
 
@@ -173,7 +173,7 @@ for i = 1:length(t) - 1
                 GH.p.cp_floor * GH.p.rho_floor * GH.p.GHFloorArea * GH.p.GHFloorThickness;
                 GH.p.cp_lettuce * MassPlant;
                 GH.p.Vpipe*GH.p.rho_steel*...
-            GH.p.cp_steel+pi*GH.p.pipeL*GH.p.r_0^2*GH.p.rho_water*GH.p.cp_water];  
+            GH.p.cp_steel];  
 
 
     

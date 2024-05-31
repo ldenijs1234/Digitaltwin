@@ -22,6 +22,8 @@ coolingline_total = heatingline_total + 4;
 coolingline = coolingline_total(SimStart:SimEnd) ;
 coolingerror = zeros(1, length(t)-1); % Error array
 
+meanline = (heatingline + coolingline)/2 ;
+
 % Weather conditions
 cloud = CloudCover./100 ; % 0-1 cloud cover
 LdClear = 213+5.5*OutsideTemperature;                      % Equation 5.26
