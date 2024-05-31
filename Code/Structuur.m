@@ -246,7 +246,7 @@ ylabel("Temperature (°C)")
 legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Heatpipe','Outside', 'Heating Line', 'Cooling Line')
 hold off
 
-disp(sum(Energy_kWh.*simdaycost));
+disp(sum(Energy_kWh.*simdaycost(1:end-1)));
 
 
 

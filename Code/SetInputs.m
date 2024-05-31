@@ -1,7 +1,4 @@
-% Set user inputs and out-of-power conditions (exam. weather)
-
 % User Inputs
-
 CO2_injection = 0 ;   % kg/s
 OpenWindowAngle = 30 * ones(1, length(t)-1) ; %in degrees
 

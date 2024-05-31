@@ -25,7 +25,7 @@ hWaitBar2 = waitbar(0, 'Please wait...') ;
 iteration_amount = 10;
 for n = 2:iteration_amount
 
-    waitbar(n / iteration_amount), hWaitBar2, sprintf('Runs: %d%%', round(n) )));
+    waitbar(n / iteration_amount), hWaitBar2, sprintf('Runs: %d%%', round(n) );
 
     function [T_st_test, delta] = opt(T_st(:,n-1))
 
