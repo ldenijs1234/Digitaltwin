@@ -27,9 +27,9 @@ GH.p.           GHHeight = 3 ; %m
 GH.p.           GHWallThickness = 3e-3 ; %m
 GH.p.           GHFloorThickness = 1e-2 ;	%m
 
-GH.p.           NumberOfWindows = 50 ; 
-GH.p.           WindowLength = 0.8 ;
-GH.p.           WindowHeight = 0.4 ;
+GH.p.           NumberOfWindows = 100 ; 
+GH.p.           WindowLength = 1.5 ;
+GH.p.           WindowHeight = 0.8 ;
 GH.p.           RoofAngle = 26 ; % degrees, same as Venlo type
 
 GH.p.           WindowArea = GH.p.WindowHeight*GH.p.WindowLength ;
