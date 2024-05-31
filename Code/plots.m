@@ -121,8 +121,8 @@ figure("WindowStyle", "docked")
 hold on
 plot(t/3600, AddStates(1,:))
 plot(t/3600, OutsideHumidity)
-legend("Indoor Humidity", "Outside Humdity")
-title("Humidity")
+plot(t/3600, AddStates(2,:))
+legend("Inside Humidity", "Outside Humidity", "CO2")
 hold off
 
 % figure("WindowStyle", "docked")

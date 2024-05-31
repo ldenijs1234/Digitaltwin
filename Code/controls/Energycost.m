@@ -26,6 +26,7 @@ function [price_array_W6, price_array_W5, price_array_W4, simdaycost, day_averag
     price_array_W6 = interp1(time_hours, price_arrayy_W6, new_time_hours, 'linear', 'extrap');
     price_array_W5 = interp1(time_hours, price_arrayy_W5, new_time_hours, 'linear', 'extrap');
     price_array_W4 = interp1(time_hours, price_arrayy_W4, new_time_hours, 'linear', 'extrap');
+    
     % Give price array for length of simulation
     simdaycost = daycost(1:total_time*(length(new_time_hours)/24));
     day_average = sum(simdaycost)/length(simdaycost)*ones(1, length(new_time_hours));

@@ -141,7 +141,7 @@ for i = 1:length(t) - 1
     [integral(i+1), heatingerror(i + 1), ControllerOutputWatt(i)] = PIController(T_WaterOut(i) ,T(1,i), meanline(i), dt, integral(i), heatingerror(i)) ;
     [coolingerror(i), OpenWindowAngle(i), U_fog(i)] = WindowController(T(1,i), meanline(i), dt);
     
-    T_WaterIn(i+1) = min(99,T_WaterOut(i) + ControllerOutputWatt(i) / (GH.p.m_flow * GH.p.cp_water)) ;
+    T_WaterIn(i+1) = min(99,T_WaterOut(i) + ControllerOutputWatt(i) / (GH.p.Npipes*GH.p.m_flow * GH.p.cp_water)) ;
 
     
     %Variable parameter functions (+ convection rate, ventilation rate...)
@@ -246,15 +246,7 @@ ylabel("Temperature (°C)")
 legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Heatpipe','Outside', 'Heating Line', 'Cooling Line')
 hold off
 
-figure("WindowStyle", "docked")
-hold on
-plot(t/3600, AddStates(1,:))
-plot(t/3600, OutsideHumidity)
-plot(t/3600, AddStates(2,:))
-legend("Inside Humidity", "Outside Humidity", "CO2")
-hold off
-
-
+disp(sum(Energy_kWh.*simdaycost));
 
 
 

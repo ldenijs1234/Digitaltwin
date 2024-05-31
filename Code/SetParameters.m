@@ -1,4 +1,4 @@
-% Set variables (for matrices), parameters saved in general field 'GH' under field 'p'
+% Set variables (for matrices), parameters saved in structure 'GH' under field 'p'
 
 % General parameters
 GH.p.           cp_air = 1003.5 ; %J kg^-1 K^-1
