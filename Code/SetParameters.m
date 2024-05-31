@@ -204,3 +204,5 @@ ViewMatrix = [0,     0,      0,      0,      0,      0;   %check if sum(ViewMatr
              0,     F_pc,   F_pw,   F_pf,   F_pp,   F_ph;
              0,     F_hc,   F_hw,   F_hf,   F_hp,   F_hh];
 
+ViewMatrix = ViewMatrix.';
+
