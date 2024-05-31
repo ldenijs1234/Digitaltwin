@@ -129,6 +129,8 @@ function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeedkph, T_out, O
     VentilationRate = 0.5 * p.NumberOfWindows * (v_wind^2 + v_temp^2)^(0.5) ;
 end
 
+hWaitBar = waitbar(0, 'Please wait...') ;
+
 for i = 1:length(t) - 1
     
     % Controller inputs
@@ -136,7 +138,7 @@ for i = 1:length(t) - 1
     [h_pipeout(i), Q_heat(6,i), water_arrayOut] = heating_pipe(GH, T_WaterIn(i), T(1,i), T(6,i), dt, water_array) ;
     T_WaterOut(i) = water_arrayOut(end) ; water_array = water_arrayOut ;
 
-    [integral(i+1), heatingerror(i + 1), ControllerOutputWatt(i), OpenwindowAngle(i)] = PIController(T_WaterOut(i) ,T(1,i), heatingline(i), dt, integral(i), heatingerror(i)) ;
+    [integral(i+1), heatingerror(i + 1), ControllerOutputWatt(i)] = PIController(T_WaterOut(i) ,T(1,i), heatingline(i), dt, integral(i), heatingerror(i)) ;
     [coolingerror(i), OpenWindowAngle(i), U_fog(i)] = WindowController(T(1,i), coolingline(i), dt);
     
     T_WaterIn(i+1) = min(99,T_WaterOut(i) + ControllerOutputWatt(i) / (GH.p.m_flow * GH.p.cp_water)) ;
@@ -203,8 +205,8 @@ for i = 1:length(t) - 1
     Q_conv(:,i) = convection(ConvectionCoefficientsIn(:,i), ConvectionCoefficientsOut(:, i), T(:,i), OutsideTemperature(i), ConvAreaArray);
     Q_vent(1, i) = HeatByVentilation(GH, T(1, i), OutsideTemperature(i), VentilationRate(i)) ; 
     Q_vent(2: height(T), i) = zeros(height(T)-1, 1) ;
-    % Q_latent(5, i) = LatentHeat(-W_trans(i)) ; Q_latent(2, i) = LatentHeat(W_cond(i)) ;
-    Q_latent(1, i) = LatentHeat(-W_vent(i)) + LatentHeat(-W_cond(i)) + LatentHeat(-W_fog(i));%+ LatentHeat(W_trans(i)) ;
+    Q_latent(5, i) = LatentHeat(-W_trans(i)) ; Q_latent(2, i) = LatentHeat(W_cond(i)) ;
+    Q_latent(1, i) = LatentHeat(-W_vent(i)) + LatentHeat(-W_cond(i)) + LatentHeat(-W_fog(i))+ LatentHeat(W_trans(i)) ;
 
     %Total heat transfer 
     Q_tot(:,i) = Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) + Q_rad_in(:,i) - q_rad_out(:,i) .* AreaArrayRad + Q_heat(:,i) + Q_latent(:, i);
@@ -225,9 +227,13 @@ for i = 1:length(t) - 1
         disp(i*dt/3600)
     end
 
+    if rem(i*dt/360, 1) == 0 
+        waitbar(sqrt(i*dt / simulation_time), hWaitBar, sprintf('Progress: %d%%', round(sqrt(i*dt / simulation_time) * 100)));
+    end
+
 end
 
-
+close(hWaitBar);
 
 figure("WindowStyle", "docked");
 hold on

@@ -44,6 +44,3 @@ function [time_vec, OutsideTemperature, OutsideRelhumidity, SolarRadiation, Wind
     time_vec = new_time_hours;
 end
 
-
-
-

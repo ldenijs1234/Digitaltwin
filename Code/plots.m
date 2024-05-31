@@ -102,6 +102,7 @@ hold off
 figure("WindowStyle", "docked");
 hold on
 plot(t(1:end-1)/3600, ControllerOutputWatt)
+plot(t/3600, heatingerror)
 xlabel("Time (h)")
 ylabel("Boiler input (W)")
 legend('Controller Boiler')
@@ -131,11 +132,11 @@ hold off
 % legend("DryWeight")
 % hold off
 
-% figure("WindowStyle", "docked")
-% hold on
-% plot(t(1:end-1)/3600, C_trans)
-% legend("trans")
-% hold off
+figure("WindowStyle", "docked")
+hold on
+plot(t(1:end-1)/3600, RelHumidity)
+legend("RelHumidity")
+hold off
 
 figure("WindowStyle", "docked")
 hold on
@@ -147,9 +148,9 @@ legend("trans", "cond", "vent", "fog")
 title("Humidity flows")
 hold off
 
-figure("WindowStyle", "docked")
-hold on
-plot(t/3600, SolarIntensity)
-plot(t/3600, SolarRadiation)
-title("Solar Intensity")
-hold off
+% figure("WindowStyle", "docked")
+% hold on
+% plot(t/3600, SolarIntensity)
+% plot(t/3600, SolarRadiation)
+% title("Solar Intensity")
+% hold off

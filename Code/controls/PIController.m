@@ -1,11 +1,11 @@
 
 
-function [integral, error, ControllerOutputWatt, OpenWindowAngle] = PIController(T_WaterOut, T_air, setpoint, dt, integral, prev_error)
+function [integral, error, ControllerOutputWatt] = PIController(T_WaterOut, T_air, setpoint, dt, integral, prev_error)
     %PI controller
     k = 2000;        % Multiplication
     kp = 5;       % Proportional gain
     ki = 0.000001;       % Integral gain
-    kd = 5000;          %derivatice gain
+    kd = 000;          %derivative gain
     kpv = 10 ;
     
     % Initialize variables
@@ -24,8 +24,6 @@ function [integral, error, ControllerOutputWatt, OpenWindowAngle] = PIController
     Watt_Controller = k * (proportional + integral_component + derivative_component);
     Unlim_ControllerOutput = max(0, Watt_Controller);
     ControllerOutputWatt = min(BoilerMaxWatt, Unlim_ControllerOutput);
-    WindowAngle = min(45, -kpv*error);
-    OpenWindowAngle = max(0, WindowAngle);
     
     
 end
