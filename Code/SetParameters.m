@@ -27,9 +27,9 @@ GH.p.           GHHeight = 3 ; %m
 GH.p.           GHWallThickness = 3e-3 ; %m
 GH.p.           GHFloorThickness = 1e-2 ;	%m
 
-GH.p.           NumberOfWindows = 50 ; 
-GH.p.           WindowLength = 0.8 ;
-GH.p.           WindowHeight = 0.4 ;
+GH.p.           NumberOfWindows = 100 ; 
+GH.p.           WindowLength = 1.5 ;
+GH.p.           WindowHeight = 0.8 ;
 GH.p.           RoofAngle = 26 ; % degrees, same as Venlo type
 
 GH.p.           WindowArea = GH.p.WindowHeight*GH.p.WindowLength ;
@@ -82,7 +82,12 @@ GH.p.           FIRDiffusePipe = 1 - GH.p.FIRAbsorbancePipe ;
 GH.p.           r_0 = 0.015; % inside radius of the pipe in meters
 GH.p.           r_1 = 0.017; % outside radius of the pipe in meters  
 GH.p.           r_2 = 0.04; % outside radius of the fin in meters  
-GH.p.           pipeL = 1*GH.p.GHFloorArea ; % length of the pipe in meters
+GH.p.           pipeLength = 1*GH.p.GHFloorArea ; % length of the pipe in meters
+GH.p.           Vel_water = 0.1; %speed of the water through the pipe
+GH.p.           dL = dt*GH.p.Vel_water; %distance 
+GH.p.           dPipe = 20; % number of pipe pieces for numerical calculation
+GH.p.           Npipes = ceil(GH.p.pipeLength/(GH.p.dL*GH.p.dPipe)); % number of pipes
+GH.p.           pipeL = GH.p.Npipes*GH.p.dPipe*GH.p.dL;
 GH.p.           pipeF = 80; % Fins per meter of pipe %!!!!keep the thickness in mind not more fins then fit on the pipe!!!!
 GH.p.           pipet = 0.001; % half of the thickness of one fin in meters 
 GH.p.           PipeArea = GH.p.pipeL*2*pi*GH.p.r_2 ;
@@ -92,9 +97,6 @@ GH.p.           Afin =  2*pi*GH.p.r_1*(GH.p.Dpipe-GH.p.Bpipe+(GH.p.pipet/2)*log(
 GH.p.           Vfin = 4*pi*GH.p.pipet*GH.p.r_1*(GH.p.r_2-GH.p.r_1); %volume of a fin in m^3
 GH.p.           Vpipe = GH.p.Vfin*GH.p.pipeL*GH.p.pipeF+(GH.p.r_1^2-GH.p.r_0^2)*pi*GH.p.pipeL; %Volume of the material of the pipe
 GH.p.           Apipe = GH.p.pipeL*GH.p.pipeF*GH.p.Afin+(GH.p.pipeL-GH.p.pipeL*GH.p.pipeF*2*GH.p.pipet)*2*pi*GH.p.r_1; % total area of the pipe in m^2
-GH.p.           Vel_water = 0.1; %speed of the water through the pipe
-GH.p.           dL = dt*GH.p.Vel_water; %distance 
-GH.p.           dPipe = GH.p.pipeL/GH.p.dL; % number of pipe pieces for numerical calculation
 GH.p.           m_flow = GH.p.rho_water*GH.p.Vel_water*pi*GH.p.r_0^2; % mass flow through pipe
 GH.p.           APipeIn = pi*GH.p.r_0^2; %Area inside crossection pipe
 
@@ -203,4 +205,6 @@ ViewMatrix = [0,     0,      0,      0,      0,      0;   %check if sum(ViewMatr
              0,     F_fc,   F_fw,   F_ff,   F_fp,   F_fh;
              0,     F_pc,   F_pw,   F_pf,   F_pp,   F_ph;
              0,     F_hc,   F_hw,   F_hf,   F_hp,   F_hh];
+
+ViewMatrix = ViewMatrix.';
 

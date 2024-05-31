@@ -5,14 +5,14 @@
 %state 5: plant
 %state 6: heatpipe
 
-function q = Fq_rad_out(emissivity, T)                          %input: emissivity array and T(:,i)
-    q = 5.670374419e-8 * emissivity .* ((T + 273.15).^4);    %emittance of components
+function Q = FQ_rad_out(emissivity, T, Area)                          %input: emissivity array and T(:,i)
+    Q = 5.670374419e-8 * emissivity .* Area .* ((T + 273.15).^4);    %emittance of components
 end                                                             %q(:,i) = F
 
 
-function Q = FQ_rad_in(absorbance, diffuse, Area, Viewf, qrad)      %imput: parameter arrays, viewfactor matrix and q radiance array(:,i)
-    Q =(absorbance .* Area .* Viewf * qrad);                       %how much each object absorbs
-    Q(1,:) = sum(diffuse .* Area .* Viewf * qrad);                   %inside air recieves diffused radiation
+function Q = FQ_rad_in(absorbance, diffuse, Area, Viewf, Qrad)      %imput: parameter arrays, viewfactor matrix and q radiance array(:,i)
+    Q =(absorbance .* Viewf * Qrad);                       %how much each object absorbs
+    Q(1,:) = sum(diffuse .* Viewf * Qrad);                   %inside air recieves diffused radiation
 end
 
 
@@ -138,8 +138,8 @@ for i = 1:length(t) - 1
     [h_pipeout(i), Q_heat(6,i), water_arrayOut] = heating_pipe(GH, T_WaterIn(i), T(1,i), T(6,i), dt, water_array) ;
     T_WaterOut(i) = water_arrayOut(end) ; water_array = water_arrayOut ;
 
-    [integral(i+1), heatingerror(i + 1), ControllerOutputWatt(i)] = PIController(T_WaterOut(i) ,T(1,i), heatingline(i), dt, integral(i), heatingerror(i)) ;
-    [coolingerror(i), OpenWindowAngle(i), U_fog(i)] = WindowController(T(1,i), coolingline(i), dt);
+    [integral(i+1), heatingerror(i + 1), ControllerOutputWatt(i)] = PIController(T_WaterOut(i) ,T(1,i), meanline(i), dt, integral(i), heatingerror(i)) ;
+    [coolingerror(i), OpenWindowAngle(i), U_fog(i)] = WindowController(T(1,i), meanline(i), dt);
     
     T_WaterIn(i+1) = min(99,T_WaterOut(i) + ControllerOutputWatt(i) / (GH.p.m_flow * GH.p.cp_water)) ;
 
@@ -172,8 +172,7 @@ for i = 1:length(t) - 1
                 GH.p.cp_glass * GH.p.rho_glass * GH.p.GHWallThickness * AreaArray(3);
                 GH.p.cp_floor * GH.p.rho_floor * GH.p.GHFloorArea * GH.p.GHFloorThickness;
                 GH.p.cp_lettuce * MassPlant;
-                GH.p.Vpipe*GH.p.rho_steel*...
-            GH.p.cp_steel+pi*GH.p.pipeL*GH.p.r_0^2*GH.p.rho_water*GH.p.cp_water];  
+                GH.p.Vpipe*GH.p.rho_steel*GH.p.cp_steel];  
 
 
     
@@ -197,8 +196,8 @@ for i = 1:length(t) - 1
     [Q_ground(:, i), QFloor(:, i)] = FGroundConduction(GH, FloorTemperature(:, i), T(:, i)) ;
     FloorTemperature(:, i+1) = FloorTemperature(:, i) + QFloor(:, i) * GH.p.GHFloorArea / CAPArray(4) * dt ;
 
-    q_rad_out(:,i) = Fq_rad_out(EmmitanceArray, T(:,i));
-    Q_rad_in(:,i) = FQ_rad_in(FIRAbsorbanceArray, FIRDiffuseArray, AreaArrayRad, ViewMatrix, q_rad_out(:,i));
+    Q_rad_out(:,i) = FQ_rad_out(EmmitanceArray, T(:,i), AreaArrayRad);
+    Q_rad_in(:,i) = FQ_rad_in(FIRAbsorbanceArray, FIRDiffuseArray, AreaArrayRad, ViewMatrix, Q_rad_out(:,i));
     Q_solar(:,i) = FQ_solar(TransmissionArray, SOLARDiffuseArray, SOLARAbsorbanceArray, AreaSunArray, SolarIntensity(i), AreaArray);
     J_sky(i) = SkyEmit(DewPoint(i),OutsideTemperature(i));
     Q_sky(2:3,i) = FQ_sky(AreaArray(2:3), FIRAbsorbanceArray(2:3), EmmitanceArray(2:3), SkyTemperature(i), T(2:3,i));
@@ -209,7 +208,7 @@ for i = 1:length(t) - 1
     Q_latent(1, i) = LatentHeat(-W_vent(i)) + LatentHeat(-W_cond(i)) + LatentHeat(-W_fog(i))+ LatentHeat(W_trans(i)) ;
 
     %Total heat transfer 
-    Q_tot(:,i) = Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) + Q_rad_in(:,i) - q_rad_out(:,i) .* AreaArrayRad + Q_heat(:,i) + Q_latent(:, i);
+    Q_tot(:,i) = Q_vent(:, i) + Q_sky(:,i) + Q_conv(:,i) + Q_ground(:, i) + Q_solar(:,i) + Q_rad_in(:,i) - Q_rad_out(:,i) + Q_heat(:,i) + Q_latent(:, i);
 
     % Temperature Change
     T(:, i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
@@ -250,8 +249,9 @@ hold off
 figure("WindowStyle", "docked")
 hold on
 plot(t/3600, AddStates(1,:))
+plot(t/3600, OutsideHumidity)
 plot(t/3600, AddStates(2,:))
-legend("Humidity", "CO2")
+legend("Inside Humidity", "Outside Humidity", "CO2")
 hold off
 
 
