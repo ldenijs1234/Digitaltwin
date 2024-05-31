@@ -10,12 +10,12 @@ setpoint = setpoint_total(SimStart:SimEnd) ;
 error = zeros(1, length(t)-1); % Error array
 integral = zeros(1, length(t)-1); % Integral array
 
-heatingline_total = bound(18, 22, 6, 10, 18, 22, dt, total_time/24); % Setpoint temperature (°C)
+heatingline_total = bound(10, 15, 6, 10, 18, 22, dt, total_time/24); % Setpoint temperature (°C)
 heatingline = heatingline_total(SimStart:SimEnd) ;
 heatingerror = zeros(1, length(t)-1); % Error array
 heatingintegral = zeros(1, length(t)-1); % Integral array
 
-coolingline_total = heatingline_total + 4;
+coolingline_total = heatingline_total + 10;
 coolingline = coolingline_total(SimStart:SimEnd) ;
 coolingerror = zeros(1, length(t)-1); % Error array
 
