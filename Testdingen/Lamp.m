@@ -8,4 +8,4 @@ cap_Lamp = 10; % Heat capacity of the lamp in J K^-1 m^-2
 conv_air = 2.3; % Heat exchange coefficient between air and the lamp
 zeta_LampPAR = 5.2; %Photons per Joule in PAR emitted by the lamp in micromol J^-1
 efficacy_Lamp = eta_LampPAR*zeta_LampPAR; % efficacy in photons of PAR emitted per joule of input
-PPFD = efficacy_Lamp*Q_in; % Photosynthetic photon flux density(PPFD) of the lamps in micromol(PAR) s^-1
+PPFD = efficacy_Lamp*Q_in; % Photosynthetic photon flux (PPF) of the lamps in micromol(PAR) s^-1
