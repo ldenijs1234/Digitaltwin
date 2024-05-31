@@ -117,13 +117,13 @@ ylabel("OpenWindowAngle")
 legend('Controller Window', 'error')
 hold off
 
-% figure("WindowStyle", "docked")
-% hold on
-% plot(t/3600, AddStates(1,:))
-% plot(t/3600, OutsideHumidity)
-% legend("Indoor Humidity", "Outside Humdity")
-% title("Humidity")
-% hold off
+figure("WindowStyle", "docked")
+hold on
+plot(t/3600, AddStates(1,:))
+plot(t/3600, OutsideHumidity)
+legend("Indoor Humidity", "Outside Humdity")
+title("Humidity")
+hold off
 
 % figure("WindowStyle", "docked")
 % hold on
