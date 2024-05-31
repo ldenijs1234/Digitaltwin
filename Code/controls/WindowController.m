@@ -1,6 +1,6 @@
 
 function [error, OpenWindowAngle, U_fog] = WindowController(T_air, setpoint, dt)
-    kp = 45 ;
+    kp = 10 ;
     kf = 0.1 ;
     % Calculate error
     error = setpoint - T_air;
