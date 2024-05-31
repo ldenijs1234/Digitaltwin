@@ -7,7 +7,7 @@ function intitial_setpoint = setpoint(Q_air1hour, Q_air, cost1hour, cost, heatin
     Costdirection1hour = averagecost - cost1hour ;
     Costdirection = averagecost - cost ;
     
-    if Q_delta < 0 && cost1hour > cost 
+    if Q_delta < 0 && cost < cost1hour 
         intital_setpoint = meansetpoint * (1 + Costdirection)
     elseif Q_delta > 0 && cost1hour > cost
         intital_setpoint = meansetpoint * (1 - Costdirection)

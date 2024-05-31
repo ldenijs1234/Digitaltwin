@@ -3,8 +3,8 @@
 function [integral, error, ControllerOutputWatt] = PIController(T_WaterOut, T_air, setpoint, dt, integral, prev_error)
     %PI controller
     k = 2000;        % Multiplication
-    kp = 5;       % Proportional gain
-    ki = 0.000001;       % Integral gain
+    kp = 10;       % Proportional gain
+    ki = 0.00001;       % Integral gain
     kd = 000;          %derivative gain
     kpv = 10 ;
     
@@ -19,7 +19,7 @@ function [integral, error, ControllerOutputWatt] = PIController(T_WaterOut, T_ai
     proportional = kp * error;
     integral_component = ki * integral;
     derivative_component = kd * derivative;
-    BoilerMaxWatt = 10000; % Dummy
+    BoilerMaxWatt = 1000000; % Dummy
 
     Watt_Controller = k * (proportional + integral_component + derivative_component);
     Unlim_ControllerOutput = max(0, Watt_Controller);

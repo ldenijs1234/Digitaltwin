@@ -91,7 +91,7 @@ function [h_outside,Q_inpipe,water_array]  = heating_pipe(GH, T_in,T_air,T_pipe,
     c_p_array = [4217,4203,4192,4186,4181,4178,4174,4174,4178,4184,4190,4200,4209,4212,4220,4234,4250];
 
     %% Final calculations of the heat transfers and temperatures
-    for i = 1:length(water_array)
+    for i = 1:length(dT_array)
         T_input = array(i);
         k_water = interp1(T_array,k_array,T_input); %Conductive heat coefficient of water in W/(m*K)
         Pr = interp1(T_array,Pr_array,T_input); %parental number from table from "Basic heat and mass transfer"

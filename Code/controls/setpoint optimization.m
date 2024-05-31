@@ -1,23 +1,40 @@
+run("SetModel")
+
+Lowerbound_total = bound(10, 15, 6, 10, 18, 22, dt, total_time/24); % Setpoint temperature (°C)
+Lowerbound = setpoint_total(SimStart:SimEnd) ;
+
+Upperbound_total = bound(10, 15, 6, 10, 18, 22, dt, total_time/24); % Setpoint temperature (°C)
+Upperbound = setpoint_total(SimStart:SimEnd) ;
+
 function [test, delta] = opt(setpoints)
     delta = 0.1*(randi(11,length(setpoints),1)-6);
     test = setpoints + delta;
 end 
 
 
-bound_average = (coolingline+heatingline)/2;
+bound_average = (Lowerbound + Upperbound)/2;
 T_st(1) = bound_average(1:3600/dt:end)';
-lala = interp1([0:24],T_st, t/3600, 'linear', 'extrap');
+setpoint = interp1([0:24],T_st, t/3600, 'linear', 'extrap');
+
 %run simulation with T_st
 
-cost(1) = costfunction;
+cost(1) = costfunction; %deze moet nog
 
-for n = 2:11
+hWaitBar2 = waitbar(0, 'Please wait...') ;
+
+iteration_amount = 10;
+for n = 2:iteration_amount
+
+    waitbar(n / iteration_amount), hWaitBar2, sprintf('Runs: %d%%', round(n) )));
 
     function [T_st_test, delta] = opt(T_st(:,n-1))
 
-    %run simulation with T_st_test
+    setpoint = interp1([0:24], T_st_test, t/3600, 'linear', 'extrap');
+
+    run("Initialize")
+    run("RunFullSim")
     
-    cost(n) = costfunction;
+    cost(n) = costfunction; %deze moet nog
 
     alfa = 0.1;
     T_sp(:,n) =  T_sp(:,n) - alfa * (cost(n) - cost(n-1)) ./ delta;

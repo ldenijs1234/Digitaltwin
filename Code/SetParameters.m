@@ -27,7 +27,7 @@ GH.p.           GHHeight = 3 ; %m
 GH.p.           GHWallThickness = 3e-3 ; %m
 GH.p.           GHFloorThickness = 1e-2 ;	%m
 
-GH.p.           NumberOfWindows = 100 ; 
+GH.p.           NumberOfWindows = 50 ; 
 GH.p.           WindowLength = 1.5 ;
 GH.p.           WindowHeight = 0.8 ;
 GH.p.           RoofAngle = 26 ; % degrees, same as Venlo type
@@ -66,7 +66,7 @@ GH.p.           FIRDiffuseGlass = 1 - GH.p.FIRAbsorbanceGlass;
 
 % Floor parameters
 GH.p.           SOLARAbsorbanceFloor = 0.65; %DUMMY
-GH.p.           FIRAbsorbanceFloor = 0.8; %DUMMY
+GH.p.           FIRAbsorbanceFloor = 0.9; %DUMMY
 GH.p.           EmittanceFloor = 0.8 ; %DUMMY
 GH.p.           SOLARDiffuseFloor = 1 - GH.p.SOLARAbsorbanceFloor;
 GH.p.           FIRDiffuseFloor = 1 - GH.p.FIRAbsorbanceFloor ;
@@ -83,7 +83,7 @@ GH.p.           r_0 = 0.015; % inside radius of the pipe in meters
 GH.p.           r_1 = 0.017; % outside radius of the pipe in meters  
 GH.p.           r_2 = 0.04; % outside radius of the fin in meters  
 GH.p.           pipeLength = 1*GH.p.GHFloorArea ; % length of the pipe in meters
-GH.p.           Vel_water = 0.1; %speed of the water through the pipe
+GH.p.           Vel_water = 1; %speed of the water through the pipe
 GH.p.           dL = dt*GH.p.Vel_water; %distance 
 GH.p.           dPipe = 20; % number of pipe pieces for numerical calculation
 GH.p.           Npipes = ceil(GH.p.pipeLength/(GH.p.dL*GH.p.dPipe)); % number of pipes
