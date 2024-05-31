@@ -172,8 +172,7 @@ for i = 1:length(t) - 1
                 GH.p.cp_glass * GH.p.rho_glass * GH.p.GHWallThickness * AreaArray(3);
                 GH.p.cp_floor * GH.p.rho_floor * GH.p.GHFloorArea * GH.p.GHFloorThickness;
                 GH.p.cp_lettuce * MassPlant;
-                GH.p.Vpipe*GH.p.rho_steel*...
-            GH.p.cp_steel];  
+                GH.p.Vpipe*GH.p.rho_steel*GH.p.cp_steel];  
 
 
     
