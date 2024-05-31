@@ -1,5 +1,5 @@
 % Function to calculate the energy cost for a given week and day
-function [weekcost, daycost, simdaycost, new_time_hours] = Energycost(file, dt, total_time, date)
+function [weekcost, daycost, simdaycost, new_time_hours] = Energycostt(file, dt, total_time, date)
     
     tbl = readtable(file);
     dayNumber = weekday(date)-1 ; % Get the day of the week starting from 0 for Sunday
@@ -27,5 +27,5 @@ function [weekcost, daycost, simdaycost, new_time_hours] = Energycost(file, dt, 
     simdaycost = daycost(1:total_time*((length(new_time_hours)-1)/24*7));
 end
 
-%[weekcost, daycost, simdaycost, new_time_hours] = Energycostt(file, dt, total_time, '2024-05-30') ;
+[weekcost, daycost, simdaycost, new_time_hours] = Energycostt(file, dt, total_time, '2024-05-30') ;
 
