@@ -10,9 +10,9 @@ function Q = FQ_rad_out(emissivity, T, Area)                          %input: em
 end                                                             %q(:,i) = F
 
 
-function Q = FQ_rad_in(absorbance, diffuse, Area, Viewf, Qrad)      %imput: parameter arrays, viewfactor matrix and q radiance array(:,i)
+function Q = FQ_rad_in(absorbance, diffuse, Area, Viewf, Qrad)      %input: parameter arrays, viewfactor matrix and q radiance array(:,i)
     Q =(absorbance .* Viewf * Qrad);                       %how much each object absorbs
-    Q(1,:) = sum(diffuse .* Viewf * Qrad) * 0.7;                   %inside air recieves diffused radiation
+    Q(1,:) = sum(diffuse .* Viewf * Qrad) * 0.7;                   %inside air recieves 70% of diffused radiation
 end
 
 
@@ -216,10 +216,10 @@ for i = 1:length(t) - 1
     Energy_kWh(i) = ControllerOutputWatt(i) * dt / (1000 * 3600);  % Convert from W to kWh
     
     % Bound for maximal humidity
-    RelHumidity(i+1) = VaporDens2rh(T(1,i+1), AddStates(1,i+1)) ;
     MaxHumidity = rh2vaporDens(T(1,i+1), 100) ;
     AddStates(1, i+1) = min(MaxHumidity, NewHumidity) ;
     W_CondHum(i) = max(0, NewHumidity - MaxHumidity) ;
+    RelHumidity(i+1) = VaporDens2rh(T(1,i+1), AddStates(1,i+1)) ;
 
 
     if rem(i*dt/3600, 1) == 0 

@@ -4,11 +4,11 @@ run("SetParameters")
 %Initial values:
 GroundTemperature = 10 ; %in celcius
 
-AirTemperature = 10 ;  % ALL DUMMY VALUES!!!
-CoverTemperature = 10 ;
-WallTemperature = 10 ;
-PlantTemperature = 10;
-PipeTemperature = 10 ;
+AirTemperature = 15 ;  % ALL DUMMY VALUES!!!
+CoverTemperature = 15 ;
+WallTemperature = 15 ;
+PlantTemperature = 15;
+PipeTemperature = 15 ;
 T_WaterIn(1) = 60 ;
 
 water_array = T_WaterIn(1) * ones(1, GH.p.dPipe) ;
