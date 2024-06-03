@@ -17,7 +17,7 @@ function intitial_setpoint = setpoint(Q_air1hour, Q_air, cost1hour, cost, heatin
 
 end
 
-intitial_setpoint = setpoint(Q_air1hour, Q_air, cost1hour, cost, heatingline, coolingline, dt)  ;
+%intitial_setpoint = setpoint(Q_air1hour, Q_air, cost1hour, cost, heatingline, coolingline, dt)  ;
 
 
 

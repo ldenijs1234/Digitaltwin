@@ -5,8 +5,8 @@ OpenWindowAngle = 30 * ones(1, length(t)-1) ; %in degrees
 % control inputs
 price_per_kWh = zeros(1, length(t)-1) ; % Price per kWh 
 price_per_kWh = 0.34 + 0.2 * sind(2*pi*(t));  % Euro
-setpoint_total = bound(18, 22, 6, 10, 18, 22, dt, total_time/24); % Setpoint temperature (°C)
-setpoint = setpoint_total(SimStart:SimEnd) ;
+% setpoint_total = bound(18, 22, 6, 10, 18, 22, dt, total_time/24); % Setpoint temperature (°C)
+% setpoint = setpoint_total(SimStart:SimEnd) ;
 error = zeros(1, length(t)-1); % Error array
 integral = zeros(1, length(t)-1); % Integral array
 
