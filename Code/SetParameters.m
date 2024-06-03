@@ -1,37 +1,37 @@
 % Set variables (for matrices), parameters saved in structure 'GH' under field 'p'
 
 % General parameters
-GH.p.           cp_air = 1003.5 ; %J kg^-1 K^-1
-GH.p.           cp_glass = 840 ; %J kg^-1 K^-1
-GH.p.           cp_water = 4186 ;%J kg^-1 K^-1
-GH.p.           cp_floor = 880 ; %J kg^-1 K^-1
-GH.p.           cp_steel = 640 ; %J kg^-1 K^-1	
-GH.p.           rho_air = 1.2 ; %kg m^-3
-GH.p.           rho_glass = 2500 ; %kg m^-3
-GH.p.           rho_floor = 2400 ; %kg m^-3
-GH.p.           rho_steel = 7850 ; %kg m^-3
-GH.p.           rho_water = 1000 ; %kg m^-3
-GH.p.           GasConstantR = 8.314 ; % J/mol K
-GH.p.           StefBolzConst = 5.670374419e-8 ; % W/m^2 K^4 
+GH.p.           cp_air = 1003.5 ; % (J kg^-1 K^-1)
+GH.p.           cp_glass = 840 ; % (J kg^-1 K^-1)
+GH.p.           cp_water = 4186 ;% (J kg^-1 K^-1)
+GH.p.           cp_floor = 880 ; % (J kg^-1 K^-1)
+GH.p.           cp_steel = 640 ; % (J kg^-1 K^-1)	
+GH.p.           rho_air = 1.2 ; % (kg m^-3)
+GH.p.           rho_glass = 2500 ; % (kg m^-3)
+GH.p.           rho_floor = 2400 ; % (kg m^-3)
+GH.p.           rho_steel = 7850 ; % (kg m^-3)
+GH.p.           rho_water = 1000 ; % (kg m^-3)
+GH.p.           GasConstantR = 8.314 ; % (J/mol K)
+GH.p.           StefBolzConst = 5.670374419e-8 ; % (W/m^2 K^4 )
                 sigma = 5.670374419e-8 ;
-GH.p.           Gravity = 9.81 ; % m/s^2 ;
+GH.p.           Gravity = 9.81 ; % (m/s^2)
 GH.p.           Kelvin = 273.15 ;
 
 
-% Greenhouse parameters                 ALL DUMMY!!!!!!!!!!!!!
+% Greenhouse parameters                 
 GH.p.           LAI = 0.5 ; % Leaf Area Index
 
-GH.p.           GHWidth = 100 ; %m 
-GH.p.           GHLength = 100 ; %m
-GH.p.           GHHeight = 5 ; %m
-GH.p.           GHWallThickness = 3e-3 ; %m
-GH.p.           GHFloorThickness = 1e-2 ;	%m
+GH.p.           GHWidth = 100 ; % (m) 
+GH.p.           GHLength = 100 ; % (m)
+GH.p.           GHHeight = 5 ;  % (m)
+GH.p.           GHWallThickness = 3e-3 ; % (m)
+GH.p.           GHFloorThickness = 1e-2 ;	% (m)
 GH.p.           GHFloorArea = GH.p.GHLength * GH.p.GHWidth ;
 
-GH.p.           NumberOfWindows = round(GH.p.GHFloorArea*0.05) ; % Scaled to size
+GH.p.           NumberOfWindows = round(GH.p.GHFloorArea*0.05) ; % Scaled to size of greenhouse
 GH.p.           WindowLength = 1.5 ;
 GH.p.           WindowHeight = 0.8 ;
-GH.p.           RoofAngle = 26 ; % degrees, same as Venlo type
+GH.p.           RoofAngle = 26 ; % (°), same as Venlo type greenhouse
 
 GH.p.           WindowArea = GH.p.WindowHeight*GH.p.WindowLength ;
 GH.p.           GHVolume = GH.p.GHLength*GH.p.GHWidth*GH.p.GHHeight ;
@@ -39,16 +39,15 @@ GH.p.           GHFloorArea = GH.p.GHLength * GH.p.GHWidth ;
 GH.p.           GHSideArea1 = GH.p.GHLength * GH.p.GHHeight ;
 GH.p.           GHSideArea2 = GH.p.GHWidth * GH.p.GHHeight ;
 GH.p.           GHTotalArea = GH.p.GHFloorArea + 2* GH.p.GHSideArea1 + 2* GH.p.GHSideArea2 ;
-GH.p.           GHPlantArea = GH.p.LAI * GH.p.GHFloorArea ; %DUMMY
+GH.p.           GHPlantArea = GH.p.LAI * GH.p.GHFloorArea ; 
 GH.p.           GHWallArea = GH.p.GHLength * GH.p.GHHeight * 2 + GH.p.GHWidth * GH.p.GHHeight * 2 ;
 GH.p.           GHCoverArea =  GH.p.GHLength * GH.p.GHWidth ;
-GH.p.           Boilervolume = 100 ; % m^3
-GH.p.           phi_fog = 1e-4 * GH.p.GHFloorArea ; % kg s^-1, scaled to size
-GH.p.           FogPower = 1.25e5 * GH.p.phi_fog ; % Estimated max power use of fogger
+GH.p.           phi_fog = 1e-4 * GH.p.GHFloorArea ; % (kg s^-1), scaled to size
+GH.p.           FogPower = 1.25e5 * GH.p.phi_fog ; % (W), estimated max power use of fogger
 
 % Plant parameters
-GH.p.           cp_lettuce = 4020 ;
-GH.p.           rho_lettuce = 240.92 ; %Test with 1000, Should it not be similiar to water?????????? !!!!!!!!!!!
+GH.p.           cp_lettuce = 4020 ; %(J kg^-1 K^-1)
+GH.p.           rho_lettuce = 240.92 ; % (kg m^-3)
 GH.p.           EmittancePlant = 0.90 ; %DUMMY
 GH.p.           SOLARAbsorbancePlant = 0.65 ; %DUMMY
 GH.p.           FIRAbsorbancePlant = 0.78 ; %DUMMY
