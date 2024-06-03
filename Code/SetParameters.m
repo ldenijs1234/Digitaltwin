@@ -48,29 +48,29 @@ GH.p.           FogPower = 1.25e5 * GH.p.phi_fog ; % (W), estimated max power us
 % Plant parameters
 GH.p.           cp_lettuce = 4020 ; %(J kg^-1 K^-1)
 GH.p.           rho_lettuce = 240.92 ; % (kg m^-3)
-GH.p.           EmittancePlant = 0.90 ; 
-GH.p.           SOLARAbsorbancePlant = 0.65 ; 
-GH.p.           FIRAbsorbancePlant = 0.78 ; 
-GH.p.           SOLARDiffusePlant = 1 - GH.p.SOLARAbsorbancePlant;
-GH.p.           FIRDiffusePlant = 1 - GH.p.FIRAbsorbancePlant ;
+GH.p.           EmittancePlant = 0.90 ; % (-)
+GH.p.           SOLARAbsorbancePlant = 0.65 ; % (-)
+GH.p.           FIRAbsorbancePlant = 0.78 ; % (-)
+GH.p.           SOLARDiffusePlant = 1 - GH.p.SOLARAbsorbancePlant; % (-)
+GH.p.           FIRDiffusePlant = 1 - GH.p.FIRAbsorbancePlant ; % (-)
 GH.p.           YieldFactor = 0.544 ; % (-) (effective CO2 use efficiency)
 GH.p.           C_resp = 2.65e-7 ; % (s^-1) (respiration rate in terms of respired dry matter)
 
 % Glass parameters
-GH.p.           SOLARAbsorbanceGlass = 0.04 ; %DUMMY
-GH.p.           FIRAbsorbanceGlass = 0.85; %DUMMY
-GH.p.           EmittanceGlass = 0.8 ; %DUMMY
-GH.p.           SOLARTauGlass = 0.80 ; %DUMMY
-SOLARTauGlass = 0.80; %DUMMY
-GH.p.           SOLARDiffuseGlass = 1 - GH.p.SOLARAbsorbanceGlass - GH.p.SOLARTauGlass;
-GH.p.           FIRDiffuseGlass = 1 - GH.p.FIRAbsorbanceGlass;
+GH.p.           SOLARAbsorbanceGlass = 0.04 ; % (-)
+GH.p.           FIRAbsorbanceGlass = 0.85; % (-)
+GH.p.           EmittanceGlass = 0.8 ; % (-)
+GH.p.           SOLARTauGlass = 0.80 ; % (-)
+SOLARTauGlass = 0.80; % (-)
+GH.p.           SOLARDiffuseGlass = 1 - GH.p.SOLARAbsorbanceGlass - GH.p.SOLARTauGlass; % (-)
+GH.p.           FIRDiffuseGlass = 1 - GH.p.FIRAbsorbanceGlass; % (-)
 
 % Floor parameters
-GH.p.           SOLARAbsorbanceFloor = 0.65; %DUMMY
-GH.p.           FIRAbsorbanceFloor = 0.9; %DUMMY
-GH.p.           EmittanceFloor = 0.8 ; %DUMMY
-GH.p.           SOLARDiffuseFloor = 1 - GH.p.SOLARAbsorbanceFloor;
-GH.p.           FIRDiffuseFloor = 1 - GH.p.FIRAbsorbanceFloor ;
+GH.p.           SOLARAbsorbanceFloor = 0.65; % (-)
+GH.p.           FIRAbsorbanceFloor = 0.9; % (-)
+GH.p.           EmittanceFloor = 0.8 ; % (-)
+GH.p.           SOLARDiffuseFloor = 1 - GH.p.SOLARAbsorbanceFloor; % (-)
+GH.p.           FIRDiffuseFloor = 1 - GH.p.FIRAbsorbanceFloor ; % (-)
 GH.p.           KFloor = 0.3 ; %accurate enough for prototype
 GH.p.           LFloorGround = 19e-2 ; % meter
 
