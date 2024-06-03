@@ -72,14 +72,14 @@ function [W_trans, W_cond, W_vent, W_fog] = vaporflows(GH, T_air, T_wall, T_out,
     
     G_c = 1.8e-3 * (max(0, (T_air - T_wall)))^(1/3) ; %m/s
 
-    W_trans = max(0, (1 - exp(-GH.p.C_pld * DryMassPlant / GH.p.GHFloorArea)) * GH.p.C_vplai * ...
+    W_trans = max(0, (1 - exp(-GH.p.C_pld * DryMassPlant / GH.p.GHFloorArea)) * GH.p.C_vplai * ... (Van Henten, 2003)
     ((GH.p.C_v1 / (GH.p.GasConstantR * 1e3 * (T_air + 273.15))) ...
     * exp(GH.p.C_v2 * T_air / (T_air + GH.p.C_v3)) ...
     - H_air) * GH.p.GHFloorArea );%kg s^-1
-    W_cond = max(0, (G_c * (0.2522 * exp(0.0485 * T_air) * (T_air ... 
+    W_cond = max(0, (G_c * (0.2522 * exp(0.0485 * T_air) * (T_air ... (Van Henten, 2007)
     - T_out) - ((5.5638 * exp(0.0572 * T_air)) - H_air*1000)))/1000 * GH.p.GHFloorArea) ; %kg s^-1
     W_vent = VentilationRate * (H_air - H_out) ; %kg s^-1
-    W_fog = GH.p.phi_fog * U_fog ; %kg s^-1, controller input
+    W_fog = GH.p.phi_fog * U_fog ; %kg s^-1, controller input (De Zwart, 1996)
 
 end
 
@@ -98,11 +98,11 @@ end
 
 function [C_trans, C_vent, C_respD, C_respC] = CO2flows(GH, DryMassPlant, SolarIntensity, T_air, C_in, C_out, VentilationRate)
     
-    C_trans = (1 - exp(-GH.p.C_pld * DryMassPlant/GH.p.GHFloorArea)) * ((GH.p.C_RadPhoto * SolarIntensity * ... 
+    C_trans = (1 - exp(-GH.p.C_pld * DryMassPlant/GH.p.GHFloorArea)) * ((GH.p.C_RadPhoto * SolarIntensity * ... % (Van Henten, 2003)
     (-GH.p.C_CO21 * T_air^2 + GH.p.C_CO22 * T_air - GH.p.C_CO23) * (C_in - GH.p.C_R)) / ... 
     (GH.p.C_RadPhoto * SolarIntensity + (-GH.p.C_CO21 * T_air^2 + GH.p.C_CO22 * T_air - ... 
     GH.p.C_CO23) * (C_in - GH.p.C_R))) * GH.p.GHFloorArea ;
-    C_vent = VentilationRate * (C_in - C_out) ; %kg s^-1
+    C_vent = VentilationRate * (C_in - C_out) ; %kg s^-1 
     C_respD = GH.p.C_resp*(DryMassPlant / GH.p.GHFloorArea) * 2^(0.1*T_air- 2.5) ;
     C_respC = GH.p.C_respC*(DryMassPlant / GH.p.GHFloorArea) * 2^(0.1*T_air- 2.5) ;
 end
@@ -117,7 +117,7 @@ function DryWeightDot = DryWeight(GH, C_trans, C_respD)
 end
 
 
-function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeedkph, T_out, OpenWindowAngle)
+function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeedkph, T_out, OpenWindowAngle) % (De Zwart, 1996)
     p = GH.p ; 
     WindSpeed = WindSpeedkph / 3.6 ; %m/s
     G_l = 2.29e-2 * (1 - exp(-OpenWindowAngle/21.1)) ; % leeside
