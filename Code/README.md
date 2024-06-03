@@ -1,9 +1,9 @@
-##Intro
+## Intro
 This Digital Twin simulates Temperature, Humidity and CO2 of conditions in a Venlo type greenhouse. 
 The plant model used is a lettuce model from Van Henten, 2003. The model can be scaled in size by adjusting the parameters
 for length, width and height of the greenhouse in parameters.m. 
 
-##Run the model
+## Run the model
 To run the model first run Initialize.m to initialize the inside conditions in the Digital Twin.
 
 Set up the date and filenames in RunFullSim.m
