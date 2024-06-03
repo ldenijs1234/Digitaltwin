@@ -4,6 +4,7 @@
 %state 4: floor
 %state 5: plant
 %state 6: heatpipe
+WelEenBeenjeFrisHe = false;
 
 function Q = FQ_rad_out(emissivity, T, Area)                          %input: emissivity array and T(:,i)
     Q = 5.670374419e-8 * emissivity .* Area .* ((T + 273.15).^4);    %emittance of components
@@ -140,7 +141,7 @@ for i = 1:length(t) - 1
     [h_pipeout(i), Q_heat(6,i), water_arrayOut] = heating_pipe(GH, T_WaterIn(i), T(1,i), T(6,i), dt, water_array) ;
     T_WaterOut(i) = water_arrayOut(end) ; water_array = water_arrayOut ;
 
-    [integral(i+1), heatingerror(i + 1), ControllerOutputWatt(i)] = PIController(GH ,T(1,i), meanline(i), dt, integral(i), heatingerror(i)) ;
+    [integral(i+1), heatingerror(i + 1), ControllerOutputWatt(i)] = PIController(T_WaterOut(i) ,T(1,i), setpoint(i), dt, integral(i), heatingerror(i)) ;
     [coolingerror(i), OpenWindowAngle(i), U_fog(i)] = WindowController(T(1,i), meanline(i), dt);
     
     T_WaterIn(i+1) = min(99,T_WaterOut(i) + ControllerOutputWatt(i) / (GH.p.Npipes*GH.p.m_flow * GH.p.cp_water)) ;
@@ -214,6 +215,11 @@ for i = 1:length(t) - 1
     T(:, i + 1) = T(:,i) + Q_tot(:,i) ./ CAPArray * dt;
     FloorTemperature(1, i) = T(4,i) ;
     Energy_kWh(i) = ControllerOutputWatt(i) * dt / (1000 * 3600);  % Convert from W to kWh
+
+    % Abort if Temperature is too cold
+    if T(1,i) < Lowerbound
+        WelEenBeenjeFrisHe = true;
+    end
     
     % Bound for maximal humidity
     MaxHumidity = rh2vaporDens(T(1,i+1), 100) ;
@@ -221,11 +227,6 @@ for i = 1:length(t) - 1
     W_CondHum(i) = max(0, NewHumidity - MaxHumidity) ;
     RelHumidity(i+1) = min(100, VaporDens2rh(T(1,i+1), AddStates(1,i+1))) ; % Correction for calculation differences in functions
 
-
-    if rem(i*dt/3600, 1) == 0 
-        disp('hour:')
-        disp(i*dt/3600)
-    end
 
     if rem(i*dt/360, 1) == 0 
         waitbar(sqrt(i*dt / simulation_time), hWaitBar, sprintf('Progress: %d%%', round(sqrt(i*dt / simulation_time) * 100)));
@@ -235,18 +236,17 @@ end
 
 close(hWaitBar);
 
-figure("WindowStyle", "docked");
-hold on
-plot(t/3600, T(:,:))
-plot(t/3600, OutsideTemperature, 'b--')
-plot(t/3600, heatingline, 'r--') 
-plot(t/3600, coolingline, 'c--')
-plot(t/3600, meanline, 'b--')
-title("Temperatures in the greenhouse")
-xlabel("Time (h)")
-ylabel("Temperature (°C)")
-legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Heatpipe','Outside', 'Heating Line', 'Cooling Line')
-hold off
+% figure("WindowStyle", "docked");
+% hold on
+% plot(t/3600, T(:,:))
+% plot(t/3600, OutsideTemperature, 'b--')
+% plot(t/3600, heatingline, 'r--') 
+% plot(t/3600, coolingline, 'c--')
+% title("Temperatures in the greenhouse")
+% xlabel("Time (h)")
+% ylabel("Temperature (°C)")
+% legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Heatpipe','Outside', 'Heating Line', 'Cooling Line')
+% hold off
 
 disp(sum(Energy_kWh.*simdaycost(1:end-1)));
 
