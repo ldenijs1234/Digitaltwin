@@ -47,4 +47,7 @@ CAPArray = [GH.p.cp_air * GH.p.rho_air * GH.p.GHVolume;
 
         % pi*GH.p.pipeL*GH.p.r_0^2*GH.p.rho_water*GH.p.cp_water
 
+
+set_RelHumidity = VaporDens2rh(AirTemperature, Humidity) ;
+
 SimCount = 0 ;
