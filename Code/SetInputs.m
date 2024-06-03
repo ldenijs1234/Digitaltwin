@@ -32,7 +32,7 @@ LdCloud = epsCloud.*sigma.*(OutsideTemperature+273.15).^4;    % Equation 5.22 (K
 
 SkyTemperature = (LdCloud/sigma).^(0.25)-273.15 ; % (Katzin, 2021)
 
-SolarIntensity =  SolarRadiation .* (1-0.5*cloud); % (W/m^2) Assumption 50% of radiation blocked by clouds
+SolarIntensity =  SolarRadiation .* (1-0.5*cloud); % (W/m^2) Assumption: 50% of radiation gets blocked by clouds
 OutsideHumidity =   rh2vaporDens(OutsideTemperature, OutsideRelhumidity) ; % (kg/m^3) 
 
 OutsideCO2 = 0.00049 ; % (kg/m^3)  assumed to be constant troughout simulation
