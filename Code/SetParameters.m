@@ -23,7 +23,7 @@ GH.p.           LAI = 0.5 ; % Leaf Area Index
 
 GH.p.           GHWidth = 100 ; %m 
 GH.p.           GHLength = 100 ; %m
-GH.p.           GHHeight = 3 ; %m
+GH.p.           GHHeight = 100 ; %m
 GH.p.           GHWallThickness = 3e-3 ; %m
 GH.p.           GHFloorThickness = 1e-2 ;	%m
 GH.p.           GHFloorArea = GH.p.GHLength * GH.p.GHWidth ;
@@ -82,7 +82,7 @@ GH.p.           SOLARDiffusePipe = 1 - GH.p.SOLARAbsorbancePipe ;
 GH.p.           FIRDiffusePipe = 1 - GH.p.FIRAbsorbancePipe ;
 GH.p.           r_0 = 0.015; % inside radius of the pipe in meters
 GH.p.           r_1 = 0.017; % outside radius of the pipe in meters  
-GH.p.           r_2 = 0.04; % outside radius of the fin in meters  
+GH.p.           r_2 = 0.10; % outside radius of the fin in meters  
 GH.p.           pipeLength = 1*GH.p.GHFloorArea ; % length of the pipe in meters
 GH.p.           Vel_water = 1; %speed of the water through the pipe
 GH.p.           dL = dt*GH.p.Vel_water; %distance 

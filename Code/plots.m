@@ -47,16 +47,16 @@ hold off
 % title('Wall Heat Flows')
 % hold off
 
-% figure("WindowStyle", "docked");
-% hold on
-% plot(t(1:end-1), Q_conv(4,:))
-% plot(t(1:end-1), Q_solar(4,:))
-% plot(t(1:end-1), Q_rad_in(4,:) - Q_rad_out(4,:))
-% plot(t(1:end-1), Q_ground(4,:)) 
-% plot(t(1:end-1), Q_tot(4,:))
-% legend('convection', 'solar','radiation','ground', 'total')
-% title('Floor Heat Flows')
-% hold off
+figure("WindowStyle", "docked");
+hold on
+plot(t(1:end-1), Q_conv(4,:))
+plot(t(1:end-1), Q_solar(4,:))
+plot(t(1:end-1), Q_rad_in(4,:) - Q_rad_out(4,:))
+plot(t(1:end-1), Q_ground(4,:)) 
+plot(t(1:end-1), Q_tot(4,:))
+legend('convection', 'solar','radiation','ground', 'total')
+title('Floor Heat Flows')
+hold off
 
 % figure("WindowStyle", "docked");
 % hold on
