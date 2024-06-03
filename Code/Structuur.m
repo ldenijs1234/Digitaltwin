@@ -225,7 +225,7 @@ for i = 1:length(t) - 1
     MaxHumidity = rh2vaporDens(T(1,i+1), 100) ;
     AddStates(1, i+1) = min(MaxHumidity, NewHumidity) ;
     W_CondHum(i) = max(0, NewHumidity - MaxHumidity) ;
-    RelHumidity(i+1) = VaporDens2rh(T(1,i+1), AddStates(1,i+1)) ;
+    RelHumidity(i+1) = min(100, VaporDens2rh(T(1,i+1), AddStates(1,i+1))) ; % Correction for calculation differences in functions
 
 
     if rem(i*dt/360, 1) == 0 
