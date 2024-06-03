@@ -139,7 +139,7 @@ for i = 1:length(t) - 1
     T_WaterOut(i) = water_arrayOut(end) ; water_array = water_arrayOut ;
 
     [integral(i+1), heatingerror(i + 1), ControllerOutputWatt(i)] = PIController(T_WaterOut(i) ,T(1,i), meanline(i), dt, integral(i), heatingerror(i)) ;
-    [coolingerror(i), OpenWindowAngle(i), U_fog(i)] = WindowController(T(1,i), meanline(i), dt);
+    [coolingerror(i), OpenWindowAngle(i), U_fog(i)] = WindowController(T(1,i), meanline(i), RelHumidity(i));
     
     T_WaterIn(i+1) = min(99,T_WaterOut(i) + ControllerOutputWatt(i) / (GH.p.Npipes*GH.p.m_flow * GH.p.cp_water)) ;
 
@@ -160,8 +160,6 @@ for i = 1:length(t) - 1
       else
         MassPlant = AddStates(4,1) ; 
     end
-
-    RelHumidity(i) = VaporDens2rh(T(1,i), AddStates(1,i)) ;
 
     cp_airVar = AirProperties(T(1,i), 1084, RelHumidity(i), 'c_p') ;
     rho_airVar = AirProperties(T(1,i), 1084, RelHumidity(i), 'rho') ;
@@ -216,6 +214,7 @@ for i = 1:length(t) - 1
     Energy_kWh(i) = ControllerOutputWatt(i) * dt / (1000 * 3600);  % Convert from W to kWh
     
     % Bound for maximal humidity
+    RelHumidity(i+1) = VaporDens2rh(T(1,i+1), AddStates(1,i+1)) ;
     MaxHumidity = rh2vaporDens(T(1,i+1), 100) ;
     AddStates(1, i+1) = min(MaxHumidity, NewHumidity) ;
     W_CondHum(i) = max(0, NewHumidity - MaxHumidity) ;
@@ -240,6 +239,7 @@ plot(t/3600, T(:,:))
 plot(t/3600, OutsideTemperature, 'b--')
 plot(t/3600, heatingline, 'r--') 
 plot(t/3600, coolingline, 'c--')
+plot(t/3600, meanline, 'b--')
 title("Temperatures in the greenhouse")
 xlabel("Time (h)")
 ylabel("Temperature (°C)")

@@ -134,7 +134,7 @@ hold off
 
 figure("WindowStyle", "docked")
 hold on
-plot(t(1:end-1)/3600, RelHumidity)
+plot(t/3600, RelHumidity)
 legend("RelHumidity")
 hold off
 

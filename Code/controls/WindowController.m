@@ -1,15 +1,20 @@
 
-function [error, OpenWindowAngle, U_fog] = WindowController(T_air, setpoint, dt)
-    kp = 1.5 ;
-    kf = 0.05 ;
+function [errorT, OpenWindowAngle, U_fog] = WindowController(T_air, setpoint, RelHumidity)
+    kw = 1.5 ;
+    kf = 0.005 ;
+    kHw = 0.0005 ;
+    kHf = 0.005 ;
+
     % Calculate error
-    error = setpoint - T_air;
+    errorT = setpoint - T_air;
+    set_H = 70 ;
+    errorH = set_H - RelHumidity ;
 
     % Calculate control output
   
-    WindowAngle = min(45, -kp * error);
+    WindowAngle = min(45, -kw * errorT - kHw * errorH);
     OpenWindowAngle = max(0, WindowAngle); 
-    Fog = min(1, -kf * error);
+    Fog = min(1, -kf * errorT + kHf * errorH);
     U_fog = max(0, Fog);  
 
 end

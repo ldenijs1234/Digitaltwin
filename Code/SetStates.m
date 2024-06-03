@@ -25,6 +25,9 @@ Q_latent = zeros(length(T(:,1)), length(t)-1);
 AddStates = zeros(length(set_AddStates), length(t)) ;
 AddStates(:,1) = set_AddStates ;   % additional states
 
+RelHumidity = zeros(1, length(t)) ;
+RelHumidity(1) = set_RelHumidity ;
+
 W_trans = zeros(1, length(t)) ; W_cond = zeros(1, length(t)) ; W_vent = zeros(1, length(t)) ; W_fog = zeros(1, length(t)) ;
 C_trans = zeros(1, length(t)) ; C_vent = zeros(1, length(t)) ; C_resp = zeros(1, length(t)) ;
 
