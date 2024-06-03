@@ -1,5 +1,6 @@
 run("SetModel")
 
+SimCount = 0 ;
 time_steps = simulation_time/dt+1 ;
 SimCount = SimCount + 1 ;                   % keep count on number of simulations done
 SimStart = time_steps*(SimCount-1) + 1 ;    % Define interval start based on SimCount

@@ -48,13 +48,13 @@ GH.p.           FogPower = 1.25e5 * GH.p.phi_fog ; % (W), estimated max power us
 % Plant parameters
 GH.p.           cp_lettuce = 4020 ; %(J kg^-1 K^-1)
 GH.p.           rho_lettuce = 240.92 ; % (kg m^-3)
-GH.p.           EmittancePlant = 0.90 ; %DUMMY
-GH.p.           SOLARAbsorbancePlant = 0.65 ; %DUMMY
-GH.p.           FIRAbsorbancePlant = 0.78 ; %DUMMY
+GH.p.           EmittancePlant = 0.90 ; 
+GH.p.           SOLARAbsorbancePlant = 0.65 ; 
+GH.p.           FIRAbsorbancePlant = 0.78 ; 
 GH.p.           SOLARDiffusePlant = 1 - GH.p.SOLARAbsorbancePlant;
 GH.p.           FIRDiffusePlant = 1 - GH.p.FIRAbsorbancePlant ;
-GH.p.           YieldFactor = 0.544 ; %- (effective CO2 use efficiency)
-GH.p.           C_resp = 2.65e-7 ; %s^-1 (respiration rate in terms of respired dry matter)
+GH.p.           YieldFactor = 0.544 ; % (-) (effective CO2 use efficiency)
+GH.p.           C_resp = 2.65e-7 ; % (s^-1) (respiration rate in terms of respired dry matter)
 
 % Glass parameters
 GH.p.           SOLARAbsorbanceGlass = 0.04 ; %DUMMY
