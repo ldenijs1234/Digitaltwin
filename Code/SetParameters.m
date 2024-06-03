@@ -23,7 +23,7 @@ GH.p.           LAI = 0.5 ; % Leaf Area Index
 
 GH.p.           GHWidth = 100 ; %m 
 GH.p.           GHLength = 100 ; %m
-GH.p.           GHHeight = 100 ; %m
+GH.p.           GHHeight = 5 ; %m
 GH.p.           GHWallThickness = 3e-3 ; %m
 GH.p.           GHFloorThickness = 1e-2 ;	%m
 GH.p.           GHFloorArea = GH.p.GHLength * GH.p.GHWidth ;
@@ -44,6 +44,7 @@ GH.p.           GHWallArea = GH.p.GHLength * GH.p.GHHeight * 2 + GH.p.GHWidth * 
 GH.p.           GHCoverArea =  GH.p.GHLength * GH.p.GHWidth ;
 GH.p.           Boilervolume = 100 ; % m^3
 GH.p.           phi_fog = 1e-4 * GH.p.GHFloorArea ; % kg s^-1, scaled to size
+GH.p.           FogPower = 1.25e5 * GH.p.phi_fog ; % Estimated max power use of fogger
 
 % Plant parameters
 GH.p.           cp_lettuce = 4020 ;
