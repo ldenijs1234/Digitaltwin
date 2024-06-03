@@ -111,6 +111,6 @@ function [h_outside,Q_inpipe,water_array]  = heating_pipe(GH, T_in,T_air,T_pipe,
         water_array(i) = T_out;
         Q_in_array(i) = Q_in;
     end
-    Q_inpipe = sum(Q_in_array);
+    Q_inpipe = sum(Q_in_array)*GH.p.Npipes;
     h_outside = h_pipe*Fin_efficiency;
 end
