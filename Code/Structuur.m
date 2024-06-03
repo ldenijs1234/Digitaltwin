@@ -11,9 +11,9 @@ function Q = FQ_rad_out(emissivity, T, Area)                          %input: em
 end                                                             %q(:,i) = F
 
 
-function Q = FQ_rad_in(absorbance, diffuse, Area, Viewf, Qrad)      %imput: parameter arrays, viewfactor matrix and q radiance array(:,i)
+function Q = FQ_rad_in(absorbance, diffuse, Area, Viewf, Qrad)      %input: parameter arrays, viewfactor matrix and q radiance array(:,i)
     Q =(absorbance .* Viewf * Qrad);                       %how much each object absorbs
-    Q(1,:) = sum(diffuse .* Viewf * Qrad) * 0.7;                   %inside air recieves diffused radiation
+    Q(1,:) = sum(diffuse .* Viewf * Qrad) * 0.7;                   %inside air recieves 70% of diffused radiation
 end
 
 
@@ -135,6 +135,8 @@ hWaitBar = waitbar(0, 'Please wait...') ;
 for i = 1:length(t) - 1
     
     % Controller inputs
+    
+    %setpoint(i) = setpoint(T(1,i+60), T(1,i), simdaycost(i+60), simdaycost(i), meanline(i), dt)  ;
 
     [h_pipeout(i), Q_heat(6,i), water_arrayOut] = heating_pipe(GH, T_WaterIn(i), T(1,i), T(6,i), dt, water_array) ;
     T_WaterOut(i) = water_arrayOut(end) ; water_array = water_arrayOut ;
@@ -161,8 +163,6 @@ for i = 1:length(t) - 1
       else
         MassPlant = AddStates(4,1) ; 
     end
-
-    RelHumidity(i) = VaporDens2rh(T(1,i), AddStates(1,i)) ;
 
     cp_airVar = AirProperties(T(1,i), 1084, RelHumidity(i), 'c_p') ;
     rho_airVar = AirProperties(T(1,i), 1084, RelHumidity(i), 'rho') ;
@@ -225,6 +225,7 @@ for i = 1:length(t) - 1
     MaxHumidity = rh2vaporDens(T(1,i+1), 100) ;
     AddStates(1, i+1) = min(MaxHumidity, NewHumidity) ;
     W_CondHum(i) = max(0, NewHumidity - MaxHumidity) ;
+    RelHumidity(i+1) = VaporDens2rh(T(1,i+1), AddStates(1,i+1)) ;
 
 
     if rem(i*dt/360, 1) == 0 

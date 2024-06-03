@@ -21,13 +21,14 @@ GH.p.           Kelvin = 273.15 ;
 % Greenhouse parameters                 ALL DUMMY!!!!!!!!!!!!!
 GH.p.           LAI = 0.5 ; % Leaf Area Index
 
-GH.p.           GHWidth = 30 ; %m 
-GH.p.           GHLength = 30 ; %m
+GH.p.           GHWidth = 100 ; %m 
+GH.p.           GHLength = 100 ; %m
 GH.p.           GHHeight = 3 ; %m
 GH.p.           GHWallThickness = 3e-3 ; %m
 GH.p.           GHFloorThickness = 1e-2 ;	%m
+GH.p.           GHFloorArea = GH.p.GHLength * GH.p.GHWidth ;
 
-GH.p.           NumberOfWindows = 50 ; 
+GH.p.           NumberOfWindows = round(GH.p.GHFloorArea*0.05) ; % Scaled to size
 GH.p.           WindowLength = 1.5 ;
 GH.p.           WindowHeight = 0.8 ;
 GH.p.           RoofAngle = 26 ; % degrees, same as Venlo type
@@ -42,7 +43,7 @@ GH.p.           GHPlantArea = GH.p.LAI * GH.p.GHFloorArea ; %DUMMY
 GH.p.           GHWallArea = GH.p.GHLength * GH.p.GHHeight * 2 + GH.p.GHWidth * GH.p.GHHeight * 2 ;
 GH.p.           GHCoverArea =  GH.p.GHLength * GH.p.GHWidth ;
 GH.p.           Boilervolume = 100 ; % m^3
-GH.p.           phi_fog = 0.1 ; % kg s^-1
+GH.p.           phi_fog = 1e-4 * GH.p.GHFloorArea ; % kg s^-1, scaled to size
 
 % Plant parameters
 GH.p.           cp_lettuce = 4020 ;

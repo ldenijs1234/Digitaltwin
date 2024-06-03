@@ -1,14 +1,15 @@
+clear ; 
 run("SetModel")
 run("SetParameters")
 
 %Initial values:
 GroundTemperature = 10 ; %in celcius
 
-AirTemperature = 10 ;  % ALL DUMMY VALUES!!!
-CoverTemperature = 10 ;
-WallTemperature = 10 ;
-PlantTemperature = 10;
-PipeTemperature = 10 ;
+AirTemperature = 15 ;  % ALL DUMMY VALUES!!!
+CoverTemperature = 15 ;
+WallTemperature = 15 ;
+PlantTemperature = 15;
+PipeTemperature = 15 ;
 T_WaterIn(1) = 60 ;
 
 water_array = T_WaterIn(1) * ones(1, GH.p.dPipe) ;
@@ -46,5 +47,8 @@ CAPArray = [GH.p.cp_air * GH.p.rho_air * GH.p.GHVolume;
         GH.p.cp_steel]; %dynamic
 
         % pi*GH.p.pipeL*GH.p.r_0^2*GH.p.rho_water*GH.p.cp_water
+
+
+set_RelHumidity = VaporDens2rh(AirTemperature, Humidity) ;
 
 SimCount = 0 ;
