@@ -1,3 +1,4 @@
+clear ; 
 run("SetModel")
 run("SetParameters")
 
