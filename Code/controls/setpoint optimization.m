@@ -1,3 +1,4 @@
+
 run("SetModel")
 
 Lowerbound_total = bound(10, 15, 6, 10, 18, 22, dt, total_time/24); % Setpoint temperature (°C)
@@ -25,7 +26,7 @@ hWaitBar2 = waitbar(0, 'Please wait...') ;
 iteration_amount = 10;
 for n = 2:iteration_amount
 
-    waitbar(n / iteration_amount), hWaitBar2, sprintf('Runs: %d%%', round(n) );
+    waitbar(n / iteration_amount), hWaitBar2, sprintf(append(sprintf('Iteration %d/%', round(n)),  int2str(iteration_amount)));
 
     function [T_st_test, delta] = opt(T_st(:,n-1))
 
@@ -40,6 +41,6 @@ for n = 2:iteration_amount
     T_sp(:,n) =  T_sp(:,n) - alfa * (cost(n) - cost(n-1)) ./ delta;
 end
 
-
+close(hWaitBar2);
 
 
