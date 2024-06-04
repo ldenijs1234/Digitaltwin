@@ -230,12 +230,22 @@ for i = 1:length(t) - 1
     Energy_kWh(i) = ControllerOutputWatt(i) * dt / (1000 * 3600);  % Convert from W to kWh
 
     if T(1,i) < Lowerbound(i)
+<<<<<<< HEAD
+        Belowbound = true;
+        display("Too Cold")
+        t_belowbound(n) = i;
+        break
+    end
+
+
+=======
         display('Too cold')
         Belowbound = true;
         t_Below = i;
         hour_Below = round(t_Below/3600*dt);
         break
     end
+>>>>>>> 033134b8953c0a484850987e78ad7e27632d1aaf
     
     % Bound for maximal humidity
     MaxHumidity = rh2vaporDens(T(1,i+1), 100) ;
