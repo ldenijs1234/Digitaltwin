@@ -230,13 +230,14 @@ for i = 1:length(t) - 1
     FloorTemperature(1, i) = T(4,i) ;
     Energy_kWh(i) = ControllerOutputWatt(i) * dt / (1000 * 3600);  % Convert from W to kWh
 
-    % if T(1,i) < Lowerbound(i)
-    %     display('Too cold')
-    %     Belowbound = true;
-    %     t_Below = i;
-    %     hour_Below = round(t_Below/3600*dt);
-    %     break
-    % end
+    if  BoundBreak == true && T(1,i) < Lowerbound(i)
+        Belowbound = true;
+        display("Too Cold")
+        t_belowbound(n) = i;
+        hour_belowbound(n) = ceil(t_belowbound(n)/3600*dt);
+        break
+    end
+
     
     % Bound for maximal humidity
     MaxHumidity = rh2vaporDens(T(1,i+1), 100) ;

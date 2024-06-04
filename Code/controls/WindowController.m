@@ -1,5 +1,5 @@
 
-function [errorT, OpenWindowAngle, U_fog] = WindowController(T_air, setpoint, RelHumidity)
+function [errorT, OpenWindowAngle, U_fog] = WindowController(T_air, setpoint)
     kw = 1.5 ;
     kf = 0.005 ;
     % kHw = 0.0005 ;
