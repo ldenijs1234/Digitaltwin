@@ -27,10 +27,9 @@ set_FloorTemperature = init_FloorTemperature ;
 
 
 Humidity = 0.009 ; % kg/m^3 air
-
 CO2Air = 0.000464 ; % kg/m^3 air
 
-MassPlantInit = GH.p.GHPlantArea*GH.p.rho_lettuce*0.01 ; % Dry Mass plant (CO2), kg
+MassPlantInit = GH.p.GHPlantArea*GH.p.rho_lettuce*0.05*4/3 ; % Dry Mass plant (CO2), kg
 DryMassPlantInit = MassPlantInit / 20 ; % Assume plant = ~95% water, (5% Dry Mass), kg
 
 init_AddStates(:,1) = [Humidity; CO2Air; DryMassPlantInit; MassPlantInit] ;   % additional states
@@ -44,9 +43,7 @@ CAPArray = [GH.p.cp_air * GH.p.rho_air * GH.p.GHVolume;
             GH.p.cp_floor * GH.p.rho_floor * GH.p.GHFloorArea * GH.p.GHFloorThickness;
             GH.p.cp_lettuce * MassPlantInit;
             GH.p.Vpipe*GH.p.rho_steel*...
-        GH.p.cp_steel]; %dynamic
-
-        % pi*GH.p.pipeL*GH.p.r_0^2*GH.p.rho_water*GH.p.cp_water
+        GH.p.cp_steel]; % Dynamic 
 
 
 set_RelHumidity = VaporDens2rh(AirTemperature, Humidity) ;
