@@ -78,28 +78,29 @@ function Q = HeatByVentilation(GH, T_air, T_out, VentilationRate)
     Q = (T_out - T_air) * massflow * GH.p.cp_air ;
 end
 
-function [W_trans, W_cond, W_vent, W_fog] = vaporflows(GH, T_air, T_wall, T_out, H_air, H_out, DryMassPlant, VentilationRate, U_fog)
-    
-    G_c = 1.8e-3 * (max(0, (T_air - T_wall)))^(1/3) ; % (m/s) [Van Henten, 2007]
-
-    % (kg s^-1)
-    W_trans = max(0, (1 - exp(-GH.p.C_pld * DryMassPlant / GH.p.GHFloorArea)) * GH.p.C_vplai * ... 
-    ((GH.p.C_v1 / (GH.p.GasConstantR * 1e3 * (T_air + 273.15))) ...
-    * exp(GH.p.C_v2 * T_air / (T_air + GH.p.C_v3)) ...
-    - H_air) * GH.p.GHFloorArea );   % [Van Henten, 2007]  
-    W_cond = max(0, (G_c * (0.2522 * exp(0.0485 * T_air) * (T_air ... 
-    - T_out) - ((5.5638 * exp(0.0572 * T_air)) - H_air*1000)))/1000 * GH.p.GHFloorArea) ; % [Van Henten, 2007]
-    W_vent = VentilationRate * (H_air - H_out) ; 
-    W_fog = GH.p.phi_fog * U_fog ; % Controller input [De Zwart, 1996]
-
-end
-
 function h_af = ConvFloor(T_floor, T_in) % Convection coefficient between floor and air [De Zwart, 1996] 
     if T_floor > T_in
         h_af = 1.7 * (T_floor - T_in)^(1/3);
     else 
         h_af = 1.7 * (T_in - T_floor)^(1/4);
     end
+    % (W m^-2 K^-1)
+end
+
+function [W_trans, W_cond, W_vent, W_fog] = vaporflows(GH, T_air, T_wall, T_out, H_air, H_out, DryMassPlant, VentilationRate, U_fog)
+    
+    G_c = 1.8e-3 * (max(0, (T_air - T_wall)))^(1/3) ; % (m/s) [Bontsema et al, 2007]
+
+    % (kg s^-1)
+    W_trans = max(0, (1 - exp(-GH.p.C_pld * DryMassPlant / GH.p.GHFloorArea)) * GH.p.C_vplai * ... 
+    ((GH.p.C_v1 / (GH.p.GasConstantR * 1e3 * (T_air + 273.15))) ...
+    * exp(GH.p.C_v2 * T_air / (T_air + GH.p.C_v3)) ...
+    - H_air) * GH.p.GHFloorArea );   % [Van Henten, 2003]  
+    W_cond = max(0, (G_c * (0.2522 * exp(0.0485 * T_air) * (T_air ... 
+    - T_out) - ((5.5638 * exp(0.0572 * T_air)) - H_air*1000)))/1000 * GH.p.GHFloorArea) ; % [Bontsema et al, 2007]
+    W_vent = VentilationRate * (H_air - H_out) ; 
+    W_fog = GH.p.phi_fog * U_fog ; % Controller input [De Zwart, 1996]
+
 end
 
 function HumidityDot = HumidityBalance(GH, W_trans, W_cond, W_vent, W_fog)
@@ -258,7 +259,7 @@ close(hWaitBar);
 % legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Heatpipe','Outside', 'Heating Line', 'Cooling Line')
 % hold off
 
-disp(sum(Energy_kWh.*simdaycost(1:end-1)));
+disp(sum(Energy_kWh.*simdaycost(1:end-1))); % Calculate the total energy cost used for greenhouse control
 
 
 
