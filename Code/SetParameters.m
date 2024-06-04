@@ -1,4 +1,4 @@
-% Set variables (for matrices), parameters saved in structure 'GH' under field 'p'
+% Defining parameters saved in structure 'GH' under field 'p', creating arrays with coefficients for later calculation
 
 % General parameters
 GH.p.           cp_air = 1003.5 ; % (J kg^-1 K^-1)
@@ -93,7 +93,8 @@ GH.p.           pipet = 0.001; % (m), half of the thickness of one fin
 GH.p.           PipeArea = GH.p.pipeL*2*pi*GH.p.r_2 ;
 GH.p.           Bpipe = sqrt(GH.p.r_1^2+GH.p.pipet^2);
 GH.p.           Dpipe = sqrt((GH.p.r_2^2 /GH.p.r_1)^2 + GH.p.pipet^2);
-GH.p.           Afin =  2*pi*GH.p.r_1*(GH.p.Dpipe-GH.p.Bpipe+(GH.p.pipet/2)*log(((GH.p.Dpipe-GH.p.pipet)*(GH.p.Bpipe+GH.p.pipet))/((GH.p.Dpipe+GH.p.pipet)*(GH.p.Bpipe-GH.p.pipet)))); % surface area of a fin in m^2
+GH.p.           Afin =  2*pi*GH.p.r_1*(GH.p.Dpipe-GH.p.Bpipe+(GH.p.pipet/2)*log(((GH.p.Dpipe-GH.p.pipet)*...
+                (GH.p.Bpipe+GH.p.pipet))/((GH.p.Dpipe+GH.p.pipet)*(GH.p.Bpipe-GH.p.pipet)))); % (m^2), surface area of a fin
 GH.p.           Vfin = 4*pi*GH.p.pipet*GH.p.r_1*(GH.p.r_2-GH.p.r_1); % (m^3), volume of a fin
 GH.p.           Vpipe = GH.p.Vfin*GH.p.pipeL*GH.p.pipeF+(GH.p.r_1^2-GH.p.r_0^2)*pi*GH.p.pipeL; % (m^3), volume of the material of the pipe
 GH.p.           Apipe = GH.p.pipeL*GH.p.pipeF*GH.p.Afin+(GH.p.pipeL-GH.p.pipeL*GH.p.pipeF*2*GH.p.pipet)*2*pi*GH.p.r_1; % (m^2), total area of the pipe
@@ -105,7 +106,7 @@ GH.p.           C_pld = 1/3* GH.p.rho_lettuce* 0.1 ; % (m^2 kg^-1), effective ca
 GH.p.           C_vplai = 3.6e-3 ; % (m s^-1), canopy transpiration mass transfer coefficient
 GH.p.           C_v1 = 9348 ; % (J m^-3), parameter defining saturation water vapor pressure
 GH.p.           C_v2 = 17.4 ; % (K), parameter defining saturation water vapor pressure    
-GH.p.           C_v3 = 239 ; % (K), parameter defining saturation water vapor pressure
+GH.p.           C_v3 = 239 ; % (K), parameter defining saturation water vapor pressure [Van Henten, 2003]
 
 % CO2 equations parameters
 GH.p.           C_RadPhoto = 3.55e-9 ; % (kg J^-1), light use efficiency
@@ -116,17 +117,16 @@ GH.p.           C_CO23 = 6.29e-4 ; % (m s^-1 K^-1), temperature effect on CO2 di
 GH.p.           C_respC = 4.87e-7 ; % (s^-1), respiration rate in terms of produced carbon dioxide
 
 % Ventilation parameters
-GH.p.           C_f = 0.6 ; % Discharge of energy by friction
-GH.p.           BetaAir = 1/283 ; % (1/K), Thermal expansion coefficient
+GH.p.           C_f = 0.6 ; % (-), discharge of energy by friction
+GH.p.           BetaAir = 1/283 ; % (1/K), thermal expansion coefficient
 
 % Temperature equations parameters   
 
 % Convection coefficients, values are somewhat arbitrary
-h_out = 20;  % Convection between outside air and greenhouse
-h_ac = 5;  % (W/ m^2 K), convection between air and cover
-h_af = 5;  % (W/ m^2 K), convection between air and floor  
-h_ap = 5;  % (W/ m^2 K), convection between air and plant
-h_ah = 5;  % (W/ m^2 K), convection between air and heatpipe
+h_ac = 5;  % (W m^-2 K^-1), convection between air and cover
+h_af = 5;  % (W m^-2 K^-1), convection between air and floor  
+h_ap = 5;  % (W m^-2 K^-1), convection between air and plant
+h_ah = 5;  % (W m^-2 K^-1), convection between air and heatpipe
 ConvectionCoefficientsIn = [0; h_ac; h_ac; h_af; h_ap; h_ah] ; % Placeholder, will be substituted by function 'inside_convection'
 
 
@@ -141,7 +141,7 @@ FIRDiffuseArray = [0; GH.p.FIRDiffuseGlass; GH.p.FIRDiffuseGlass; GH.p.FIRDiffus
 AreaArray = [0; GH.p.GHFloorArea; GH.p.GHTotalArea- GH.p.GHFloorArea; GH.p.GHFloorArea; GH.p.GHPlantArea; GH.p.PipeArea];
 AreaSunArray = [0; GH.p.GHFloorArea; 0; GH.p.GHFloorArea - GH.p.GHPlantArea - 2*GH.p.r_2*GH.p.pipeL*0.1 ; GH.p.GHPlantArea; 2*GH.p.r_2*GH.p.pipeL*0.1];
 AreaArrayRad = AreaArray; AreaArrayRad(5) = 2 * AreaArray(5); AreaArrayRad(6) = GH.p.pipeL*2*pi*GH.p.r_2;
-TransmissionArray = [0; 1; 1; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass]; %0 for air, 1 for glass wall and roof, tau for everything underneath glass
+TransmissionArray = [0; 1; 1; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass]; % 0 for air, 1 for glass wall and roof, tau for everything underneath glass
 
 ConvAreaArray = AreaArray ;
 MassPlant = GH.p.GHPlantArea*GH.p.rho_lettuce*0.01 ;
@@ -152,20 +152,21 @@ ConvAreaArray(6) = GH.p.Apipe ;
 
 % Functions defining viewing factors for radiation
 
-function F_12 = F_rect_perp(h, w, l)   %inputs: h length of object 2, w length of object 1, l lenght of intersection
-    H = h/l;                                    %calculates shapefactor of two perpendicular adjecent rectangles
+function F_12 = F_rect_perp(h, w, l)                            %inputs: h length of object 2, w length of object 1, l lenght of intersection
+    H = h/l;                                                    %calculates shapefactor of two perpendicular adjecent rectangles
     W = w/l;
     F_12 = (1/(pi*W)) * (W * atan(1/W) + H * atan(1/H) - sqrt(H^2 + W^2) * atan(1/sqrt(H^2 + W^2))...
-        + 0.25 * log(  ((1 + W^2) * (1 + H^2)) / (1 + W^2 + H^2) * ( W^2 * (1 + W^2 + H^2)/ ((1 + W^2) * (W^2 + H^2)) )^(W^2) * (H^2 * (1 + W^2 + H^2) / ((1 + H^2) * (W^2 + H^2)) )^(H^2) ));
+        + 0.25 * log(  ((1 + W^2) * (1 + H^2)) / (1 + W^2 + H^2) * ( W^2 * (1 + W^2 + H^2)/...
+        ((1 + W^2) * (W^2 + H^2)) )^(W^2) * (H^2 * (1 + W^2 + H^2) / ((1 + H^2) * (W^2 + H^2)) )^(H^2) ));
 end
 
-function F_12 = F_para_cyl(s, d)    %inputs: s the distance between cylinders, d the diameter of the cylinders
-    X = 1 + s/d;                                %calculates shapefactor of two parallel cylinders with equal cylinders
+function F_12 = F_para_cyl(s, d)                                %inputs: s the distance between cylinders, d the diameter of the cylinders
+    X = 1 + s/d;                                                %calculates shapefactor of two parallel cylinders with equal cylinders
     F_12 = 1/pi * (sqrt(X^2 -1) + asin(1/X) - X);
 end
 
-function F_mn = F_reciprocal(F_nm, AreaRad, n, m)   %inputs: F_nm shape factor object n to m, AreaRad area area of all objects, n nth object, m mth object
-    F_mn = F_nm * AreaRad(n) / AreaRad(m);                    %calculates shapefactor object 2 to object 1
+function F_mn = F_reciprocal(F_nm, AreaRad, n, m)               %inputs: F_nm shape factor object n to m, AreaRad area area of all objects, n nth object, m mth object
+    F_mn = F_nm * AreaRad(n) / AreaRad(m);                      %calculates shapefactor object 2 to object 1
 end
 
 
