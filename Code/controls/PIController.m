@@ -3,7 +3,7 @@
 function [integral, error, ControllerOutputWatt] = PIController(GH, T_air, setpoint, dt, integral, prev_error)
     %PI controller
     k = 10000*(GH.p.GHFloorArea/500);        % Multiplication
-    kp = 15;       % Proportional gain
+    kp = 5;       % Proportional gain
     ki = 0.00001;       % Integral gain
     kd = 000;          %derivative gain
     
@@ -18,7 +18,7 @@ function [integral, error, ControllerOutputWatt] = PIController(GH, T_air, setpo
     proportional = kp * error;
     integral_component = ki * integral;
     derivative_component = kd * derivative;
-    BoilerMaxWatt = 1000000*(GH.p.GHFloorArea/500); % Dummy
+    BoilerMaxWatt = GH.p.BoilerMaxWatt ;
 
     Watt_Controller = k * (proportional + integral_component + derivative_component);
     Unlim_ControllerOutput = max(0, Watt_Controller);

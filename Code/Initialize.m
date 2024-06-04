@@ -29,7 +29,7 @@ set_FloorTemperature = init_FloorTemperature ;
 Humidity = 0.009 ; % kg/m^3 air
 CO2Air = 0.000464 ; % kg/m^3 air
 
-MassPlantInit = GH.p.GHPlantArea*GH.p.rho_lettuce*0.05*4/3 ; % Dry Mass plant (CO2), kg
+MassPlantInit = GH.p.GHPlantArea*GH.p.rho_lettuce*0.01 ; % Dry Mass plant (CO2), kg
 DryMassPlantInit = MassPlantInit / 20 ; % Assume plant = ~95% water, (5% Dry Mass), kg
 
 init_AddStates(:,1) = [Humidity; CO2Air; DryMassPlantInit; MassPlantInit] ;   % additional states

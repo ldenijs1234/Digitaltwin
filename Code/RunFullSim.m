@@ -13,9 +13,9 @@ SimEnd = time_steps*SimCount ;              % Define interval end based on SimCo
 
 run("SetInputs")
 
-% Setpoint = meanline ;        % Can be set to different setpoints, or can be turned off and defined by an optimization
-% Upperbound = coolingline ;
-% Lowerbound = heatingline ;
+Setpoint = meanline ;        % Can be set to different setpoints, or can be turned off and defined by an optimization
+Upperbound = coolingline ;
+Lowerbound = heatingline ;
 
 run("SetParameters")
 run("SetStates")
