@@ -22,7 +22,7 @@ T_st(:, 1) = bound_average(1:3600/dt:end)';
 %T_st(:,1) = best_T_st;
 
 % Interpolate setpoints over time
-setpoint = interp1(0:24, T_st(:, 1), t / 3600, 'linear', 'extrap');
+Setpoint = interp1(0:24, T_st(:, 1), t / 3600, 'linear', 'extrap');
 
 % Run the initial simulation with the initial setpoints
 run("Initialize")
@@ -38,7 +38,7 @@ cost(1) = sum(Energy_kWh .* simdaycost(1:end-1)); % Adjust if necessary
 hWaitBar2 = waitbar(0, 'Please wait...');
 
 % Number of iterations
-iteration_amount = 30;
+iteration_amount = 5;
 
 % Main optimization loop
 for n = 2:iteration_amount
