@@ -18,7 +18,7 @@
 % 
 % All interactions between states are calculated in the for-loop used for euler integration
 
-WelEenBeenjeFrisHe = false;
+Belowbound = false;
 
 function Q = FQ_rad_out(emissivity, T, Area)                          % Calculation of emitted radiation per object
     Q = 5.670374419e-8 * emissivity .* Area .* ((T + 273.15).^4);    
@@ -227,10 +227,14 @@ for i = 1:length(t) - 1
     FloorTemperature(1, i) = T(4,i) ;
     Energy_kWh(i) = ControllerOutputWatt(i) * dt / (1000 * 3600);  % Convert from W to kWh
 
-    % Abort if Temperature is too cold
-    % if T(1,i) < Lowerbound
-    %     WelEenBeenjeFrisHe = true;
-    % end
+    if T(1,i) < Lowerbound(i)
+        Belowbound = true;
+        display("Too Cold")
+        t_belowbound(n) = i;
+        break
+    end
+
+
     
     % Bound for maximal humidity
     MaxHumidity = rh2vaporDens(T(1,i+1), 100) ;

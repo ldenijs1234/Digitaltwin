@@ -2,7 +2,7 @@
 
 function [integral, error, ControllerOutputWatt] = PIController(GH, T_air, setpoint, dt, integral, prev_error)
     %PI controller
-    k = 1000*(GH.p.GHFloorArea/500);        % Multiplication
+    k = 10000*(GH.p.GHFloorArea/500);        % Multiplication
     kp = 15;       % Proportional gain
     ki = 0.00001;       % Integral gain
     kd = 000;          %derivative gain
