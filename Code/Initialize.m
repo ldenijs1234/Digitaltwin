@@ -49,3 +49,4 @@ CAPArray = [GH.p.cp_air * GH.p.rho_air * GH.p.GHVolume;
 set_RelHumidity = VaporDens2rh(AirTemperature, Humidity) ;
 
 SimCount = 0 ;
+BoundBreak = false;
