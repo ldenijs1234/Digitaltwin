@@ -16,7 +16,13 @@ Upperbound = Upperbound_total(SimStart:SimEnd);
 bound_average = (Lowerbound + Upperbound) / 2;
 
 % Initial setpoints
-T_st(:, 1) = bound_average(1:3600/dt:end)';
+%T_st(:, 1) = bound_average(1:3600/dt:end)';
+T_st(:, 1) = Lowerbound(1:3600/dt:end)';
+%T_st(:,1) = best_T_st;
+
+bias = zeros(size(T_st(:, 1)));
+cost = zeros(size(T_st(:, 1)));
+TC_Count = 0;
 %[minimum_cost, best_iteration] = min(cost);
 %best_T_st = T_st(:,best_iteration);
 %T_st(:,1) = best_T_st;
@@ -26,6 +32,7 @@ Setpoint = interp1(0:24, T_st(:, 1), t / 3600, 'linear', 'extrap');
 
 % Run the initial simulation with the initial setpoints
 run("Initialize")
+BoundBreak = true;
 run("RunFullSim")
 
 % Compute initial cost
@@ -33,11 +40,10 @@ if Belowbound == false
     cost(1) = sum(Energy_kWh .* simdaycost(1:end-1)); % Adjust if necessary
 else
     cost(1) = inf;
+    bias(max(1,hour_belowbound-1):hour_belowbound) = (1 - (n / (iteration_amount + 0.01))) / 2;
 end
 
-% if WelEenBeenjeFrisHe == true
 
-% end
 % Initialize the waitbar
 hWaitBar2 = waitbar(0, 'Please wait...');
 
@@ -45,15 +51,13 @@ hWaitBar2 = waitbar(0, 'Please wait...');
 iteration_amount = 100;
 
 % Probability function parameters:
-labda = 1;
+labda = 1.7;
 prob_rate = 3 / iteration_amount;
 
 % Main optimization loop
 for n = 2:iteration_amount
-
     %distribution function:
     Accept_rate = labda * exp(-labda * (n * prob_rate));
-
 
 
     % Update the waitbar
@@ -63,7 +67,9 @@ for n = 2:iteration_amount
     [T_st_test, delta] = Perturb(T_st(:, n-1), n, iteration_amount);
 
     f = find(T_st_test < Lowerbound(1:3600/dt:end)');
-    T_st_test(f) = Lowerbound(f) + 0.3;
+    T_st_test(f) = Lowerbound(f) + 1.2;
+
+    T_st_test = T_st_test + bias; 
 
     
 
@@ -72,26 +78,38 @@ for n = 2:iteration_amount
 
     % Run the simulation with the new setpoints
     run("Initialize")
+    BoundBreak = true;
     run("RunFullSim")
+
+    bias = zeros(size(T_st(:, 1)));
 
     % Compute the cost for the new setpoints
     if Belowbound == false
         cost(n) = sum(Energy_kWh .* simdaycost(1:end-1)); % Adjust if necessary
-    else
+        TC_Count = 0;
+    else 
         cost(n) = inf;
+        bias(max(1,hour_belowbound(n)-1):hour_belowbound(n)) = (1 - (n / (iteration_amount + 0.01))) / 2;
+        TC_Count = TC_Count + 1;
     end
 
     if cost(n) < cost(n-1)
         T_st(:,n) = T_st_test;
+        display('Accepted')
     
     elseif rand(1) < Accept_rate
         T_st(:,n) = T_st_test;
-
+        display('Accepted')
     else
         T_st(:,n) = T_st(:,n-1);
+        display('Rejected')
     end
 
-
+    if TC_Count == 5
+        [minimum_cost, best_iteration] = min(cost);
+        T_st(:,n) = T_st(:,best_iteration);
+    end
+    
 
 end
 
@@ -107,8 +125,10 @@ function [test, delta] = Perturb(setpoints, n, iteration_amount)
     delta = (1 - (n / (iteration_amount + 0.01))) * 0.3 * (randi(11, length(setpoints), 1) - 6); % Rand makes int between 0, 11 and centers it around 0 to make between -5, 5
     test = setpoints + delta;
 end
+
 [minimum_cost, best_iteration] = min(cost);
 best_T_st = T_st(:,best_iteration);
+
 figure("WindowStyle", "docked");
 hold on
 plot(0:24, best_T_st)
