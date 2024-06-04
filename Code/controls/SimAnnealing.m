@@ -16,13 +16,14 @@ Upperbound = Upperbound_total(SimStart:SimEnd);
 bound_average = (Lowerbound + Upperbound) / 2;
 
 % Initial setpoints
-%T_st(:, 1) = bound_average(1:3600/dt:end)';
-T_st(:, 1) = Lowerbound(1:3600/dt:end)';
+T_st(:, 1) = bound_average(1:3600/dt:end)';
+%T_st(:, 1) = Lowerbound(1:3600/dt:end)';
 %T_st(:,1) = best_T_st;
 
 bias = zeros(size(T_st(:, 1)));
 cost = zeros(size(T_st(:, 1)));
 TC_Count = 0;
+n = 1;
 %[minimum_cost, best_iteration] = min(cost);
 %best_T_st = T_st(:,best_iteration);
 %T_st(:,1) = best_T_st;
