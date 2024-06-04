@@ -18,19 +18,19 @@ GH.p.           Gravity = 9.81 ; % (m/s^2)
 GH.p.           Kelvin = 273.15 ;
 
 
-% Greenhouse parameters                 
+% Greenhouse parameters,               
 GH.p.           LAI = 0.5 ; % Leaf Area Index
 
 GH.p.           GHWidth = 30 ; % (m) 
 GH.p.           GHLength = 30 ; % (m)
 GH.p.           GHHeight = 5 ;  % (m)
 GH.p.           GHWallThickness = 3e-3 ; % (m)
-GH.p.           GHFloorThickness = 1e-2 ;	% (m)
+GH.p.           GHFloorThickness = 1e-2 ;	% (m), thickness of a single floor layer
 GH.p.           GHFloorArea = GH.p.GHLength * GH.p.GHWidth ;
 
 GH.p.           NumberOfWindows = round(GH.p.GHFloorArea*0.05) ; % Scaled to size of greenhouse
-GH.p.           WindowLength = 1.5 ;
-GH.p.           WindowHeight = 0.8 ;
+GH.p.           WindowLength = 1.5 ; %(m)
+GH.p.           WindowHeight = 0.8 ; %(m)
 GH.p.           RoofAngle = 26 ; % (°), same as Venlo type greenhouse
 
 GH.p.           WindowArea = GH.p.WindowHeight*GH.p.WindowLength ;
@@ -53,14 +53,14 @@ GH.p.           SOLARAbsorbancePlant = 0.65 ; % (-)
 GH.p.           FIRAbsorbancePlant = 0.78 ; % (-)
 GH.p.           SOLARDiffusePlant = 1 - GH.p.SOLARAbsorbancePlant; % (-)
 GH.p.           FIRDiffusePlant = 1 - GH.p.FIRAbsorbancePlant ; % (-)
-GH.p.           YieldFactor = 0.544 ; % (-) (effective CO2 use efficiency)
-GH.p.           C_resp = 2.65e-7 ; % (s^-1) (respiration rate in terms of respired dry matter)
+GH.p.           YieldFactor = 0.544 ; % (-) (effective CO2 use efficiency) [Van Henten, 2003]
+GH.p.           C_resp = 2.65e-7 ; % (s^-1) (respiration rate in terms of respired dry matter) [Van Henten, 2003]
 
 % Glass parameters
-GH.p.           SOLARAbsorbanceGlass = 0.04 ; % (-)
-GH.p.           FIRAbsorbanceGlass = 0.85; % (-)
-GH.p.           EmittanceGlass = 0.8 ; % (-)
-GH.p.           SOLARTauGlass = 0.80 ; % (-)
+GH.p.           SOLARAbsorbanceGlass = 0.04 ; % (-) [Vanthoor, 2011]
+GH.p.           FIRAbsorbanceGlass = 0.85; % (-) [Vanthoor, 2011]
+GH.p.           EmittanceGlass = 0.85 ; % (-) [Vanthoor, 2011]
+GH.p.           SOLARTauGlass = 0.85 ; % (-) [Vanthoor, 2011]
 GH.p.           SOLARDiffuseGlass = 1 - GH.p.SOLARAbsorbanceGlass - GH.p.SOLARTauGlass; % (-)
 GH.p.           FIRDiffuseGlass = 1 - GH.p.FIRAbsorbanceGlass; % (-)
 
@@ -74,7 +74,7 @@ GH.p.           KFloor = 0.3 ; %accurate enough for prototype
 GH.p.           LFloorGround = 19e-2 ; % (m)
 
 % Heatingpipe parameters
-GH.p.           EmittancePipe = 0.88; % (-)
+GH.p.           EmittancePipe = 0.88; % (-) [Vanthoor, 2011]
 GH.p.           SOLARAbsorbancePipe = 0.95; % (-)
 GH.p.           FIRAbsorbancePipe = 0.95; % (-)
 GH.p.           SOLARDiffusePipe = 1 - GH.p.SOLARAbsorbancePipe ; % (-)
@@ -88,7 +88,7 @@ GH.p.           dL = dt*GH.p.Vel_water; % (m), distance travelled in one time-st
 GH.p.           dPipe = 20; % (-), number of pipe pieces for numerical calculation
 GH.p.           Npipes = ceil(GH.p.pipeLength/(GH.p.dL*GH.p.dPipe)); % (-), number of pipes
 GH.p.           pipeL = GH.p.Npipes*GH.p.dPipe*GH.p.dL;
-GH.p.           pipeF = 80; % Fins per meter of pipe  !!!!keep the thickness in mind, not more fins then fit on the pipe!!!!
+GH.p.           pipeF = 80; % Fins per meter of pipe, keep the thickness in mind, not more fins then fit on the pipe
 GH.p.           pipet = 0.001; % (m), half of the thickness of one fin 
 GH.p.           PipeArea = GH.p.pipeL*2*pi*GH.p.r_2 ;
 GH.p.           Bpipe = sqrt(GH.p.r_1^2+GH.p.pipet^2);
@@ -103,34 +103,32 @@ GH.p.           APipeIn = pi*GH.p.r_0^2; % (m^2), area inside crossection pipe
 
 % Humidity equations parameters
 GH.p.           C_pld = 1/3* GH.p.rho_lettuce* 0.1 ; % (m^2 kg^-1), effective canopy surface of lettuce, modelled as a sphere
-GH.p.           C_vplai = 3.6e-3 ; % (m s^-1), canopy transpiration mass transfer coefficient
-GH.p.           C_v1 = 9348 ; % (J m^-3), parameter defining saturation water vapor pressure
-GH.p.           C_v2 = 17.4 ; % (K), parameter defining saturation water vapor pressure    
+GH.p.           C_vplai = 3.6e-3 ; % (m s^-1), canopy transpiration mass transfer coefficient [Van Henten, 2003]
+GH.p.           C_v1 = 9348 ; % (J m^-3), parameter defining saturation water vapor pressure [Van Henten, 2003]
+GH.p.           C_v2 = 17.4 ; % (K), parameter defining saturation water vapor pressure [Van Henten, 2003]
 GH.p.           C_v3 = 239 ; % (K), parameter defining saturation water vapor pressure [Van Henten, 2003]
 
 % CO2 equations parameters
-GH.p.           C_RadPhoto = 3.55e-9 ; % (kg J^-1), light use efficiency
-GH.p.           C_R = 5.2e-5 ; % (kg m^-3), CO2 compensation point
-GH.p.           C_CO21 = 5.11e-6 ; % (m s^-1 K^-1), temperature effect on CO2 diffiusion in leaves
-GH.p.           C_CO22 = 2.3e-4 ; % (m s^-1 K^-1), temperature effect on CO2 diffiusion in leaves
-GH.p.           C_CO23 = 6.29e-4 ; % (m s^-1 K^-1), temperature effect on CO2 diffiusion in leaves
-GH.p.           C_respC = 4.87e-7 ; % (s^-1), respiration rate in terms of produced carbon dioxide
+GH.p.           C_RadPhoto = 3.55e-9 ; % (kg J^-1), light use efficiency [Van Henten, 2003]
+GH.p.           C_R = 5.2e-5 ; % (kg m^-3), CO2 compensation point [Van Henten, 2003]
+GH.p.           C_CO21 = 5.11e-6 ; % (m s^-1 K^-1), temperature effect on CO2 diffiusion in leaves [Van Henten, 2003]
+GH.p.           C_CO22 = 2.3e-4 ; % (m s^-1 K^-1), temperature effect on CO2 diffiusion in leaves [Van Henten, 2003]
+GH.p.           C_CO23 = 6.29e-4 ; % (m s^-1 K^-1), temperature effect on CO2 diffiusion in leaves [Van Henten, 2003]
+GH.p.           C_respC = 4.87e-7 ; % (s^-1), respiration rate in terms of produced carbon dioxide [Van Henten, 2003]
 
 % Ventilation parameters
-GH.p.           C_f = 0.6 ; % (-), discharge of energy by friction
-GH.p.           BetaAir = 1/283 ; % (1/K), thermal expansion coefficient
+GH.p.           C_f = 0.6 ; % (-), discharge of energy by friction [De Zwart, 1996]
+GH.p.           BetaAir = 1/283 ; % (1/K), thermal expansion coefficient [De Zwart, 1996]
 
-% Temperature equations parameters   
+
+% Temperature equations parameters:   
 
 % Convection coefficients, values are somewhat arbitrary
 h_ac = 5;  % (W m^-2 K^-1), convection between air and cover
 h_af = 5;  % (W m^-2 K^-1), convection between air and floor  
-h_ap = 5;  % (W m^-2 K^-1), convection between air and plant
+h_ap = 5;  % (W m^-2 K^-1), convection between air and plant [Katzin, 2021]
 h_ah = 5;  % (W m^-2 K^-1), convection between air and heatpipe
-ConvectionCoefficientsIn = [0; h_ac; h_ac; h_af; h_ap; h_ah] ; % Placeholder, will be substituted by function 'inside_convection'
-
-
-
+ConvectionCoefficientsIn = [0; h_ac; h_ac; h_af; h_ap; h_ah] ; % Placeholder  values (except h_ap), will be substituted by function 'inside_convection'
 
 % Heat transfer and area arrays for later calculations
 EmmitanceArray = [0; GH.p.EmittanceGlass; GH.p.EmittanceGlass; GH.p.EmittanceFloor; GH.p.EmittancePlant; GH.p.EmittancePipe];
@@ -147,8 +145,6 @@ ConvAreaArray = AreaArray ;
 MassPlant = GH.p.GHPlantArea*GH.p.rho_lettuce*0.01 ;
 ConvAreaArray(5) = MassPlant * GH.p.C_pld  ; % Effect plant surface
 ConvAreaArray(6) = GH.p.Apipe ;
-
-
 
 % Functions defining viewing factors for radiation
 
@@ -169,9 +165,7 @@ function F_mn = F_reciprocal(F_nm, AreaRad, n, m)               %inputs: F_nm sh
     F_mn = F_nm * AreaRad(n) / AreaRad(m);                      %calculates shapefactor object 2 to object 1
 end
 
-
-%%shapefactors, cover:c, walls: w, floor: f, plant: p, heatingpipe: h
-
+% Shapefactors, cover:c, walls: w, floor: f, plant: p, heatingpipe: h
 F_hc = 1/12; 
 F_hh = 2 * F_para_cyl((GH.p.GHFloorArea/GH.p.pipeL), GH.p.r_2); 
 F_hf = 0.6 - F_hh; 
@@ -202,7 +196,7 @@ F_pw = F_reciprocal(F_wp, AreaArrayRad, 3 ,5);
 F_pf = F_reciprocal(F_fp, AreaArrayRad, 4, 5); 
 F_pp = 1 - F_pc - F_pw - F_pf - F_ph; 
 
-ViewMatrix = [0,     0,      0,      0,      0,      0;   %check if sum(ViewMatrix,2) = [0; ones(height(ViewMatrix) - 1, 1)] & AreaArrayRad .* ViewMatrix - (AreaArrayRad .* ViewMatrix)' = zeros(size(ViewMatrix))
+ViewMatrix = [0,     0,      0,      0,      0,      0;   
              0,     F_cc,   F_cw,   F_cf,   F_cp,   F_ch;
              0,     F_wc,   F_ww,   F_wf,   F_wp,   F_wh;   
              0,     F_fc,   F_fw,   F_ff,   F_fp,   F_fh;
@@ -211,3 +205,5 @@ ViewMatrix = [0,     0,      0,      0,      0,      0;   %check if sum(ViewMatr
 
 ViewMatrix = ViewMatrix.';
 
+% Check: sum(ViewMatrix,2) = [0; ones(height(ViewMatrix) - 1, 1)] & AreaArrayRad .* ViewMatrix -...
+% (AreaArrayRad .* ViewMatrix)' = zeros(size(ViewMatrix))

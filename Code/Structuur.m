@@ -31,25 +31,26 @@ function Q = FQ_rad_in(absorbance, diffuse, Viewf, Qrad)      % Calculation of a
 end
 
 
-function Q = FQ_solar(transmission, diffuse, absorbance, Areasun, Isun, Area)     %input: transmission of the cover, parameter arrays and I_sun(i)
-    Q = transmission .* absorbance .* Areasun * Isun; %absorbed sun radiation by each object
-    dif = sum(diffuse(4:end,:) .* Areasun(4:end,:) * Isun);          %all sun radiation that is diffused
-    Q = [diffuse(2); Area(2) / sum(Area(2:3)) * absorbance(2); Area(3) / sum(Area(2:3)) * absorbance(3); 0; 0; 0] * dif + Q;   %air absorbs diffused radiation thats again diffused by glass, glass absorbs this
+function Q = FQ_solar(transmission, diffuse, absorbance, Areasun, Isun, Area)    % Calculation of absorbed solar radiation per object
+    Q = transmission .* absorbance .* Areasun * Isun; 
+    dif = sum(diffuse(4:end,:) .* Areasun(4:end,:) * Isun);                      % All solar radiation that is diffused
+    Q = [diffuse(2); Area(2) / sum(Area(2:3)) * ...
+    absorbance(2); Area(3) / sum(Area(2:3)) * absorbance(3); 0; 0; 0] * dif + Q;   % Diffused solar radiation gets absorbed by glass, or rediffused and absorbed by the air
 end
 
-function Q = FQ_sky(Area, absorbance, emissivity, TSky, T) %input: parameter arrays, effective sky temperature and Temperature of walls and roof
-    Q = 5.670374419*10^-8 * Area .* (absorbance * (TSky + 273.15).^4 - emissivity .* ((T + 273.15).^4) ); %absorbance of sky emmision minus emittance of walls and roof 
+function Q = FQ_sky(Area, absorbance, emissivity, TSky, T)  % Calculation of sky emission using effective sky temperature
+    Q = 5.670374419*10^-8 * Area .* (absorbance * (TSky + 273.15).^4 - emissivity .* ((T + 273.15).^4) ); 
 end
 
 
-function Q = convection(hin, hout, T, T_out, Area)   % Convective heat flow 
+function Q = convection(hin, hout, T, T_out, Area)                  % Convective heat flows
     Convection_matrix = - eye(length(T));
     Convection_matrix(:, 1) = 1;
     Convection_matrix(1,1) = 0;
     dT = Convection_matrix * T ;
     Q  = Area .* hin .* dT ;
-    Q(1) = -sum(Q) ;                                % Convective heat flow to air
-    Q_out = Area(2:3) .* hout .* ([T_out; T_out] - T(2:3)) ;       % Convection of wall and cover with outside air
+    Q(1) = -sum(Q) ;                                                % Convective heat flow to air
+    Q_out = Area(2:3) .* hout .* ([T_out; T_out] - T(2:3)) ;        % Convection of wall and cover with outside air
     Q(2:3) = Q(2:3) + Q_out; 
 end
 
@@ -73,7 +74,7 @@ function Q = LatentHeat(mf)    % Latent heat of evaporation of water mass flow m
     Q = 2.45e6 * mf ;
 end
 
-function Q = HeatByVentilation(GH, T_air, T_out, VentilationRate)
+function Q = HeatByVentilation(GH, T_air, T_out, VentilationRate) % Calculation of heat exchange due to ventilation
     massflow = GH.p.rho_air *  VentilationRate ;
     Q = (T_out - T_air) * massflow * GH.p.cp_air ;
 end
@@ -104,8 +105,8 @@ function [W_trans, W_cond, W_vent, W_fog] = vaporflows(GH, T_air, T_wall, T_out,
 end
 
 function HumidityDot = HumidityBalance(GH, W_trans, W_cond, W_vent, W_fog)
-    W = - W_vent - W_cond + W_trans + W_fog; %kg s^-1 
-    HumidityDot = W / GH.p.GHVolume ; %kg m^-3 s^-1
+    W = - W_vent - W_cond + W_trans + W_fog;  
+    HumidityDot = W / GH.p.GHVolume ; % (kg m^-3 s^-1)
 end
 
 function [C_trans, C_vent, C_respD, C_respC] = CO2flows(GH, DryMassPlant, SolarIntensity, T_air, C_in, C_out, VentilationRate)
@@ -125,15 +126,16 @@ function CO2Dot = CO2Balance(GH, C_trans, C_vent, C_inject, C_respC)
 end
 
 function DryWeightDot = DryWeight(GH, C_trans, C_respD)
-    DryWeightDot = GH.p.YieldFactor*C_trans - C_respD ;
+    DryWeightDot = GH.p.YieldFactor*C_trans - C_respD ; % [Van Henten, 2003]
 end
 
 
-function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeedkph, T_out, OpenWindowAngle) % [De Zwart, 1996]
+function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeedkph, T_out, OpenWindowAngle) 
+    % Calculation of ventilation rate, assuming no leakage [De Zwart, 1996]
     p = GH.p ; 
-    WindSpeed = WindSpeedkph / 3.6 ; % (m/s)
-    G_l = 2.29e-2 * (1 - exp(-OpenWindowAngle/21.1)) ; % leeside window function
-    G_w = 1.2e-3 * OpenWindowAngle * exp(OpenWindowAngle/211) ; % windward side window function
+    WindSpeed = WindSpeedkph / 3.6 ; % Conversion of data units (m/s)
+    G_l = 2.29e-2 * (1 - exp(-OpenWindowAngle/21.1)) ; % Leeside window function
+    G_w = 1.2e-3 * OpenWindowAngle * exp(OpenWindowAngle/211) ; % Windward side window function
     v_wind = (G_l + G_w) * p.WindowArea * WindSpeed ;
     H = p.WindowHeight * (sind(p.RoofAngle)- sind(p.RoofAngle - OpenWindowAngle)) ;
     v_temp = p.C_f * p.WindowLength/3 * (abs(p.Gravity*p.BetaAir*(T_air ... 
@@ -144,6 +146,8 @@ end
 
 hWaitBar = waitbar(0, 'Please wait...') ;
 
+
+% For-loop containing euler-integration of states and inter-state dynamics:
 for i = 1:length(t) - 1
     
     % Controller inputs
@@ -186,8 +190,6 @@ for i = 1:length(t) - 1
                 GH.p.cp_floor * GH.p.rho_floor * GH.p.GHFloorArea * GH.p.GHFloorThickness;
                 GH.p.cp_lettuce * MassPlant;
                 GH.p.Vpipe*GH.p.rho_steel*GH.p.cp_steel];  
-
-
     
 
     % Vapor flows and balance
@@ -228,6 +230,7 @@ for i = 1:length(t) - 1
     Energy_kWh(i) = ControllerOutputWatt(i) * dt / (1000 * 3600);  % Convert from W to kWh
 
     if T(1,i) < Lowerbound(i)
+<<<<<<< HEAD
         Belowbound = true;
         display("Too Cold")
         t_belowbound(n) = i;
@@ -235,6 +238,14 @@ for i = 1:length(t) - 1
     end
 
 
+=======
+        display('Too cold')
+        Belowbound = true;
+        t_Below = i;
+        hour_Below = round(t_Below/3600*dt);
+        break
+    end
+>>>>>>> 033134b8953c0a484850987e78ad7e27632d1aaf
     
     % Bound for maximal humidity
     MaxHumidity = rh2vaporDens(T(1,i+1), 100) ;
@@ -251,19 +262,21 @@ end
 
 close(hWaitBar);
 
-% figure("WindowStyle", "docked");
-% hold on
-% plot(t/3600, T(:,:))
-% plot(t/3600, OutsideTemperature, 'b--')
-% plot(t/3600, heatingline, 'r--') 
-% plot(t/3600, coolingline, 'c--')
-% title("Temperatures in the greenhouse")
-% xlabel("Time (h)")
-% ylabel("Temperature (°C)")
-% legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Heatpipe','Outside', 'Heating Line', 'Cooling Line')
-% hold off
+% Plot temperatures:
+figure("WindowStyle", "docked");
+hold on
+plot(t/3600, T(:,:))
+plot(t/3600, OutsideTemperature, 'b--')
+plot(t/3600, heatingline, 'r--') 
+plot(t/3600, coolingline, 'c--')
+title("Temperatures in the greenhouse")
+xlabel("Time (h)")
+ylabel("Temperature (°C)")
+legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Heatpipe','Outside', 'Heating Line', 'Cooling Line')
+hold off
 
-disp(sum(Energy_kWh.*simdaycost(1:end-1))); % Calculate the total energy cost used for greenhouse control
+% Calculate the total energy cost used for greenhouse control:
+disp(sum(Energy_kWh.*simdaycost(1:end-1))); 
 
 
 
