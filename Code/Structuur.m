@@ -11,7 +11,7 @@ function Q = FQ_rad_out(emissivity, T, Area)                          %input: em
 end                                                             %q(:,i) = F
 
 
-function Q = FQ_rad_in(absorbance, diffuse, Area, Viewf, Qrad)      %input: parameter arrays, viewfactor matrix and q radiance array(:,i)
+function Q = FQ_rad_in(absorbance, diffuse, Viewf, Qrad)      %input: parameter arrays, viewfactor matrix and q radiance array(:,i)
     Q =(absorbance .* Viewf * Qrad);                       %how much each object absorbs
     Q(1,:) = sum(diffuse .* Viewf * Qrad) * 0.7;                   %inside air recieves 70% of diffused radiation
 end
@@ -27,23 +27,19 @@ function Q = FQ_sky(Area, absorbance, emissivity, TSky, T) %input: parameter arr
     Q = 5.670374419*10^-8 * Area .* (absorbance * (TSky + 273.15).^4 - emissivity .* ((T + 273.15).^4) ); %absorbance of sky emmision minus emittance of walls and roof 
 end
 
-function J = SkyEmit(T_dew, T_out)
-    epsilon = 0.741 + 0.0062 * T_dew;
-    J = epsilon * (T_out + 273.15)^4;
-end
 
-function Q = convection(hin, hout, T, T_out, Area)   % Convective heat flow array from with coefficient h with dt-matrix
+function Q = convection(hin, hout, T, T_out, Area)   % Convective heat flow 
     Convection_matrix = - eye(length(T));
     Convection_matrix(:, 1) = 1;
     Convection_matrix(1,1) = 0;
     dT = Convection_matrix * T ;
     Q  = Area .* hin .* dT ;
     Q(1) = -sum(Q) ;                                % Convective heat flow to air
-    Q_out = Area(2:3) .* hout .* ([T_out; T_out] - T(2:3)) ;       % Convection with outside air
+    Q_out = Area(2:3) .* hout .* ([T_out; T_out] - T(2:3)) ;       % Convection of wall and cover with outside air
     Q(2:3) = Q(2:3) + Q_out; 
 end
 
-function [Q, QFloor] = FGroundConduction(GH, FloorTemperature, T)
+function [Q, QFloor] = FGroundConduction(GH, FloorTemperature, T)  % Calculation of conduction between floor layers
     
     s = height(FloorTemperature) ;
     matrix1 = -2* eye(s) ;
@@ -199,9 +195,8 @@ for i = 1:length(t) - 1
     FloorTemperature(:, i+1) = FloorTemperature(:, i) + QFloor(:, i) * GH.p.GHFloorArea / CAPArray(4) * dt ;
 
     Q_rad_out(:,i) = FQ_rad_out(EmmitanceArray, T(:,i), AreaArrayRad);
-    Q_rad_in(:,i) = FQ_rad_in(FIRAbsorbanceArray, FIRDiffuseArray, AreaArrayRad, ViewMatrix, Q_rad_out(:,i));
+    Q_rad_in(:,i) = FQ_rad_in(FIRAbsorbanceArray, FIRDiffuseArray, ViewMatrix, Q_rad_out(:,i));
     Q_solar(:,i) = FQ_solar(TransmissionArray, SOLARDiffuseArray, SOLARAbsorbanceArray, AreaSunArray, SolarIntensity(i), AreaArray);
-    J_sky(i) = SkyEmit(DewPoint(i),OutsideTemperature(i));
     Q_sky(2:3,i) = FQ_sky(AreaArray(2:3), FIRAbsorbanceArray(2:3), EmmitanceArray(2:3), SkyTemperature(i), T(2:3,i));
     Q_conv(:,i) = convection(ConvectionCoefficientsIn(:,i), ConvectionCoefficientsOut(:, i), T(:,i), OutsideTemperature(i), ConvAreaArray);
     Q_vent(1, i) = HeatByVentilation(GH, T(1, i), OutsideTemperature(i), VentilationRate(i)) ; 
