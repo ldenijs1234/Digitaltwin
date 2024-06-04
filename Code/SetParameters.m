@@ -24,7 +24,7 @@ GH.p.           GHWidth = 30 ; % (m)
 GH.p.           GHLength = 30 ; % (m)
 GH.p.           GHHeight = 5 ;  % (m)
 GH.p.           GHWallThickness = 3e-3 ; % (m)
-GH.p.           GHFloorThickness = 1e-2 ;	% (m), thickness of a single floor layer
+GH.p.           GHFloorThickness = 2e-2 ;	% (m), thickness of a single floor layer
 GH.p.           GHFloorArea = GH.p.GHLength * GH.p.GHWidth ;
 
 GH.p.           NumberOfWindows = round(GH.p.GHFloorArea*0.05) ; % Scaled to size of greenhouse
@@ -74,7 +74,6 @@ GH.p.           EmittanceFloor = 1.0 ; % (-)  [Vanthoor, 2011]
 GH.p.           SOLARDiffuseFloor = 1 - GH.p.SOLARAbsorbanceFloor; % (-)
 GH.p.           FIRDiffuseFloor = 1 - GH.p.FIRAbsorbanceFloor ; % (-)
 GH.p.           KFloor = 1.7 ; % (W m^-1 K^-1), thermal conductivity [Katzin, 2021]
-GH.p.           LFloorGround = 19e-2 ; % (m)
 
 % Heatingpipe parameters
 GH.p.           EmittancePipe = 0.88; % (-) [Vanthoor, 2011]
