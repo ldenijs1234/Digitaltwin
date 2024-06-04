@@ -5,7 +5,13 @@
 
 run("SetModel")
 
-SimCount = 0 ;                              % Delete when running multiple simulations after one another
+% Extract final states                                Turned off by default, turn on to run multiple simulations after one another
+%                                                     and continue with the state values from last simulation.                                                   
+% set_T = T(:, end) ;
+% set_AddStates = AddStates(:, end) ;
+% set_FloorTemperature = FloorTemperature(:, end) ;
+SimCount = 0 ;                              % Turn off when running multiple simulations after one another
+
 time_steps = simulation_time/dt+1 ;
 SimCount = SimCount + 1 ;                   % Keep count on number of simulations done
 SimStart = time_steps*(SimCount-1) + 1 ;    % Define interval start based on SimCount
