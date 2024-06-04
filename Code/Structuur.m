@@ -59,8 +59,8 @@ function [Q, QFloor] = FGroundConduction(GH, FloorTemperature, T)
 
 end
 
-function Q = LatentHeat(mv)    % Latent heat of evaporation of water mass flow mv
-    Q = 2.45e6 * mv ;
+function Q = LatentHeat(mf)    % Latent heat of evaporation of water mass flow mf
+    Q = 2.45e6 * mf ;
 end
 
 function Q = HeatByVentilation(GH, T_air, T_out, VentilationRate)
@@ -70,20 +70,21 @@ end
 
 function [W_trans, W_cond, W_vent, W_fog] = vaporflows(GH, T_air, T_wall, T_out, H_air, H_out, DryMassPlant, VentilationRate, U_fog)
     
-    G_c = 1.8e-3 * (max(0, (T_air - T_wall)))^(1/3) ; %m/s
+    G_c = 1.8e-3 * (max(0, (T_air - T_wall)))^(1/3) ; % (m/s) [Van Henten, 2007]
 
-    W_trans = max(0, (1 - exp(-GH.p.C_pld * DryMassPlant / GH.p.GHFloorArea)) * GH.p.C_vplai * ... (Van Henten, 2003)
+    % (kg s^-1)
+    W_trans = max(0, (1 - exp(-GH.p.C_pld * DryMassPlant / GH.p.GHFloorArea)) * GH.p.C_vplai * ... 
     ((GH.p.C_v1 / (GH.p.GasConstantR * 1e3 * (T_air + 273.15))) ...
     * exp(GH.p.C_v2 * T_air / (T_air + GH.p.C_v3)) ...
-    - H_air) * GH.p.GHFloorArea );%kg s^-1
-    W_cond = max(0, (G_c * (0.2522 * exp(0.0485 * T_air) * (T_air ... (Van Henten, 2007)
-    - T_out) - ((5.5638 * exp(0.0572 * T_air)) - H_air*1000)))/1000 * GH.p.GHFloorArea) ; %kg s^-1
-    W_vent = VentilationRate * (H_air - H_out) ; %kg s^-1
-    W_fog = GH.p.phi_fog * U_fog ; %kg s^-1, controller input (De Zwart, 1996)
+    - H_air) * GH.p.GHFloorArea );   % [Van Henten, 2007]  
+    W_cond = max(0, (G_c * (0.2522 * exp(0.0485 * T_air) * (T_air ... 
+    - T_out) - ((5.5638 * exp(0.0572 * T_air)) - H_air*1000)))/1000 * GH.p.GHFloorArea) ; % [Van Henten, 2007]
+    W_vent = VentilationRate * (H_air - H_out) ; 
+    W_fog = GH.p.phi_fog * U_fog ; % Controller input [De Zwart, 1996]
 
 end
 
-function h_af = ConvFloor(T_floor, T_in) %convection coefficient between floor and air (De Zwart, 1996)
+function h_af = ConvFloor(T_floor, T_in) % Convection coefficient between floor and air [De Zwart, 1996] 
     if T_floor > T_in
         h_af = 1.7 * (T_floor - T_in)^(1/3);
     else 
@@ -97,19 +98,19 @@ function HumidityDot = HumidityBalance(GH, W_trans, W_cond, W_vent, W_fog)
 end
 
 function [C_trans, C_vent, C_respD, C_respC] = CO2flows(GH, DryMassPlant, SolarIntensity, T_air, C_in, C_out, VentilationRate)
-    
-    C_trans = (1 - exp(-GH.p.C_pld * DryMassPlant/GH.p.GHFloorArea)) * ((GH.p.C_RadPhoto * SolarIntensity * ... % (Van Henten, 2003)
+    % (kg s^-1)
+    C_trans = (1 - exp(-GH.p.C_pld * DryMassPlant/GH.p.GHFloorArea)) * ((GH.p.C_RadPhoto * SolarIntensity * ... 
     (-GH.p.C_CO21 * T_air^2 + GH.p.C_CO22 * T_air - GH.p.C_CO23) * (C_in - GH.p.C_R)) / ... 
     (GH.p.C_RadPhoto * SolarIntensity + (-GH.p.C_CO21 * T_air^2 + GH.p.C_CO22 * T_air - ... 
-    GH.p.C_CO23) * (C_in - GH.p.C_R))) * GH.p.GHFloorArea ;
-    C_vent = VentilationRate * (C_in - C_out) ; %kg s^-1 
+    GH.p.C_CO23) * (C_in - GH.p.C_R))) * GH.p.GHFloorArea ;   % [Van Henten, 2003]
+    C_vent = VentilationRate * (C_in - C_out) ; 
     C_respD = GH.p.C_resp*(DryMassPlant / GH.p.GHFloorArea) * 2^(0.1*T_air- 2.5) ;
     C_respC = GH.p.C_respC*(DryMassPlant / GH.p.GHFloorArea) * 2^(0.1*T_air- 2.5) ;
 end
 
 function CO2Dot = CO2Balance(GH, C_trans, C_vent, C_inject, C_respC)
     C = - C_trans - C_vent + C_inject + C_respC;
-    CO2Dot = C / GH.p.GHVolume ; %kg m^-3 s^-1
+    CO2Dot = C / GH.p.GHVolume ; % (kg m^-3 s^-1)
 end
 
 function DryWeightDot = DryWeight(GH, C_trans, C_respD)
@@ -117,17 +118,17 @@ function DryWeightDot = DryWeight(GH, C_trans, C_respD)
 end
 
 
-function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeedkph, T_out, OpenWindowAngle) % (De Zwart, 1996)
+function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeedkph, T_out, OpenWindowAngle) % [De Zwart, 1996]
     p = GH.p ; 
-    WindSpeed = WindSpeedkph / 3.6 ; %m/s
-    G_l = 2.29e-2 * (1 - exp(-OpenWindowAngle/21.1)) ; % leeside
-    G_w = 1.2e-3 * OpenWindowAngle * exp(OpenWindowAngle/211) ; % windward side
+    WindSpeed = WindSpeedkph / 3.6 ; % (m/s)
+    G_l = 2.29e-2 * (1 - exp(-OpenWindowAngle/21.1)) ; % leeside window function
+    G_w = 1.2e-3 * OpenWindowAngle * exp(OpenWindowAngle/211) ; % windward side window function
     v_wind = (G_l + G_w) * p.WindowArea * WindSpeed ;
     H = p.WindowHeight * (sind(p.RoofAngle)- sind(p.RoofAngle - OpenWindowAngle)) ;
     v_temp = p.C_f * p.WindowLength/3 * (abs(p.Gravity*p.BetaAir*(T_air ... 
     - T_out)))^(0.5) * H^(1.5) ;
 
-    VentilationRate = 0.5 * p.NumberOfWindows * (v_wind^2 + v_temp^2)^(0.5) ;
+    VentilationRate = 0.5 * p.NumberOfWindows * (v_wind^2 + v_temp^2)^(0.5) ; % (kg s^-1)
 end
 
 hWaitBar = waitbar(0, 'Please wait...') ;
