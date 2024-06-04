@@ -174,10 +174,10 @@ for i = 1:length(t) - 1
     ConvectionCoefficientsIn(5,i) = h_ap ;
     ConvectionCoefficientsIn(6,i) = h_pipeout(i) ;
     
-    if AddStates(4,1) == 0
+    if AddStates(4,i) == 0
         MassPlant = MassPlanInit ;
       else
-        MassPlant = AddStates(4,1) ; 
+        MassPlant = AddStates(4,i) ; 
     end
 
     cp_airVar = AirProperties(T(1,i), 1084, RelHumidity(i), 'c_p') ;
@@ -191,6 +191,7 @@ for i = 1:length(t) - 1
                 GH.p.cp_lettuce * MassPlant;
                 GH.p.Vpipe*GH.p.rho_steel*GH.p.cp_steel];  
     
+    ConvAreaArray(5) = MassPlant * GH.p.C_pld  ; % Effect plant surface
 
     % Vapor flows and balance
     [W_trans(i), W_cond(i), W_vent(i), W_fog(i)] = vaporflows(GH, T(1, i), T(2, i), OutsideTemperature(1,i), AddStates(1, i), OutsideHumidity(i), AddStates(3,i), VentilationRate(i),  U_fog(i));
@@ -229,6 +230,7 @@ for i = 1:length(t) - 1
     FloorTemperature(1, i) = T(4,i) ;
     Energy_kWh(i) = ControllerOutputWatt(i) * dt / (1000 * 3600);  % Convert from W to kWh
 
+<<<<<<< HEAD
     if  BoundBreak == true && T(1,i) < Lowerbound(i)
         Belowbound = true;
         display("Too Cold")
@@ -237,6 +239,15 @@ for i = 1:length(t) - 1
         break
     end
 
+=======
+    % if T(1,i) < Lowerbound(i)
+    %     display('Too cold')
+    %     Belowbound = true;
+    %     t_Below = i;
+    %     hour_Below = round(t_Below/3600*dt);
+    %     break
+    % end
+>>>>>>> 9435a2f5233ee0054c308965ded471c8e45cfc8d
     
     % Bound for maximal humidity
     MaxHumidity = rh2vaporDens(T(1,i+1), 100) ;

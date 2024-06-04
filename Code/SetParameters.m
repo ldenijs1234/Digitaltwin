@@ -2,18 +2,17 @@
 
 % General parameters
 GH.p.           cp_air = 1003.5 ; % (J kg^-1 K^-1)
-GH.p.           cp_glass = 840 ; % (J kg^-1 K^-1)
+GH.p.           cp_glass = 840 ; % (J kg^-1 K^-1)   [Vanthoor, 2011]
 GH.p.           cp_water = 4186 ;% (J kg^-1 K^-1)
-GH.p.           cp_floor = 880 ; % (J kg^-1 K^-1)
+GH.p.           cp_floor = 880 ; % (J kg^-1 K^-1)  [Vanthoor, 2011]
 GH.p.           cp_steel = 640 ; % (J kg^-1 K^-1)	
 GH.p.           rho_air = 1.2 ; % (kg m^-3)
-GH.p.           rho_glass = 2500 ; % (kg m^-3)
-GH.p.           rho_floor = 2400 ; % (kg m^-3)
+GH.p.           rho_glass = 2200 ; % (kg m^-3)
+GH.p.           rho_floor = 2400 ; % (kg m^-3)   [Vanthoor, 2011]
 GH.p.           rho_steel = 7850 ; % (kg m^-3)
 GH.p.           rho_water = 1000 ; % (kg m^-3)
 GH.p.           GasConstantR = 8.314 ; % (J/mol K)
 GH.p.           StefBolzConst = 5.670374419e-8 ; % (W/m^2 K^4 )
-                sigma = 5.670374419e-8 ;
 GH.p.           Gravity = 9.81 ; % (m/s^2)
 GH.p.           Kelvin = 273.15 ;
 
@@ -42,6 +41,9 @@ GH.p.           GHTotalArea = GH.p.GHFloorArea + 2* GH.p.GHSideArea1 + 2* GH.p.G
 GH.p.           GHPlantArea = GH.p.LAI * GH.p.GHFloorArea ; 
 GH.p.           GHWallArea = GH.p.GHLength * GH.p.GHHeight * 2 + GH.p.GHWidth * GH.p.GHHeight * 2 ;
 GH.p.           GHCoverArea =  GH.p.GHLength * GH.p.GHWidth ;
+
+% Control unit values, estimation based on area or known values
+GH.p.           BoilerMaxWatt = 1000000*(GH.p.GHFloorArea/500); % (W), scaled to size
 GH.p.           phi_fog = 1e-4 * GH.p.GHFloorArea ; % (kg s^-1), scaled to size
 GH.p.           FogPower = 1.25e5 * GH.p.phi_fog ; % (W), estimated max power use of fogger
 
@@ -55,9 +57,10 @@ GH.p.           SOLARDiffusePlant = 1 - GH.p.SOLARAbsorbancePlant; % (-)
 GH.p.           FIRDiffusePlant = 1 - GH.p.FIRAbsorbancePlant ; % (-)
 GH.p.           YieldFactor = 0.544 ; % (-) (effective CO2 use efficiency) [Van Henten, 2003]
 GH.p.           C_resp = 2.65e-7 ; % (s^-1) (respiration rate in terms of respired dry matter) [Van Henten, 2003]
+GH.p.           C_pld =  GH.p.rho_lettuce* 1/3*0.1 * 2/3 ; % (m^2 kg^-1), effective canopy surface of lettuce, modelled as a sphere
 
 % Glass parameters
-GH.p.           SOLARAbsorbanceGlass = 0.04 ; % (-) [Vanthoor, 2011]
+GH.p.           SOLARAbsorbanceGlass = 0.1 ; % (-) [Vanthoor, 2011]
 GH.p.           FIRAbsorbanceGlass = 0.85; % (-) [Vanthoor, 2011]
 GH.p.           EmittanceGlass = 0.85 ; % (-) [Vanthoor, 2011]
 GH.p.           SOLARTauGlass = 0.85 ; % (-) [Vanthoor, 2011]
@@ -65,12 +68,12 @@ GH.p.           SOLARDiffuseGlass = 1 - GH.p.SOLARAbsorbanceGlass - GH.p.SOLARTa
 GH.p.           FIRDiffuseGlass = 1 - GH.p.FIRAbsorbanceGlass; % (-)
 
 % Floor parameters
-GH.p.           SOLARAbsorbanceFloor = 0.65; % (-)
-GH.p.           FIRAbsorbanceFloor = 0.9; % (-)
-GH.p.           EmittanceFloor = 0.8 ; % (-)
+GH.p.           SOLARAbsorbanceFloor = 0.5; % (-)  [Vanthoor, 2011]
+GH.p.           FIRAbsorbanceFloor = 1.0; % (-)   [Vanthoor, 2011]
+GH.p.           EmittanceFloor = 1.0 ; % (-)  [Vanthoor, 2011]
 GH.p.           SOLARDiffuseFloor = 1 - GH.p.SOLARAbsorbanceFloor; % (-)
 GH.p.           FIRDiffuseFloor = 1 - GH.p.FIRAbsorbanceFloor ; % (-)
-GH.p.           KFloor = 0.3 ; %accurate enough for prototype
+GH.p.           KFloor = 1.7 ; % (W m^-1 K^-1), thermal conductivity [Katzin, 2021]
 GH.p.           LFloorGround = 19e-2 ; % (m)
 
 % Heatingpipe parameters
@@ -85,7 +88,7 @@ GH.p.           r_2 = 0.10; % (m), outside radius of the fin
 GH.p.           pipeLength = 1*GH.p.GHFloorArea ; % (m), length of the pipe 
 GH.p.           Vel_water = 1; % (m/s), speed of the water through the pipe
 GH.p.           dL = dt*GH.p.Vel_water; % (m), distance travelled in one time-step 
-GH.p.           dPipe = 20; % (-), number of pipe pieces for numerical calculation
+GH.p.           dPipe = 10; % (-), number of pipe pieces for numerical calculation
 GH.p.           Npipes = ceil(GH.p.pipeLength/(GH.p.dL*GH.p.dPipe)); % (-), number of pipes
 GH.p.           pipeL = GH.p.Npipes*GH.p.dPipe*GH.p.dL;
 GH.p.           pipeF = 80; % Fins per meter of pipe, keep the thickness in mind, not more fins then fit on the pipe
@@ -102,7 +105,6 @@ GH.p.           m_flow = GH.p.rho_water*GH.p.Vel_water*pi*GH.p.r_0^2; % (kg/s), 
 GH.p.           APipeIn = pi*GH.p.r_0^2; % (m^2), area inside crossection pipe
 
 % Humidity equations parameters
-GH.p.           C_pld = 1/3* GH.p.rho_lettuce* 0.1 ; % (m^2 kg^-1), effective canopy surface of lettuce, modelled as a sphere
 GH.p.           C_vplai = 3.6e-3 ; % (m s^-1), canopy transpiration mass transfer coefficient [Van Henten, 2003]
 GH.p.           C_v1 = 9348 ; % (J m^-3), parameter defining saturation water vapor pressure [Van Henten, 2003]
 GH.p.           C_v2 = 17.4 ; % (K), parameter defining saturation water vapor pressure [Van Henten, 2003]
@@ -124,10 +126,10 @@ GH.p.           BetaAir = 1/283 ; % (1/K), thermal expansion coefficient [De Zwa
 % Temperature equations parameters:   
 
 % Convection coefficients, values are somewhat arbitrary
-h_ac = 5;  % (W m^-2 K^-1), convection between air and cover
-h_af = 5;  % (W m^-2 K^-1), convection between air and floor  
+h_ac = 2;  % (W m^-2 K^-1), convection between air and cover, assumed value
+h_af = 2;  % (W m^-2 K^-1), convection between air and floor, assumed value
 h_ap = 5;  % (W m^-2 K^-1), convection between air and plant [Katzin, 2021]
-h_ah = 5;  % (W m^-2 K^-1), convection between air and heatpipe
+h_ah = 5;  % (W m^-2 K^-1), convection between air and heatpipe, assumed value
 ConvectionCoefficientsIn = [0; h_ac; h_ac; h_af; h_ap; h_ah] ; % Placeholder  values (except h_ap), will be substituted by function 'inside_convection'
 
 % Heat transfer and area arrays for later calculations

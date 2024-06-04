@@ -59,16 +59,16 @@ legend('convection', 'solar','radiation','ground', 'total')
 title('Floor Heat Flows')
 hold off
 
-% figure("WindowStyle", "docked");
-% hold on
-% plot(t(1:end-1), Q_conv(5,:))
-% plot(t(1:end-1), Q_solar(5,:))
-% plot(t(1:end-1), Q_rad_in(5,:) - Q_rad_out(5,:))
-% plot(t(1:end-1), Q_latent(5,:))
-% plot(t(1:end-1), Q_tot(5,:))
-% legend('convection', 'solar','radiation', 'latent', 'total')
-% title('Plant Heat Flows')
-% hold off
+figure("WindowStyle", "docked");
+hold on
+plot(t(1:end-1), Q_conv(5,:))
+plot(t(1:end-1), Q_solar(5,:))
+plot(t(1:end-1), Q_rad_in(5,:) - Q_rad_out(5,:))
+plot(t(1:end-1), Q_latent(5,:))
+plot(t(1:end-1), Q_tot(5,:))
+legend('convection', 'solar','radiation', 'latent', 'total')
+title('Plant Heat Flows')
+hold off
 
 figure("WindowStyle", "docked");
 hold on 
@@ -141,10 +141,10 @@ hold off
 
 figure("WindowStyle", "docked")
 hold on
-plot(t/3600, W_trans)
-plot(t/3600, W_cond)
-plot(t/3600, W_vent)
-plot(t/3600, W_fog)
+plot(t(1:end-1)/3600, W_trans)
+plot(t(1:end-1)/3600, W_cond)
+plot(t(1:end-1)/3600, W_vent)
+plot(t(1:end-1)/3600, W_fog)
 legend("trans", "cond", "vent", "fog")
 title("Humidity flows")
 hold off
