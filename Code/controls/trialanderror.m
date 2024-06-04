@@ -17,9 +17,9 @@ bound_average = (Lowerbound + Upperbound) / 2;
 
 % Initial setpoints
 T_st(:, 1) = bound_average(1:3600/dt:end)';
-%[minimum_cost, best_iteration] = min(cost);
-%best_T_st = T_st(:,best_iteration);
-%T_st(:,1) = best_T_st;
+% [minimum_cost, best_iteration] = min(cost);
+% best_T_st = T_st(:,best_iteration);
+% T_st(:,1) = best_T_st;
 
 % Interpolate setpoints over time
 setpoint = interp1(0:24, T_st(:, 1), t / 3600, 'linear', 'extrap');
@@ -29,11 +29,13 @@ run("Initialize")
 run("RunFullSim")
 
 % Compute initial cost
-cost(1) = sum(Energy_kWh .* simdaycost(1:end-1)); % Adjust if necessary
+if Belowbound == false
+    cost(1) = sum(Energy_kWh .* simdaycost(1:end-1)); % Adjust if necessary
+else
+    cost(1) = inf;
+end
 
-% if WelEenBeenjeFrisHe == true
 
-% end
 % Initialize the waitbar
 hWaitBar2 = waitbar(0, 'Please wait...');
 
@@ -46,8 +48,15 @@ for n = 2:iteration_amount
     % Update the waitbar
     waitbar(n / iteration_amount, hWaitBar2, sprintf('Iteration %d/%d', n, iteration_amount));
 
-    % Perturb the setpoints using the larslars function
-    [T_st_test, delta] = larslars(T_st(:, n-1));
+    % Perturb the setpoints
+    [T_st_test, delta] = perturb(T_st(:, n-1));
+
+    if Belowbound == true
+        bias = zeros(25,1);
+        bias(max(1,hour_Below-1), hour_Below) = 2; %add a postive bias before temperature become too
+        [T_st_test, delta] = perturb(T_st(:, max(1,n-2)));
+        T_st_test = T_st_test + bias;
+    end
 
     % Interpolate new setpoints over time
     setpoint = interp1(0:24, T_st_test, t / 3600, 'linear', 'extrap');
@@ -57,12 +66,17 @@ for n = 2:iteration_amount
     run("RunFullSim")
 
     % Compute the cost for the new setpoints
-    cost(n) = sum(Energy_kWh .* simdaycost(1:end-1)); % Adjust if necessary
+    if Belowbound == false
+        cost(n) = sum(Energy_kWh .* simdaycost(1:end-1)); % Adjust if necessary
+        %T_st(:, n) = T_st(:, n-1) - alfa * (cost(n) - cost(n-1)) ./ delta;
+        T_st(:, n) = T_st(:,n-1) - sign(cost(n) - cost(n-1)) * delta ;
+    else
+        cost(n) = inf;
+        T_st(:,n) = T_st(:,max(1,n-2));
+    end
 
-    % Update setpoints using a simple gradient descent step
-    alfa = 0.1;
-    %T_st(:, n) = T_st(:, n-1) - alfa * (cost(n) - cost(n-1)) ./ delta;
-    T_st(:, n) = T_st(:,n-1) - sign(cost(n) - cost(n-1)) * delta ;
+    
+    
 end
 
 setpoint = interp1(0:24, T_st(:,end), t / 3600, 'linear', 'extrap');
@@ -73,10 +87,12 @@ run("RunFullSim")
 close(hWaitBar2);
 
 % Function to perturb the setpoints
-function [test, delta] = larslars(setpoints)
+function [test, delta] = perturb(setpoints)
     delta = 0.1 * (randi(11, length(setpoints), 1) - 6);
     test = setpoints + delta;
 end
+
+
 [minimum_cost, best_iteration] = min(cost);
 best_T_st = T_st(:,best_iteration);
 figure("WindowStyle", "docked");
