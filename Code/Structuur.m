@@ -1,19 +1,33 @@
-%state 1: Air
-%state 2: cover
-%state 3: wall
-%state 4: floor
-%state 5: plant
-%state 6: heatpipe
+% Main calculation script, defining functions based on state vectors, then integrating using euler integration.
+% Parameters such as area or heat transfer coefficient are inserted as an array corresponding with the state vector for
+% easy and faster calculation.
+%
+% Temperature states of different elements in the greenhouse, saved in vector T:
+%       Temperature state 1: Air        (°C)
+%       Temperature state 2: Cover      (°C)
+%       Temperature state 3: Wall       (°C)
+%       Temperature state 4: Floor      (°C)
+%       Temperature state 5: Plant      (°C)
+%       Temperature state 6: Heatpipe   (°C)
+%
+% Additional states not regarding temperature are saved in a second state vector, AddStates:
+%       Additional state 1: Inside humidity             (kg m^-3)
+%       Additional state 2: Inside CO2 concentration    (kg m^-3)
+%       Additional state 3: Dry mass plant              (kg)
+%       Additional state 4: Total mass plant            (kg)
+% 
+% All interactions between states are calculated in the for-loop used for euler integration
+
 WelEenBeenjeFrisHe = false;
 
-function Q = FQ_rad_out(emissivity, T, Area)                          %input: emissivity array and T(:,i)
-    Q = 5.670374419e-8 * emissivity .* Area .* ((T + 273.15).^4);    %emittance of components
-end                                                             %q(:,i) = F
+function Q = FQ_rad_out(emissivity, T, Area)                          % Calculation of emitted radiation per object
+    Q = 5.670374419e-8 * emissivity .* Area .* ((T + 273.15).^4);    
+end                                                             
 
 
-function Q = FQ_rad_in(absorbance, diffuse, Viewf, Qrad)      %input: parameter arrays, viewfactor matrix and q radiance array(:,i)
-    Q =(absorbance .* Viewf * Qrad);                       %how much each object absorbs
-    Q(1,:) = sum(diffuse .* Viewf * Qrad) * 0.7;                   %inside air recieves 70% of diffused radiation
+function Q = FQ_rad_in(absorbance, diffuse, Viewf, Qrad)      % Calculation of absorbed radiation per object using view factors
+    Q =(absorbance .* Viewf * Qrad);                       
+    Q(1,:) = sum(diffuse .* Viewf * Qrad) * 0.7;              % Assumption: inside air recieves 70% of diffused radiation
 end
 
 
@@ -189,7 +203,7 @@ for i = 1:length(t) - 1
     AddStates(3, i+1) = AddStates(3, i) + DryWeightDot*dt ;
     AddStates(4, i+1 ) = AddStates(3, i+1) / 0.05 ;
 
-    %Q functions (+ convection conduction...)
+    % Q functions (+ convection conduction...)
     FloorTemperature(1, i) = T(4, i) ;
     [Q_ground(:, i), QFloor(:, i)] = FGroundConduction(GH, FloorTemperature(:, i), T(:, i)) ;
     FloorTemperature(:, i+1) = FloorTemperature(:, i) + QFloor(:, i) * GH.p.GHFloorArea / CAPArray(4) * dt ;
