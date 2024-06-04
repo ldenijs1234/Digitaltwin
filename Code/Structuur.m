@@ -31,25 +31,26 @@ function Q = FQ_rad_in(absorbance, diffuse, Viewf, Qrad)      % Calculation of a
 end
 
 
-function Q = FQ_solar(transmission, diffuse, absorbance, Areasun, Isun, Area)     %input: transmission of the cover, parameter arrays and I_sun(i)
-    Q = transmission .* absorbance .* Areasun * Isun; %absorbed sun radiation by each object
-    dif = sum(diffuse(4:end,:) .* Areasun(4:end,:) * Isun);          %all sun radiation that is diffused
-    Q = [diffuse(2); Area(2) / sum(Area(2:3)) * absorbance(2); Area(3) / sum(Area(2:3)) * absorbance(3); 0; 0; 0] * dif + Q;   %air absorbs diffused radiation thats again diffused by glass, glass absorbs this
+function Q = FQ_solar(transmission, diffuse, absorbance, Areasun, Isun, Area)    % Calculation of absorbed solar radiation per object
+    Q = transmission .* absorbance .* Areasun * Isun; 
+    dif = sum(diffuse(4:end,:) .* Areasun(4:end,:) * Isun);                      % All solar radiation that is diffused
+    Q = [diffuse(2); Area(2) / sum(Area(2:3)) * ...
+    absorbance(2); Area(3) / sum(Area(2:3)) * absorbance(3); 0; 0; 0] * dif + Q;   % Diffused solar radiation gets absorbed by glass, or rediffused and absorbed by the air
 end
 
-function Q = FQ_sky(Area, absorbance, emissivity, TSky, T) %input: parameter arrays, effective sky temperature and Temperature of walls and roof
-    Q = 5.670374419*10^-8 * Area .* (absorbance * (TSky + 273.15).^4 - emissivity .* ((T + 273.15).^4) ); %absorbance of sky emmision minus emittance of walls and roof 
+function Q = FQ_sky(Area, absorbance, emissivity, TSky, T)  % Calculation of sky emission using effective sky temperature
+    Q = 5.670374419*10^-8 * Area .* (absorbance * (TSky + 273.15).^4 - emissivity .* ((T + 273.15).^4) ); 
 end
 
 
-function Q = convection(hin, hout, T, T_out, Area)   % Convective heat flow 
+function Q = convection(hin, hout, T, T_out, Area)                  % Convective heat flows
     Convection_matrix = - eye(length(T));
     Convection_matrix(:, 1) = 1;
     Convection_matrix(1,1) = 0;
     dT = Convection_matrix * T ;
     Q  = Area .* hin .* dT ;
-    Q(1) = -sum(Q) ;                                % Convective heat flow to air
-    Q_out = Area(2:3) .* hout .* ([T_out; T_out] - T(2:3)) ;       % Convection of wall and cover with outside air
+    Q(1) = -sum(Q) ;                                                % Convective heat flow to air
+    Q_out = Area(2:3) .* hout .* ([T_out; T_out] - T(2:3)) ;        % Convection of wall and cover with outside air
     Q(2:3) = Q(2:3) + Q_out; 
 end
 
