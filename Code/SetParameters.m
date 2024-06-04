@@ -1,4 +1,4 @@
-% Set variables (for matrices), parameters saved in structure 'GH' under field 'p'
+% Defining parameters saved in structure 'GH' under field 'p', creating arrays with coefficients for later calculation
 
 % General parameters
 GH.p.           cp_air = 1003.5 ; % (J kg^-1 K^-1)
@@ -48,92 +48,91 @@ GH.p.           FogPower = 1.25e5 * GH.p.phi_fog ; % (W), estimated max power us
 % Plant parameters
 GH.p.           cp_lettuce = 4020 ; %(J kg^-1 K^-1)
 GH.p.           rho_lettuce = 240.92 ; % (kg m^-3)
-GH.p.           EmittancePlant = 0.90 ; 
-GH.p.           SOLARAbsorbancePlant = 0.65 ; 
-GH.p.           FIRAbsorbancePlant = 0.78 ; 
-GH.p.           SOLARDiffusePlant = 1 - GH.p.SOLARAbsorbancePlant;
-GH.p.           FIRDiffusePlant = 1 - GH.p.FIRAbsorbancePlant ;
+GH.p.           EmittancePlant = 0.90 ; % (-)
+GH.p.           SOLARAbsorbancePlant = 0.65 ; % (-)
+GH.p.           FIRAbsorbancePlant = 0.78 ; % (-)
+GH.p.           SOLARDiffusePlant = 1 - GH.p.SOLARAbsorbancePlant; % (-)
+GH.p.           FIRDiffusePlant = 1 - GH.p.FIRAbsorbancePlant ; % (-)
 GH.p.           YieldFactor = 0.544 ; % (-) (effective CO2 use efficiency)
 GH.p.           C_resp = 2.65e-7 ; % (s^-1) (respiration rate in terms of respired dry matter)
 
 % Glass parameters
-GH.p.           SOLARAbsorbanceGlass = 0.04 ; %DUMMY
-GH.p.           FIRAbsorbanceGlass = 0.85; %DUMMY
-GH.p.           EmittanceGlass = 0.8 ; %DUMMY
-GH.p.           SOLARTauGlass = 0.80 ; %DUMMY
-SOLARTauGlass = 0.80; %DUMMY
-GH.p.           SOLARDiffuseGlass = 1 - GH.p.SOLARAbsorbanceGlass - GH.p.SOLARTauGlass;
-GH.p.           FIRDiffuseGlass = 1 - GH.p.FIRAbsorbanceGlass;
+GH.p.           SOLARAbsorbanceGlass = 0.04 ; % (-)
+GH.p.           FIRAbsorbanceGlass = 0.85; % (-)
+GH.p.           EmittanceGlass = 0.8 ; % (-)
+GH.p.           SOLARTauGlass = 0.80 ; % (-)
+GH.p.           SOLARDiffuseGlass = 1 - GH.p.SOLARAbsorbanceGlass - GH.p.SOLARTauGlass; % (-)
+GH.p.           FIRDiffuseGlass = 1 - GH.p.FIRAbsorbanceGlass; % (-)
 
 % Floor parameters
-GH.p.           SOLARAbsorbanceFloor = 0.65; %DUMMY
-GH.p.           FIRAbsorbanceFloor = 0.9; %DUMMY
-GH.p.           EmittanceFloor = 0.8 ; %DUMMY
-GH.p.           SOLARDiffuseFloor = 1 - GH.p.SOLARAbsorbanceFloor;
-GH.p.           FIRDiffuseFloor = 1 - GH.p.FIRAbsorbanceFloor ;
+GH.p.           SOLARAbsorbanceFloor = 0.65; % (-)
+GH.p.           FIRAbsorbanceFloor = 0.9; % (-)
+GH.p.           EmittanceFloor = 0.8 ; % (-)
+GH.p.           SOLARDiffuseFloor = 1 - GH.p.SOLARAbsorbanceFloor; % (-)
+GH.p.           FIRDiffuseFloor = 1 - GH.p.FIRAbsorbanceFloor ; % (-)
 GH.p.           KFloor = 0.3 ; %accurate enough for prototype
-GH.p.           LFloorGround = 19e-2 ; % meter
+GH.p.           LFloorGround = 19e-2 ; % (m)
 
 % Heatingpipe parameters
-GH.p.           EmittancePipe = 0.88; 
-GH.p.           SOLARAbsorbancePipe = 0.95;
-GH.p.           FIRAbsorbancePipe = 0.95;
-GH.p.           SOLARDiffusePipe = 1 - GH.p.SOLARAbsorbancePipe ;
-GH.p.           FIRDiffusePipe = 1 - GH.p.FIRAbsorbancePipe ;
-GH.p.           r_0 = 0.015; % inside radius of the pipe in meters
-GH.p.           r_1 = 0.017; % outside radius of the pipe in meters  
-GH.p.           r_2 = 0.10; % outside radius of the fin in meters  
-GH.p.           pipeLength = 1*GH.p.GHFloorArea ; % length of the pipe in meters
-GH.p.           Vel_water = 1; %speed of the water through the pipe
-GH.p.           dL = dt*GH.p.Vel_water; %distance 
-GH.p.           dPipe = 20; % number of pipe pieces for numerical calculation
-GH.p.           Npipes = ceil(GH.p.pipeLength/(GH.p.dL*GH.p.dPipe)); % number of pipes
+GH.p.           EmittancePipe = 0.88; % (-)
+GH.p.           SOLARAbsorbancePipe = 0.95; % (-)
+GH.p.           FIRAbsorbancePipe = 0.95; % (-)
+GH.p.           SOLARDiffusePipe = 1 - GH.p.SOLARAbsorbancePipe ; % (-)
+GH.p.           FIRDiffusePipe = 1 - GH.p.FIRAbsorbancePipe ; % (-)
+GH.p.           r_0 = 0.015; % (m), inside radius of the pipe 
+GH.p.           r_1 = 0.017; % (m), outside radius of the pipe
+GH.p.           r_2 = 0.10; % (m), outside radius of the fin  
+GH.p.           pipeLength = 1*GH.p.GHFloorArea ; % (m), length of the pipe 
+GH.p.           Vel_water = 1; % (m/s), speed of the water through the pipe
+GH.p.           dL = dt*GH.p.Vel_water; % (m), distance travelled in one time-step 
+GH.p.           dPipe = 20; % (-), number of pipe pieces for numerical calculation
+GH.p.           Npipes = ceil(GH.p.pipeLength/(GH.p.dL*GH.p.dPipe)); % (-), number of pipes
 GH.p.           pipeL = GH.p.Npipes*GH.p.dPipe*GH.p.dL;
-GH.p.           pipeF = 80; % Fins per meter of pipe %!!!!keep the thickness in mind not more fins then fit on the pipe!!!!
-GH.p.           pipet = 0.001; % half of the thickness of one fin in meters 
+GH.p.           pipeF = 80; % Fins per meter of pipe  !!!!keep the thickness in mind, not more fins then fit on the pipe!!!!
+GH.p.           pipet = 0.001; % (m), half of the thickness of one fin 
 GH.p.           PipeArea = GH.p.pipeL*2*pi*GH.p.r_2 ;
 GH.p.           Bpipe = sqrt(GH.p.r_1^2+GH.p.pipet^2);
 GH.p.           Dpipe = sqrt((GH.p.r_2^2 /GH.p.r_1)^2 + GH.p.pipet^2);
-GH.p.           Afin =  2*pi*GH.p.r_1*(GH.p.Dpipe-GH.p.Bpipe+(GH.p.pipet/2)*log(((GH.p.Dpipe-GH.p.pipet)*(GH.p.Bpipe+GH.p.pipet))/((GH.p.Dpipe+GH.p.pipet)*(GH.p.Bpipe-GH.p.pipet)))); % surface area of a fin in m^2
-GH.p.           Vfin = 4*pi*GH.p.pipet*GH.p.r_1*(GH.p.r_2-GH.p.r_1); %volume of a fin in m^3
-GH.p.           Vpipe = GH.p.Vfin*GH.p.pipeL*GH.p.pipeF+(GH.p.r_1^2-GH.p.r_0^2)*pi*GH.p.pipeL; %Volume of the material of the pipe
-GH.p.           Apipe = GH.p.pipeL*GH.p.pipeF*GH.p.Afin+(GH.p.pipeL-GH.p.pipeL*GH.p.pipeF*2*GH.p.pipet)*2*pi*GH.p.r_1; % total area of the pipe in m^2
-GH.p.           m_flow = GH.p.rho_water*GH.p.Vel_water*pi*GH.p.r_0^2; % mass flow through pipe
-GH.p.           APipeIn = pi*GH.p.r_0^2; %Area inside crossection pipe
+GH.p.           Afin =  2*pi*GH.p.r_1*(GH.p.Dpipe-GH.p.Bpipe+(GH.p.pipet/2)*log(((GH.p.Dpipe-GH.p.pipet)*...
+                (GH.p.Bpipe+GH.p.pipet))/((GH.p.Dpipe+GH.p.pipet)*(GH.p.Bpipe-GH.p.pipet)))); % (m^2), surface area of a fin
+GH.p.           Vfin = 4*pi*GH.p.pipet*GH.p.r_1*(GH.p.r_2-GH.p.r_1); % (m^3), volume of a fin
+GH.p.           Vpipe = GH.p.Vfin*GH.p.pipeL*GH.p.pipeF+(GH.p.r_1^2-GH.p.r_0^2)*pi*GH.p.pipeL; % (m^3), volume of the material of the pipe
+GH.p.           Apipe = GH.p.pipeL*GH.p.pipeF*GH.p.Afin+(GH.p.pipeL-GH.p.pipeL*GH.p.pipeF*2*GH.p.pipet)*2*pi*GH.p.r_1; % (m^2), total area of the pipe
+GH.p.           m_flow = GH.p.rho_water*GH.p.Vel_water*pi*GH.p.r_0^2; % (kg/s),  mass flow through pipe
+GH.p.           APipeIn = pi*GH.p.r_0^2; % (m^2), area inside crossection pipe
 
 % Humidity equations parameters
-GH.p.           C_pld = 1/3* GH.p.rho_lettuce* 0.1 ;%53 ; %m^2 kg^-1 (effective canopy surface)
-GH.p.           C_vplai = 3.6e-3 ; %m s^-1 (canopy transpiration mass transfer coefficient)
-GH.p.           C_v1 = 9348 ; %J m^-3 (parameter defining saturation water vapor pressure)
-GH.p.           C_v2 = 17.4 ; %K (parameter defining saturation water vapor pressure)    
-GH.p.           C_v3 = 239 ; %K (parameter defining saturation water vapor pressure)  
+GH.p.           C_pld = 1/3* GH.p.rho_lettuce* 0.1 ; % (m^2 kg^-1), effective canopy surface of lettuce, modelled as a sphere
+GH.p.           C_vplai = 3.6e-3 ; % (m s^-1), canopy transpiration mass transfer coefficient
+GH.p.           C_v1 = 9348 ; % (J m^-3), parameter defining saturation water vapor pressure
+GH.p.           C_v2 = 17.4 ; % (K), parameter defining saturation water vapor pressure    
+GH.p.           C_v3 = 239 ; % (K), parameter defining saturation water vapor pressure [Van Henten, 2003]
 
 % CO2 equations parameters
-GH.p.           C_RadPhoto = 3.55e-9 ; %kg J^-1 (light use efficiency)
-GH.p.           C_R = 5.2e-5 ; %kg m^-3 (CO2 compensation point)
-GH.p.           C_CO21 = 5.11e-6 ; %m s^-1 K^-1 (temperature effect on CO2 diffiusion in leaves)
-GH.p.           C_CO22 = 2.3e-4 ; %m s^-1 K^-1 (temperature effect on CO2 diffiusion in leaves)
-GH.p.           C_CO23 = 6.29e-4 ; %m s^-1 K^-1 (temperature effect on CO2 diffiusion in leaves)
-GH.p.           C_respC = 4.87e-7 ; % s^-1 (respiration rate in terms of produced carbon dioxide)
+GH.p.           C_RadPhoto = 3.55e-9 ; % (kg J^-1), light use efficiency
+GH.p.           C_R = 5.2e-5 ; % (kg m^-3), CO2 compensation point
+GH.p.           C_CO21 = 5.11e-6 ; % (m s^-1 K^-1), temperature effect on CO2 diffiusion in leaves
+GH.p.           C_CO22 = 2.3e-4 ; % (m s^-1 K^-1), temperature effect on CO2 diffiusion in leaves
+GH.p.           C_CO23 = 6.29e-4 ; % (m s^-1 K^-1), temperature effect on CO2 diffiusion in leaves
+GH.p.           C_respC = 4.87e-7 ; % (s^-1), respiration rate in terms of produced carbon dioxide
 
 % Ventilation parameters
-GH.p.           C_f = 0.6 ; % Discharge of energy by friction
-GH.p.           BetaAir = 1/283 ; % Thermal expansion coefficient
+GH.p.           C_f = 0.6 ; % (-), discharge of energy by friction
+GH.p.           BetaAir = 1/283 ; % (1/K), thermal expansion coefficient
 
 % Temperature equations parameters   
 
-% Convection coefficients, can de dynamic
-h_out = 20;  % Convection between outside air and greenhouse
-h_ac = 5;  % Convection between air and cover
-h_af = 5;  % Convection between air and floor  
-h_ap = 5;  % Convection between air and plant
-h_ah = 5;  % Convection between air and heatpipe
-ConvectionCoefficientsIn = [0; h_ac; h_ac; h_af; h_ap; h_ah] ;
-
-% ConvectionCoefficientsOut = [h_out; h_out] ;
+% Convection coefficients, values are somewhat arbitrary
+h_ac = 5;  % (W m^-2 K^-1), convection between air and cover
+h_af = 5;  % (W m^-2 K^-1), convection between air and floor  
+h_ap = 5;  % (W m^-2 K^-1), convection between air and plant
+h_ah = 5;  % (W m^-2 K^-1), convection between air and heatpipe
+ConvectionCoefficientsIn = [0; h_ac; h_ac; h_af; h_ap; h_ah] ; % Placeholder, will be substituted by function 'inside_convection'
 
 
-% Radiation
+
+
+% Heat transfer and area arrays for later calculations
 EmmitanceArray = [0; GH.p.EmittanceGlass; GH.p.EmittanceGlass; GH.p.EmittanceFloor; GH.p.EmittancePlant; GH.p.EmittancePipe];
 SOLARAbsorbanceArray = [0; GH.p.SOLARAbsorbanceGlass; GH.p.SOLARAbsorbanceGlass; GH.p.SOLARAbsorbanceFloor; GH.p.SOLARAbsorbancePlant; GH.p.SOLARAbsorbancePipe];
 FIRAbsorbanceArray = [0; GH.p.FIRAbsorbanceGlass; GH.p.FIRAbsorbanceGlass; GH.p.FIRAbsorbanceFloor; GH.p.FIRAbsorbancePlant; GH.p.FIRAbsorbancePipe];
@@ -142,7 +141,7 @@ FIRDiffuseArray = [0; GH.p.FIRDiffuseGlass; GH.p.FIRDiffuseGlass; GH.p.FIRDiffus
 AreaArray = [0; GH.p.GHFloorArea; GH.p.GHTotalArea- GH.p.GHFloorArea; GH.p.GHFloorArea; GH.p.GHPlantArea; GH.p.PipeArea];
 AreaSunArray = [0; GH.p.GHFloorArea; 0; GH.p.GHFloorArea - GH.p.GHPlantArea - 2*GH.p.r_2*GH.p.pipeL*0.1 ; GH.p.GHPlantArea; 2*GH.p.r_2*GH.p.pipeL*0.1];
 AreaArrayRad = AreaArray; AreaArrayRad(5) = 2 * AreaArray(5); AreaArrayRad(6) = GH.p.pipeL*2*pi*GH.p.r_2;
-TransmissionArray = [0; 1; 1; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass]; %0 for air, 1 for glass wall and roof, tau for everything underneath glass
+TransmissionArray = [0; 1; 1; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass; GH.p.SOLARTauGlass]; % 0 for air, 1 for glass wall and roof, tau for everything underneath glass
 
 ConvAreaArray = AreaArray ;
 MassPlant = GH.p.GHPlantArea*GH.p.rho_lettuce*0.01 ;
@@ -151,20 +150,23 @@ ConvAreaArray(6) = GH.p.Apipe ;
 
 
 
-function F_12 = F_rect_perp(h, w, l)   %inputs: h length of object 2, w length of object 1, l lenght of intersection
-    H = h/l;                                    %calculates shapefactor of two perpendicular adjecent rectangles
+% Functions defining viewing factors for radiation
+
+function F_12 = F_rect_perp(h, w, l)                            %inputs: h length of object 2, w length of object 1, l lenght of intersection
+    H = h/l;                                                    %calculates shapefactor of two perpendicular adjecent rectangles
     W = w/l;
     F_12 = (1/(pi*W)) * (W * atan(1/W) + H * atan(1/H) - sqrt(H^2 + W^2) * atan(1/sqrt(H^2 + W^2))...
-        + 0.25 * log(  ((1 + W^2) * (1 + H^2)) / (1 + W^2 + H^2) * ( W^2 * (1 + W^2 + H^2)/ ((1 + W^2) * (W^2 + H^2)) )^(W^2) * (H^2 * (1 + W^2 + H^2) / ((1 + H^2) * (W^2 + H^2)) )^(H^2) ));
+        + 0.25 * log(  ((1 + W^2) * (1 + H^2)) / (1 + W^2 + H^2) * ( W^2 * (1 + W^2 + H^2)/...
+        ((1 + W^2) * (W^2 + H^2)) )^(W^2) * (H^2 * (1 + W^2 + H^2) / ((1 + H^2) * (W^2 + H^2)) )^(H^2) ));
 end
 
-function F_12 = F_para_cyl(s, d)    %inputs: s the distance between cylinders, d the diameter of the cylinders
-    X = 1 + s/d;                                %calculates shapefactor of two parallel cylinders with equal cylinders
+function F_12 = F_para_cyl(s, d)                                %inputs: s the distance between cylinders, d the diameter of the cylinders
+    X = 1 + s/d;                                                %calculates shapefactor of two parallel cylinders with equal cylinders
     F_12 = 1/pi * (sqrt(X^2 -1) + asin(1/X) - X);
 end
 
-function F_mn = F_reciprocal(F_nm, AreaRad, n, m)   %inputs: F_nm shape factor object n to m, AreaRad area area of all objects, n nth object, m mth object
-    F_mn = F_nm * AreaRad(n) / AreaRad(m);                    %calculates shapefactor object 2 to object 1
+function F_mn = F_reciprocal(F_nm, AreaRad, n, m)               %inputs: F_nm shape factor object n to m, AreaRad area area of all objects, n nth object, m mth object
+    F_mn = F_nm * AreaRad(n) / AreaRad(m);                      %calculates shapefactor object 2 to object 1
 end
 
 

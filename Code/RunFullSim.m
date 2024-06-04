@@ -1,8 +1,8 @@
 run("SetModel")
 
-SimCount = 0 ;
+SimCount = 0 ;                              % Delete when running multiple simulations after one another
 time_steps = simulation_time/dt+1 ;
-SimCount = SimCount + 1 ;                   % keep count on number of simulations done
+SimCount = SimCount + 1 ;                   % Keep count on number of simulations done
 SimStart = time_steps*(SimCount-1) + 1 ;    % Define interval start based on SimCount
 SimEnd = time_steps*SimCount ;              % Define interval end based on SimCount
 

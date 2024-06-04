@@ -25,14 +25,14 @@ meanline = (heatingline + coolingline)/2 ;  % Average setpoint line
 
 % Weather conditions
 cloud = CloudCover./100 ; % 0-1 cloud cover
-LdClear = 213+5.5*OutsideTemperature;                      % Equation 5.26 (Katzin, 2021)
-epsClear = LdClear./(sigma*(OutsideTemperature+273.15).^4);   % Equation 5.22 (Katzin, 2021)
-epsCloud = (1-0.84*cloud).*epsClear+0.84*cloud;             % Equation 5.32 (Katzin, 2021)
-LdCloud = epsCloud.*sigma.*(OutsideTemperature+273.15).^4;    % Equation 5.22 (Katzin, 2021)
+LdClear = 213+5.5*OutsideTemperature;                      % Equation 5.26 [Katzin, 2021]
+epsClear = LdClear./(sigma*(OutsideTemperature+273.15).^4);   % Equation 5.22 [Katzin, 2021]
+epsCloud = (1-0.84*cloud).*epsClear+0.84*cloud;             % Equation 5.32 [Katzin, 2021]
+LdCloud = epsCloud.*sigma.*(OutsideTemperature+273.15).^4;    % Equation 5.22 [Katzin, 2021]
 
-SkyTemperature = (LdCloud/sigma).^(0.25)-273.15 ; % (Katzin, 2021)
+SkyTemperature = (LdCloud/sigma).^(0.25)-273.15 ; % [Katzin, 2021]
 
-SolarIntensity =  SolarRadiation .* (1-0.5*cloud); % (W/m^2) Assumption 50% of radiation blocked by clouds
+SolarIntensity =  SolarRadiation .* (1-0.5*cloud); % (W/m^2) Assumption: 50% of radiation gets blocked by clouds
 OutsideHumidity =   rh2vaporDens(OutsideTemperature, OutsideRelhumidity) ; % (kg/m^3) 
 
 OutsideCO2 = 0.00049 ; % (kg/m^3)  assumed to be constant troughout simulation
