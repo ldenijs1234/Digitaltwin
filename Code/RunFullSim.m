@@ -7,9 +7,9 @@ SimStart = time_steps*(SimCount-1) + 1 ;    % Define interval start based on Sim
 SimEnd = time_steps*SimCount ;              % Define interval end based on SimCount
 
 % Set files and date 
-date = '2024-05-30' ; % Date of the simulation 'yyyy-mm-dd'
+date = '2023-11-28' ; % Date of the simulation 'yyyy-mm-dd'
 file = 'Netherlands.csv'; % File name of the energy cost CSV file
-filename = 'Delft30-5.csv'; % File name of the weather data CSV file 
+filename = 'Delft28-11.csv'; % File name of the weather data CSV file 
 
 [time_vec, OutsideTemperatureF, OutsideRelhumidityF, SolarRadiationF, WindspeedF, WinddirectionF, SealevelpressureF, CloudCoverF, DewPointF] = Weather2Arrays(filename, dt, total_time) ;
 [price_array_W6D, price_array_W5D, price_array_W4D, simdaycostD, day_averageD] = Energycost(file, dt, total_time, date);
