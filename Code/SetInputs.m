@@ -30,7 +30,7 @@ price_array_W6 = price_array_W6D(SimStart:SimEnd) ; price_array_W5 = price_array
 simdaycost = simdaycostD(SimStart:SimEnd) ; day_average = day_averageD(SimStart:SimEnd) ;
 SolarIntensity =  SolarRadiation .* (1-0.5*CloudCover/100);                         % (W/m^2) Assumption: 50% of radiation gets blocked by clouds
 OutsideHumidity =   rh2vaporDens(OutsideTemperature, OutsideRelhumidity) ; % (kg/m^3) 
-SkyTemperature = SkyTemperatureCalc(GH, OutsideTemperature, CloudCover) ;
+SkyTemperature = SkyTemperatureCalc (GH, OutsideTemperature, CloudCover) ;
 
 OutsideCO2 = 0.00049 ;                                                     % (kg/m^3)  assumed to be constant troughout simulation
 GroundTemperature = 10  ;                                                  % (°C) Assumed to be constant troughout simulation

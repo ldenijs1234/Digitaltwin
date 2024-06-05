@@ -21,9 +21,13 @@ T_st(:, 1) = bound_average(1:3600/dt:end)';
 %T_st(:,1) = best_T_st;
 ttt = T_st(:, 1);
 bias = zeros(size(T_st(:, 1)));
-cost = zeros(size(T_st(:, 1)));
+cost = inf * ones(size(T_st(:, 1)));
 TC_Count = 0;
 n = 1;
+
+% Number of iterations
+iteration_amount = 100;
+
 %[minimum_cost, best_iteration] = min(cost);
 %best_T_st = T_st(:,best_iteration);
 %T_st(:,1) = best_T_st;
@@ -41,15 +45,13 @@ if Belowbound == false
     cost(1) = sum(Energy_kWh .* simdaycost(1:end-1)); % Adjust if necessary
 else
     cost(1) = inf;
-    bias(max(1,hour_belowbound-1):hour_belowbound) = (1 - (n / (iteration_amount + 0.01))) / 2;
+    bias(max(1,hour_belowbound-2):hour_belowbound) = (1 - (n / (iteration_amount + 0.01))) / 2;
 end
 
 
 % Initialize the waitbar
 hWaitBar2 = waitbar(0, 'Please wait...');
 
-% Number of iterations
-iteration_amount = 100;
 
 % Probability function parameters:
 labda = 1.7;
@@ -101,7 +103,7 @@ for n = 2:iteration_amount
     elseif rand(1) < Accept_rate
         T_st(:,n) = T_st_test;
         display('Accepted')
-        ttt = [ttt, T_st(n-1)];
+        ttt = [ttt, T_st(:,n-1)];
     else
         T_st(:,n) = T_st(:,n-1);
         display('Rejected')
