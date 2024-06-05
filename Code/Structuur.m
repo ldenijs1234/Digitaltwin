@@ -268,7 +268,9 @@ legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Heatpipe','Outside', 'Heating
 hold off
 
 % Calculate the total energy cost used for greenhouse control:
-disp(sum(Energy_kWh.*simdaycost(1:end-1))); 
+if Belowbound == false
+    disp(sum(Energy_kWh.*simdaycost(1:end-1)));
+end
 
 
 

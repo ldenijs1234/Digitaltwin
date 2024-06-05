@@ -1,4 +1,4 @@
-function T_sky = SkyTemperature(GH, OutsideTemperature, CloudCover)
+function T_sky = SkyTemperatureCalc(GH, OutsideTemperature, CloudCover)
     sigma = GH.p.StefBolzConst ;
 
     cloud = CloudCover./100 ; % 0-1 cloud cover

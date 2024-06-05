@@ -19,7 +19,7 @@ bound_average = (Lowerbound + Upperbound) / 2;
 T_st(:, 1) = bound_average(1:3600/dt:end)';
 %T_st(:, 1) = Lowerbound(1:3600/dt:end)';
 %T_st(:,1) = best_T_st;
-
+ttt = T_st(:, 1);
 bias = zeros(size(T_st(:, 1)));
 cost = zeros(size(T_st(:, 1)));
 TC_Count = 0;
@@ -101,6 +101,7 @@ for n = 2:iteration_amount
     elseif rand(1) < Accept_rate
         T_st(:,n) = T_st_test;
         display('Accepted')
+        ttt = [ttt, T_st(n-1)];
     else
         T_st(:,n) = T_st(:,n-1);
         display('Rejected')
