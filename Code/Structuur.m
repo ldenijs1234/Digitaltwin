@@ -146,6 +146,7 @@ end
 
 hWaitBar = waitbar(0, 'Please wait...') ;
 
+simdaycost = 0.5 * ones(size(t)) ; simdaycost(1/3*length(t): 2/3* length(t)) = 0.02 ;
 
 % For-loop containing euler-integration of states and inter-state dynamics:
 for i = 1:length(t) - 1
@@ -255,17 +256,18 @@ end
 close(hWaitBar);
 
 % Plot temperatures:
-figure("WindowStyle", "docked");
-hold on
-plot(t/3600, T(:,:))
-plot(t/3600, OutsideTemperature, 'b--')
-plot(t/3600, heatingline, 'r--') 
-plot(t/3600, coolingline, 'c--')
-title("Temperatures in the greenhouse")
-xlabel("Time (h)")
-ylabel("Temperature (°C)")
-legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Heatpipe','Outside', 'Heating Line', 'Cooling Line')
-hold off
+% figure("WindowStyle", "docked");
+% hold on
+% plot(t/3600, T(:,:))
+% plot(t/3600, OutsideTemperature, 'b--')
+% plot(t/3600, Setpoint, 'Linewidth', 8) 
+% plot(t/3600, heatingline, 'r--') 
+% plot(t/3600, coolingline, 'c--')
+% title("Temperatures in the greenhouse")
+% xlabel("Time (h)")
+% ylabel("Temperature (°C)")
+% legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Heatpipe','Outside', 'Heating Line', 'Cooling Line')
+% hold off
 
 % Calculate the total energy cost used for greenhouse control:
 if Belowbound == false
