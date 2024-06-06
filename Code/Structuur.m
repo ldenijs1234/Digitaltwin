@@ -237,6 +237,7 @@ for i = 1:length(t) - 1
         t_belowbound(n) = i;
         hour_belowbound(n) = ceil(t_belowbound(n)/3600*dt);
         run("plots")
+        disp(ControllerOutputWatt)
         break
     end
 
