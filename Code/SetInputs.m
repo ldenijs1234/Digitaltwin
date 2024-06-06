@@ -12,6 +12,8 @@ coolingline_total = heatingline_total + 10;
 coolingline = coolingline_total(SimStart:SimEnd) ;
 coolingerror = zeros(1, length(t)-1);                                % Empty error array
 meanline = (heatingline + coolingline)/2 ;                           % Average setpoint line
+Lowerbound = 10 * ones(size(t));
+Upperbound = 20 * ones(size(t));
 
 % Weather and energy cost forecasts:
 
