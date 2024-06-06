@@ -39,6 +39,7 @@ The weather file should be hourly for 24 hours or hourly for X hours. X hours sh
 This is because of the 'SimCount' which by default is set to 0 in 'RunFullSim'. T
 
 Weatherfiles are from: https://www.visualcrossing.com/
+
 Energycostfiles are from: https://ember-climate.org/data-catalogue/european-wholesale-electricity-price-data/
 
 Now run 'RunFullSim' to simulate the conditions over the set simulation time of (standard = 24 hours).
