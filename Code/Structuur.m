@@ -236,6 +236,7 @@ for i = 1:length(t) - 1
         display("Too Cold")
         t_belowbound(n) = i;
         hour_belowbound(n) = ceil(t_belowbound(n)/3600*dt);
+        run("plots")
         break
     end
 

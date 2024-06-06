@@ -30,6 +30,7 @@ alfa = 0.001;
 % Number of iterations
 iteration_amount = 30;
 n = 1;
+perturb_amount = 5;
 
 % Interpolate setpoints over time
 function [cost, Belowbound] = cost_set(T_st, n)
@@ -72,10 +73,10 @@ cost_save(1) = costT_st;
 
 for n = 2:iteration_amount
     waitbar(n/iteration_amount, hWaitBar2, sprintf('Iteration %d/%d', n, iteration_amount))
-    delta =  0.01 *randi(5,25,1) - 0.03;
-    %delta = zeros(size(T_st));
-    %delta() = 0.01 *randi(5,pp,1) - 0.03;
-   
+    % delta =  0.01 *randi(5,25,1) - 0.03;
+    delta = zeros(size(T_st));
+    delta(randi(length(delta), perturb_amount, 1)) = 0.01 *randi(5,perturb_amount,1) - 0.03;
+    
     T_st_delta = T_st + delta ;
     [costT_st_delta, Belowbound] = cost_set(T_st_delta, n) ;
 
@@ -109,9 +110,11 @@ for n = 2:iteration_amount
 
 end
 
+
+Setpoint_end = interp1(0:24, T_st, t / 3600, 'linear', 'extrap');
 figure("WindowStyle", "docked");
 hold on
-plot(t/3600, T_st, 'g--') 
+plot(t/3600, Setpoint_end, 'g--') 
 plot(t/3600, Lowerbound, 'r--') 
 plot(t/3600, Upperbound, 'c--')
 plot(t/3600, bound_average, 'm--')
