@@ -73,7 +73,6 @@ for n = 2:iteration_amount
     for m = randperm(25)    
         % set and run test 
         T_st_test = T_st;
-        T_st_test(m) = T_st(m) + delta;
 
         T_st_new = T_st;
 
