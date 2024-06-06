@@ -1,4 +1,5 @@
 run("SetModel")
+run("SetInputs")
 SimCount = 0;
 time_steps = simulation_time/dt+1 ;
 SimCount = SimCount + 1 ;                   % keep count on number of simulations done
@@ -32,7 +33,7 @@ TC_Count = 0;
 delta = 0.01;
 alfa = 0.5;
 % Number of iterations
-iteration_amount = 10;
+iteration_amount = 2;
 n = 1;
 
 % Interpolate setpoints over time
@@ -70,7 +71,7 @@ end
 for n = 2:iteration_amount
     waitbar(n/iteration_amount, hWaitBar2, sprintf('Iteration %d/%d', n, iteration_amount))
 
-    for m = randperm(25)    
+    for m = randperm(10)    
         % set and run test 
         T_st_test = T_st;
         T_st_test(m) = T_st(m) + delta;
