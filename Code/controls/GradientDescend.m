@@ -41,10 +41,11 @@ function [cost, Belowbound] = cost_set(T_st, n)
     run("Initialize")
     BoundBreak = true;
     run("RunFullSim")
+
     if Belowbound == false
         cost =  sum(Energy_kWh .* simdaycost(1:end-1)) ;
     else
-        cost = 0;
+        cost = 10;
     end
 end
 
