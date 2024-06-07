@@ -5,11 +5,11 @@ run("SetParameters")
 %Initial values:
 GroundTemperature = 10 ; %in celcius
 
-AirTemperature = 15 ;  % ALL DUMMY VALUES!!!
-CoverTemperature = 15 ;
-WallTemperature = 15 ;
-PlantTemperature = 15;
-PipeTemperature = 15 ;
+AirTemperature = 11 ;  % ALL DUMMY VALUES!!!
+CoverTemperature = 11 ;
+WallTemperature = 11 ;
+PlantTemperature = 11;
+PipeTemperature = 11 ;
 T_WaterIn(1) = 60 ;
 
 Humidity = 0.009 ; % kg/m^3 air
