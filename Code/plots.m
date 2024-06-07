@@ -11,6 +11,7 @@ plot(t/3600, coolingline, 'c--')
 title("Temperatures in the greenhouse")
 xlabel("Time (h)")
 ylabel("Temperature (°C)")
+legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Heatpipe','Outside', 'Heat', 'Setpoint', 'Cool')
 hold off
 
 % figure("WindowStyle", "docked");
@@ -101,13 +102,26 @@ hold off
 
 % figure("WindowStyle", "docked");
 % hold on
+<<<<<<< HEAD
 % plot(t(1:end-1)/3600, ControllerOutputWatt)
 % plot(t(1:end-1)/3600, heatingerror)
+=======
+% plot(t(1:length(ControllerOutputWatt))/3600, ControllerOutputWatt)
+% plot(t/3600, simdaycost*100000)
+>>>>>>> a85f6b68a4ee36223141b4236f6a109e27a179f3
 % xlabel("Time (h)")
 % ylabel("Boiler input (W)")
 % legend('Controller Boiler')
 % hold off
 
+figure("WindowStyle", "docked");
+hold on
+plot(t(1:end-1)/3600, OpenWindowAngle)
+plot(t(1:end-1)/3600, coolingerror)
+xlabel("Time (h)")
+ylabel("OpenWindowAngle")
+legend('Controller Window', 'error')
+hold off
 
 % figure("WindowStyle", "docked")
 % hold on
@@ -124,7 +138,21 @@ hold off
 % legend("DryWeight")
 % hold off
 
+figure("WindowStyle", "docked")
+hold on
+plot(t/3600, RelHumidity)
+legend("RelHumidity")
+hold off
 
+figure("WindowStyle", "docked")
+hold on
+plot(t(1:end-1)/3600, W_trans)
+plot(t(1:end-1)/3600, W_cond)
+plot(t(1:end-1)/3600, W_vent)
+plot(t(1:end-1)/3600, W_fog)
+legend("trans", "cond", "vent", "fog")
+title("Humidity flows")
+hold off
 
 % figure("WindowStyle", "docked")
 % hold on

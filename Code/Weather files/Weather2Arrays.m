@@ -4,6 +4,14 @@ function [time_vec, OutsideTemperature, OutsideRelhumidity, SolarRadiation, Wind
     tbl = readtable(filename);
     
     % Extract the relevant columns
+    temp_out = [table2array(tbl(:,3)); table2array(tbl(end,3))];
+    rel_hum = [table2array(tbl(:,6)); table2array(tbl(end,6))];   
+    wind_speed = [table2array(tbl(:,13)); table2array(tbl(end,13))];
+    wind_dir = [table2array(tbl(:,14)); table2array(tbl(end,14))];  
+    sealevel_pressure = [table2array(tbl(:,15)); table2array(tbl(end,15))];
+    cloud_cover = [table2array(tbl(:,16)); table2array(tbl(end,16))];
+    solar_rad = [table2array(tbl(:,18)); table2array(tbl(end,18))]; 
+    dew_point = [table2array(tbl(:,5)); table2array(tbl(end,5))]; 
 
     % Generate a time vector for data points (modify as per actual data timing)
     time_hours = 0:1:((height(tbl)) * 1);
