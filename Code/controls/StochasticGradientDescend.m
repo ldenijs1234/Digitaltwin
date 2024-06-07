@@ -25,6 +25,8 @@ bound_average = (Lowerbound + Upperbound) / 2;
 T_st = Lowerbound(1:3600/dt:end)' + 1;
 
 
+customsetpoint = false;
+
 % Initialize waitbar
 hWaitBar2 = waitbar(0, 'Please wait...');
 
@@ -33,7 +35,7 @@ TC_Count = 0;
 delta = 0.01;
 alfa = 0.5;
 % Number of iterations
-iteration_amount = 2;
+iteration_amount = 10;
 n = 1;
 
 % Interpolate setpoints over time
@@ -71,7 +73,7 @@ end
 for n = 2:iteration_amount
     waitbar(n/iteration_amount, hWaitBar2, sprintf('Iteration %d/%d', n, iteration_amount))
 
-    for m = randperm(10)    
+    for m = randperm(25)    
         % set and run test 
         T_st_test = T_st;
         T_st_test(m) = T_st(m) + delta;

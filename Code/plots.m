@@ -104,7 +104,7 @@ hold off
 % figure("WindowStyle", "docked");
 % hold on
 % plot(t(1:end-1)/3600, ControllerOutputWatt)
-% plot(t/3600, heatingerror)
+% plot(t(1:end-1)/3600, heatingerror)
 % xlabel("Time (h)")
 % ylabel("Boiler input (W)")
 % legend('Controller Boiler')
