@@ -4,9 +4,10 @@ figure("WindowStyle", "docked");
 hold on
 plot(t/3600, T(:,:))
 plot(t/3600, OutsideTemperature, 'b--')
-plot(t/3600, heatingline, 'r--')
+plot(t/3600, Lowerbound, 'r--')
 plot(t/3600, Setpoint, 'm--')
-plot(t/3600, coolingline, 'c--') 
+plot(t/3600, meanline, 'k--')
+plot(t/3600, Upperbound, 'c--') 
 % plot(t(1:end-1)/3600, error)
 title("Temperatures in the greenhouse")
 xlabel("Time (h)")
@@ -102,8 +103,13 @@ hold off
 
 % figure("WindowStyle", "docked");
 % hold on
+<<<<<<< HEAD
+% plot(t(1:end-1)/3600, ControllerOutputWatt)
+% plot(t(1:end-1)/3600, heatingerror)
+=======
 % plot(t(1:length(ControllerOutputWatt))/3600, ControllerOutputWatt)
 % plot(t/3600, simdaycost*100000)
+>>>>>>> a85f6b68a4ee36223141b4236f6a109e27a179f3
 % xlabel("Time (h)")
 % ylabel("Boiler input (W)")
 % legend('Controller Boiler')
