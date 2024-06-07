@@ -24,7 +24,7 @@
     co2 = mol_co2/mol_air;
     P_w = h_abs.*(T+273.15)/C; % water vapour pressure
     P_ws = 6.116441*10^(7.591386*(T)/(T+240.7263));  % saturation vapour pressure
-    h = P_w/P_ws; % relative humidity for range -20 to +50 celsius
+    h = max(0, min(100, P_w/P_ws)); % relative humidity for range -20 to +50 celsius
     dT = T-T_wall; % temperature difference
     mu = AirProperties(T,p,h,'xCO2',co2,'mu'); % dynamic viscosity of the air
     rho = AirProperties(T,p,h,'xCO2',co2,'rho'); % density of the air
