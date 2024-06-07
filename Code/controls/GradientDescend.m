@@ -7,11 +7,9 @@ Lowerbound_total = bound(10, 15, 6, 10, 18, 22, dt, total_time / 24); % Setpoint
 Upperbound_total = bound(20, 25, 6, 10, 18, 22, dt, total_time / 24); % Setpoint temperature (°C)
 
 % Extract bounds for the simulation period
-% Lowerbound = Lowerbound_total(SimStart:SimEnd);
-% Upperbound = Upperbound_total(SimStart:SimEnd);
+Lowerbound = Lowerbound_total(SimStart:SimEnd);
+Upperbound = Upperbound_total(SimStart:SimEnd);
 
-Lowerbound = 10 * ones(size(t));
-Upperbound = 20 * ones(size(t));
 
 
 % Initialize setpoint
@@ -83,6 +81,7 @@ for n = 2:iteration_amount
 
     gradient = (costT_st_delta - costT_st) ./ delta ;
     gradient(gradient == inf) = 0;
+    gradient(isnan(gradient)) = 0;
     T_st_new = T_st - alfa .* gradient ;
 
     [cost_new, Belowbound] = cost_set(T_st_new, n);

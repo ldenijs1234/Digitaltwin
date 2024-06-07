@@ -6,21 +6,20 @@ OpenWindowAngle = 5 * ones(1, length(t)-1) ; % (°), place-holder, will be overw
 error = zeros(1, length(t)-1);                                       % Empty error array
 integral = zeros(1, length(t)-1);                                    % Empty integral array
 heatingline_total = bound(10, 15, 6, 10, 18, 22, dt, total_time/24); % Setpoint temperature (°C)
-heatingline = heatingline_total(SimStart:SimEnd) ;
+Lowerbound = heatingline_total(SimStart:SimEnd) ;
 heatingerror = zeros(1, length(t)-1);                                % Empty error array
 coolingline_total = heatingline_total + 10;
-coolingline = coolingline_total(SimStart:SimEnd) ;
+Upperbound = coolingline_total(SimStart:SimEnd) ;
 coolingerror = zeros(1, length(t)-1);                                % Empty error array
-meanline = (heatingline + coolingline)/2 ;                           % Average setpoint line
-Lowerbound = 10 * ones(size(t));
-Upperbound = 20 * ones(size(t));
+meanline = (Lowerbound + Upperbound)/2 ;                           % Average setpoint line
+
 
 % Weather and energy cost forecasts:
 
 % Set files and date 
 date = '2024-05-04' ;                   % Date of the simulation 'yyyy-mm-dd'
 file_energy = 'Netherlands.csv';        % File name of the energy cost CSV file
-file_weather = 'Delft28-11.csv';        % File name of the weather data CSV file 
+file_weather = '03-26.csv';        % File name of the weather data CSV file 
 
 [time_vec, OutsideTemperatureF, OutsideRelhumidityF, SolarRadiationF, WindspeedF, WinddirectionF, SealevelpressureF, CloudCoverF, DewPointF] = Weather2Arrays(file_weather, dt, total_time) ;
 [price_array_W6D, price_array_W5D, price_array_W4D, simdaycostD, day_averageD] = Energycost(file_energy, dt, total_time, date);

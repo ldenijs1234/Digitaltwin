@@ -4,9 +4,14 @@ figure("WindowStyle", "docked");
 hold on
 plot(t/3600, T(:,:))
 plot(t/3600, OutsideTemperature, 'b--')
-plot(t/3600, heatingline, 'r--')
+plot(t/3600, Lowerbound, 'r--')
 plot(t/3600, Setpoint, 'm--')
+<<<<<<< Updated upstream
 plot(t/3600, coolingline, 'c--') 
+=======
+plot(t/3600, meanline, 'k--')
+plot(t/3600, Upperbound, 'c--') 
+>>>>>>> Stashed changes
 % plot(t(1:end-1)/3600, error)
 title("Temperatures in the greenhouse")
 xlabel("Time (h)")
