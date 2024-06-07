@@ -20,7 +20,7 @@ Upperbound = 20 * ones(size(t));
 % Set files and date 
 date = '2024-05-04' ;                   % Date of the simulation 'yyyy-mm-dd'
 file_energy = 'Netherlands.csv';        % File name of the energy cost CSV file
-file_weather = '05-04.csv';        % File name of the weather data CSV file 
+file_weather = 'Delft28-11.csv';        % File name of the weather data CSV file 
 
 [time_vec, OutsideTemperatureF, OutsideRelhumidityF, SolarRadiationF, WindspeedF, WinddirectionF, SealevelpressureF, CloudCoverF, DewPointF] = Weather2Arrays(file_weather, dt, total_time) ;
 [price_array_W6D, price_array_W5D, price_array_W4D, simdaycostD, day_averageD] = Energycost(file_energy, dt, total_time, date);

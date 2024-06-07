@@ -26,11 +26,11 @@ T_st = Lowerbound(1:3600/dt:end)' + 2;
 hWaitBar2 = waitbar(0, 'Please wait...');
 cost = inf * ones(size(T_st));
 TC_Count = 0;
-alfa = 0.001;
+alfa = 0.1;
 % Number of iterations
-iteration_amount = 30;
+iteration_amount = 250;
 n = 1;
-perturb_amount = 5;
+perturb_amount = 2;
 
 % Interpolate setpoints over time
 function [cost, Belowbound] = cost_set(T_st, n)
@@ -41,10 +41,11 @@ function [cost, Belowbound] = cost_set(T_st, n)
     run("Initialize")
     BoundBreak = true;
     run("RunFullSim")
+
     if Belowbound == false
         cost =  sum(Energy_kWh .* simdaycost(1:end-1)) ;
     else
-        cost = 0;
+        cost = 10;
     end
 end
 
@@ -75,7 +76,7 @@ for n = 2:iteration_amount
     waitbar(n/iteration_amount, hWaitBar2, sprintf('Iteration %d/%d', n, iteration_amount))
     % delta =  0.01 *randi(5,25,1) - 0.03;
     delta = zeros(size(T_st));
-    delta(randi(length(delta), perturb_amount, 1)) = 0.01 *randi(5,perturb_amount,1) - 0.03;
+    delta(randi(length(delta), perturb_amount, 1)) = 0.01 *randi(3,perturb_amount,1) - 0.02;
     
     T_st_delta = T_st + delta ;
     [costT_st_delta, Belowbound] = cost_set(T_st_delta, n) ;
