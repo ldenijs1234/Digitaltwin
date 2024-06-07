@@ -61,7 +61,7 @@ prob_rate = 3 / iteration_amount;
 for n = 2:iteration_amount
     %distribution function:
     Accept_rate = labda * exp(-labda * (n * prob_rate));
-
+    Accept_rate
 
     % Update the waitbar
     waitbar(n / iteration_amount, hWaitBar2, sprintf('Iteration %d/%d', n, iteration_amount));
@@ -90,6 +90,7 @@ for n = 2:iteration_amount
     if Belowbound == false
         cost(n) = sum(Energy_kWh .* simdaycost(1:end-1)); % Adjust if necessary
         TC_Count = 0;
+        Accept_rate = exp((- cost(n) - cost(n-1))/ t);
     else 
         cost(n) = inf;
         bias(max(1,hour_belowbound(n)-1):hour_belowbound(n)) = (1 - (n / (iteration_amount + 0.01))) / 2;
