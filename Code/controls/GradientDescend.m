@@ -26,11 +26,8 @@ T_st = Lowerbound(1:3600/dt:end)' + 2;
 hWaitBar2 = waitbar(0, 'Please wait...');
 cost = inf * ones(size(T_st));
 TC_Count = 0;
-alfa = 0.001;
 % Number of iterations
-iteration_amount = 30;
 n = 1;
-perturb_amount = 5;
 
 % Interpolate setpoints over time
 function [cost, Belowbound] = cost_set(T_st, n)
@@ -75,7 +72,6 @@ for n = 2:iteration_amount
     waitbar(n/iteration_amount, hWaitBar2, sprintf('Iteration %d/%d', n, iteration_amount))
     % delta =  0.01 *randi(5,25,1) - 0.03;
     delta = zeros(size(T_st));
-    delta(randi(length(delta), perturb_amount, 1)) = 0.01 *randi(5,perturb_amount,1) - 0.03;
     
     T_st_delta = T_st + delta ;
     [costT_st_delta, Belowbound] = cost_set(T_st_delta, n) ;

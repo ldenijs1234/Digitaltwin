@@ -6,13 +6,11 @@ plot(t/3600, T(:,:))
 plot(t/3600, OutsideTemperature, 'b--')
 plot(t/3600, heatingline, 'r--')
 plot(t/3600, Setpoint, 'm--')
-plot(t/3600, meanline, 'k--')
 plot(t/3600, coolingline, 'c--') 
 % plot(t(1:end-1)/3600, error)
 title("Temperatures in the greenhouse")
 xlabel("Time (h)")
 ylabel("Temperature (°C)")
-legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Heatpipe','Outside', 'Heat', 'Setpoint', 'Mean', 'Cool')
 hold off
 
 % figure("WindowStyle", "docked");
@@ -110,14 +108,6 @@ hold off
 % legend('Controller Boiler')
 % hold off
 
-% figure("WindowStyle", "docked");
-% hold on
-% plot(t(1:end-1)/3600, OpenWindowAngle)
-% plot(t(1:end-1)/3600, coolingerror)
-% xlabel("Time (h)")
-% ylabel("OpenWindowAngle")
-% legend('Controller Window', 'error')
-% hold off
 
 % figure("WindowStyle", "docked")
 % hold on
@@ -134,21 +124,7 @@ hold off
 % legend("DryWeight")
 % hold off
 
-% figure("WindowStyle", "docked")
-% hold on
-% plot(t/3600, RelHumidity)
-% legend("RelHumidity")
-% hold off
 
-% figure("WindowStyle", "docked")
-% hold on
-% plot(t(1:end-1)/3600, W_trans)
-% plot(t(1:end-1)/3600, W_cond)
-% plot(t(1:end-1)/3600, W_vent)
-% plot(t(1:end-1)/3600, W_fog)
-% legend("trans", "cond", "vent", "fog")
-% title("Humidity flows")
-% hold off
 
 % figure("WindowStyle", "docked")
 % hold on

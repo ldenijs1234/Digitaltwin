@@ -27,9 +27,6 @@ GH.p.           GHWallThickness = 3e-3 ; % (m)
 GH.p.           GHFloorThickness = 2e-2 ;	% (m), thickness of a single floor layer
 GH.p.           GHFloorArea = GH.p.GHLength * GH.p.GHWidth ;
 
-GH.p.           NumberOfWindows = round(GH.p.GHFloorArea*0.05) ; % Scaled to size of greenhouse
-GH.p.           WindowLength = 1.5 ; %(m)
-GH.p.           WindowHeight = 0.8 ; %(m)
 GH.p.           RoofAngle = 26 ; % (°), same as Venlo type greenhouse
 
 GH.p.           WindowArea = GH.p.WindowHeight*GH.p.WindowLength ;

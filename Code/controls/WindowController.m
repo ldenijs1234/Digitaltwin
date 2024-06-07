@@ -1,7 +1,6 @@
 
 function [errorT, OpenWindowAngle, U_fog] = WindowController(T_air, setpoint)
-    kw = 1.5 ;
-    kf = 0.005 ;
+    kw = 2.5 ;
     % kHw = 0.0005 ;
     % kHf = 0.005 ;
 
