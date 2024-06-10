@@ -43,7 +43,7 @@ GH.p.           GHWallArea = GH.p.GHLength * GH.p.GHHeight * 2 + GH.p.GHWidth * 
 GH.p.           GHCoverArea =  GH.p.GHLength * GH.p.GHWidth ;
 
 % Control unit values, estimation based on area or known values
-GH.p.           BoilerMaxWatt = 1000000*(GH.p.GHFloorArea/500); % (W), scaled to size
+GH.p.           BoilerMaxWatt = 1e6*(GH.p.GHFloorArea/500); % (W), scaled to size
 GH.p.           phi_fog = 1e-4 * GH.p.GHFloorArea ; % (kg s^-1), scaled to size
 GH.p.           FogPower = 1.25e5 * GH.p.phi_fog ; % (W), estimated max power use of fogger
 

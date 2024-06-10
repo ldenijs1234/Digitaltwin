@@ -15,7 +15,7 @@ Guess5 = 0.25*sin(4*pi*(h24+2)/24) +  Guess2 ;
 
 % Educated guesses
 Cost_Derivative = diff(simdaycost)./diff(t);
-Windowwidth = 65;
+windowwidth = 63;
 Timeforward = 70;
 windowavgnow = zeros(1, length(simdaycost));
 windowavgforward = zeros(1, length(simdaycost));

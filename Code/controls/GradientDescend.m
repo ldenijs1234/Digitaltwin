@@ -19,7 +19,7 @@ TC_Count = 0;
 alfa = 0.3;
 
 % Number of iterations
-iteration_amount = 30;
+iteration_amount = 200;
 n = 1;
 perturb_amount = 2;
 
@@ -51,7 +51,6 @@ end
 T_st = Guesses(:, Guess_index);
 disp('Continuing with guess:')
 disp(Guess_index)
-T_st = Guess8;
 
 % while Belowbound == true
 %     disp('increase setpoint by 1')
@@ -75,6 +74,15 @@ T_st_save(:,1) = T_st;
 cost_save(1) = costT_st;
 
 for n = 2:iteration_amount
+
+    if n < iteration_amount *0.1
+        alfa = 0.3;
+    elseif n < iteration_amount * 0.5
+        alfa = 0.2;
+    else
+        alfa =0.1;
+    end
+
     waitbar(n/iteration_amount, hWaitBar2, sprintf('Iteration %d/%d', n, iteration_amount))
     % delta =  0.01 *randi(5,25,1) - 0.03;
     delta = zeros(size(T_st));
