@@ -146,6 +146,7 @@ end
 
 hWaitBar = waitbar(0, 'Please wait...') ;
 
+simdaycost = 0.5 * ones(size(t)) ; simdaycost(round(1/3*length(t)): round(2/3* length(t))) = 0.02 ;
 
 % For-loop containing euler-integration of states and inter-state dynamics:
 for i = 1:length(t) - 1
@@ -158,7 +159,7 @@ for i = 1:length(t) - 1
     T_WaterOut(i) = water_arrayOut(end) ; water_array = water_arrayOut ;
 
     [integral(i+1), heatingerror(i + 1), ControllerOutputWatt(i)] = PIController(GH ,T(1,i), Setpoint(i), dt, integral(i), heatingerror(i)) ;
-    [coolingerror(i), OpenWindowAngle(i), U_fog(i)] = WindowController(T(1,i), Upperbound(i) -2);
+    [coolingerror(i), OpenWindowAngle(i), U_fog(i)] = WindowController(T(1,i), Upperbound(i));
     
     T_WaterIn(i+1) = min(99,T_WaterOut(i) + ControllerOutputWatt(i) / (GH.p.Npipes*GH.p.m_flow * GH.p.cp_water)) ;
 

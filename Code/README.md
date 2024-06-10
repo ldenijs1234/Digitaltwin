@@ -19,7 +19,7 @@ The map 'controls' consists of controller and optimization functions used in the
 
 'SetStates' is used to set the starting states for the simulation. These can either come from 'Initialize', a previous simulation or can be inserted from measurements.
 
-'Structuur' is the main calculation file. It includes all functions defining heat, humidity and CO2 flows as well as the ventilation rate and even a nifty progress bar.
+'Structure' is the main calculation file. It includes all functions defining heat, humidity and CO2 flows as well as the ventilation rate and even a nifty progress bar.
 
 'RunFullSim' runs all the files in order for a full simulation. It also includes a possibility to run multiple (short) simulations after
 one another and automatically shift the weather forecast horizon.. This makes use of the 'SimCount'. By default it is not used and set to 0. 
