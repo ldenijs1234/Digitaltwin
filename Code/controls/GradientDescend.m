@@ -9,15 +9,8 @@ Upperbound_total = bound(20, 25, 6, 10, 18, 22, dt, total_time / 24); % Setpoint
 % Extract bounds for the simulation period
 Lowerbound = Lowerbound_total(SimStart:SimEnd);
 Upperbound = Upperbound_total(SimStart:SimEnd);
-
-
-
-% Initialize setpoint
 bound_average = (Lowerbound + Upperbound) / 2;
 
-
-% Initial setpoints
-h24 = [0:24]' ;
 
 
 % Initialize waitbar
@@ -47,14 +40,16 @@ function [cost, Belowbound] = cost_set(T_st, n)
     end
 end
 
-costguess = zeros(1, length(Guesses));
-for i = 1:length(Guesses)                   % Determine cost per initial guess
+costguess = zeros(1, width(Guesses));
+for i = 1:width(Guesses)                   % Determine cost per initial guess
     Guess = Guesses(:, i);
-    costguess(i) = cost(Guess);
+    costguess(i) = cost_set(Guess, n);
 end
 
-costmin, index = min(costguess) ;           % Determine initial guess with lowest cost
-T_st = Guesses(:, index);
+[costmin, Guess_index] = min(costguess) ;           % Determine initial guess with lowest cost
+T_st = Guesses(:, Guess_index);
+disp('Continuing with guess:')
+disp(Guess_index)
 
 % while Belowbound == true
 %     disp('increase setpoint by 1')

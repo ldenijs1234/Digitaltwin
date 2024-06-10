@@ -32,7 +32,7 @@ for i = 1:length(simdaycost) - (windowwidth + Timeforward)
 end
 Guess6 = Guess6(1:3600/dt:end)';
 
-h24 = [0:24] ;
+h24 = [0:24]' ;
 avg_cost = mean(simdaycost) ;
 intersec = find(abs(simdaycost - avg_cost) <0.0001) ;
 point1 = round(intersec(2)/length(t) *24) ;
