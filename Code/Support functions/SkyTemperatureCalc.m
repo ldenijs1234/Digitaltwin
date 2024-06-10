@@ -1,5 +1,5 @@
-function T_sky = SkyTemperatureCalc(GH, OutsideTemperature, CloudCover)
-    sigma = GH.p.StefBolzConst ;
+function T_sky = SkyTemperatureCalc(OutsideTemperature, CloudCover)
+    sigma =  5.670374419e-8 ;
 
     cloud = CloudCover./100 ; % 0-1 cloud cover
     LdClear = 213+5.5*OutsideTemperature;                      % Equation 5.26 [Katzin, 2021]

@@ -4,7 +4,8 @@ SimEnd = length(t) ;
 run("SetInputs")
 run("SetParameters")
 
-sinefunction = sin(3);
+sinefunction = 6 * sin(2 * pi * t/ 24);
+plot(t, sinefunction)
 
 Cost_Derivative = diff(simdaycost)./diff(t);
 
