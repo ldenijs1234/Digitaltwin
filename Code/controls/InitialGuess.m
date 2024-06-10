@@ -1,5 +1,10 @@
 run("SetModel")
+SimStart = 1 ;
+SimEnd = length(t) ;
 run("SetInputs")
+run("SetParameters")
+
+sinefunction = sin(3);
 
 Cost_Derivative = diff(simdaycost)./diff(t);
 

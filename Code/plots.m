@@ -103,10 +103,6 @@ hold off
 
 % figure("WindowStyle", "docked");
 % hold on
-<<<<<<< HEAD
-% plot(t(1:end-1)/3600, ControllerOutputWatt)
-% plot(t(1:end-1)/3600, heatingerror)
-=======
 % plot(t(1:length(ControllerOutputWatt))/3600, ControllerOutputWatt)
 % plot(t/3600, simdaycost*100000)
 % xlabel("Time (h)")
@@ -154,21 +150,21 @@ hold off
 % title("Humidity flows")
 % hold off
 
-% figure("WindowStyle", "docked")
-% hold on
-% plot(t/3600, SolarIntensity)
-% plot(t/3600, SolarRadiation)
-% title("Solar Intensity")
-% hold off
+figure("WindowStyle", "docked")
+hold on
+plot(t/3600, SolarIntensity)
+plot(t/3600, SolarRadiation)
+title("Solar Intensity")
+hold off
 
-% figure('Windowstyle','docked');
-% hold on
-% plot(t/3600, simdaycost);
+figure('Windowstyle','docked');
+hold on
+plot(t/3600, simdaycost);
 % plot(t/3600, price_array_W6, 'b--');
 % plot(t/3600, price_array_W5, 'b:');
 % plot(t/3600, price_array_W4, 'b-.');
-% plot(t/3600, day_average, 'r--');
-% title('Energy cost for a day')
-% xlabel('Time (h)')
-% ylabel('Energy cost (€/kWh)')
-% hold off
+plot(t/3600, day_average, 'r--');
+title('Energy cost for a day')
+xlabel('Time (h)')
+ylabel('Energy cost (€/kWh)')
+hold off
