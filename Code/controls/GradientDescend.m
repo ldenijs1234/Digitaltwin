@@ -19,7 +19,7 @@ TC_Count = 0;
 alfa = 0.3;
 
 % Number of iterations
-iteration_amount = 200;
+iteration_amount = 300;
 n = 1;
 perturb_amount = 2;
 
@@ -80,7 +80,7 @@ for n = 2:iteration_amount
     elseif n < iteration_amount * 0.5
         alfa = 0.2;
     else
-        alfa =0.1;
+        alfa = 0.1;
     end
 
     waitbar(n/iteration_amount, hWaitBar2, sprintf('Iteration %d/%d', n, iteration_amount))
