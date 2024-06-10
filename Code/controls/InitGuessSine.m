@@ -1,8 +1,15 @@
 run("SetModel")
 SimStart = 1 ;
 SimEnd = length(t) ;
-run("SetInputs")
-run("SetParameters")
+% run("SetInputs")
+% run("SetParameters")
 
-sinefunction = 6 * sin(2 * pi * t/ 24);
-plot(t, sinefunction)
+h24 = [0:24] ;
+hourshift = 10; 
+period = 9/4 * pi;
+peaklocation = 1/4* period/(2*pi) * 24 + hourshift;
+
+sinefunction = 1 * sin(period * (h24-hourshift)/ 24);
+
+figure("WindowStyle", "docked")
+plot(h24, sinefunction)
