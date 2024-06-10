@@ -109,7 +109,6 @@ hold off
 =======
 % plot(t(1:length(ControllerOutputWatt))/3600, ControllerOutputWatt)
 % plot(t/3600, simdaycost*100000)
->>>>>>> a85f6b68a4ee36223141b4236f6a109e27a179f3
 % xlabel("Time (h)")
 % ylabel("Boiler input (W)")
 % legend('Controller Boiler')
