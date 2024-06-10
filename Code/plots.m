@@ -101,14 +101,14 @@ hold off
 % legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Heatpipe','Outside', 'Setpoint')
 % hold off
 
-figure("WindowStyle", "docked");
-hold on
-plot(t(1:length(ControllerOutputWatt))/3600, ControllerOutputWatt)
-plot(t/3600, simdaycost*100000)
-xlabel("Time (h)")
-ylabel("Boiler input (W)")
-legend('Controller Boiler')
-hold off
+% figure("WindowStyle", "docked");
+% hold on
+% plot(t(1:length(ControllerOutputWatt))/3600, ControllerOutputWatt)
+% plot(t/3600, simdaycost*100000)
+% xlabel("Time (h)")
+% ylabel("Boiler input (W)")
+% legend('Controller Boiler')
+% hold off
 
 % figure("WindowStyle", "docked");
 % hold on
@@ -150,26 +150,21 @@ hold off
 % title("Humidity flows")
 % hold off
 
-figure("WindowStyle", "docked")
-hold on
-plot(t/3600, SolarIntensity)
-plot(t/3600, SolarRadiation)
-title("Solar Intensity")
-hold off
+% figure("WindowStyle", "docked")
+% hold on
+% plot(t/3600, SolarIntensity)
+% plot(t/3600, SolarRadiation)
+% title("Solar Intensity")
+% hold off
 
-costtest = ControllerOutputWatt .* simdaycost(1:end-1);
-avg_cost = mean(costtest);
-
-figure('Windowstyle','docked');
-hold on
-plot(t/3600, simdaycost * 10^5, 'c-');
-plot(t(1:end-1)/3600, costtest)
-plot(t(1:end-1)/3600, avg_cost*ones(size(costtest)))
+% figure('Windowstyle','docked');
+% hold on
+% plot(t/3600, simdaycost);
 % plot(t/3600, price_array_W6, 'b--');
 % plot(t/3600, price_array_W5, 'b:');
 % plot(t/3600, price_array_W4, 'b-.');
-plot(t/3600, day_average* 10^5, 'r--');
-title('Energy cost for a day')
-xlabel('Time (h)')
-ylabel('Energy cost (€/kWh)')
-hold off
+% plot(t/3600, day_average, 'r--');
+% title('Energy cost for a day')
+% xlabel('Time (h)')
+% ylabel('Energy cost (€/kWh)')
+% hold off
