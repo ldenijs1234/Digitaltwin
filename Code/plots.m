@@ -157,10 +157,14 @@ plot(t/3600, SolarRadiation)
 title("Solar Intensity")
 hold off
 
+costtest = ControllerOutputWatt .* simdaycost(1:end-1);
+avg_cost = mean(costtest);
+
 figure('Windowstyle','docked');
 hold on
 plot(t/3600, simdaycost * 10^5, 'c-');
-plot(t(1:end-1)/3600, ControllerOutputWatt .* simdaycost(1:end-1))
+plot(t(1:end-1)/3600, costtest)
+plot(t(1:end-1)/3600, avg_cost*ones(size(costtest)))
 % plot(t/3600, price_array_W6, 'b--');
 % plot(t/3600, price_array_W5, 'b:');
 % plot(t/3600, price_array_W4, 'b-.');

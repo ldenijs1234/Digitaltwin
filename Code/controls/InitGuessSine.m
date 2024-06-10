@@ -5,8 +5,8 @@ SimEnd = length(t) ;
 % run("SetParameters")
 
 h24 = [0:24] ;
-hourshift = 10; 
-period = 9/4 * pi;
+hourshift = -3; 
+period = 16/4 * pi;
 peaklocation = 1/4* period/(2*pi) * 24 + hourshift;
 
 sinefunction = 1 * sin(period * (h24-hourshift)/ 24);

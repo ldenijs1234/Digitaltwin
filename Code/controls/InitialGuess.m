@@ -22,7 +22,7 @@ hold off
 Cost_Derivative = diff(simdaycost)./diff(t);
 Windowwidth = 60;
 Timeforward = 60;
-
+windo
 
 for i = 1:length(simdaycost) - Windowwidth
     windowavgnow(i) = sum(simdaycost(i:i+Windowwidth)) / windowwidth;

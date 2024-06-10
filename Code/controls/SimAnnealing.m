@@ -1,4 +1,4 @@
-run("SetModel")
+drun("SetModel")
 SimCount = 0;
 time_steps = simulation_time/dt+1 ;
 SimCount = SimCount + 1 ;                   % keep count on number of simulations done
