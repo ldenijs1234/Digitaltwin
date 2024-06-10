@@ -18,9 +18,9 @@ meanline = (Lowerbound + Upperbound)/2 ;                           % Average set
 % Weather and energy cost forecasts:
 
 % Set files and date 
-date = '2023-11-28' ;                   % Date of the simulation 'yyyy-mm-dd'
+date = '2023-03-11' ;                   % Date of the simulation 'yyyy-mm-dd'
 file_energy = 'Netherlands.csv';        % File name of the energy cost CSV file
-file_weather = 'Delft28-11.csv';        % File name of the weather data CSV file 
+file_weather = '03-11.csv';             % File name of the weather data CSV file 
 
 [time_vec, OutsideTemperatureF, OutsideRelhumidityF, SolarRadiationF, WindspeedF, WinddirectionF, SealevelpressureF, CloudCoverF, DewPointF] = Weather2Arrays(file_weather, dt, total_time) ;
 [price_array_W6D, price_array_W5D, price_array_W4D, simdaycostD, day_averageD] = Energycost(file_energy, dt, total_time, date);
