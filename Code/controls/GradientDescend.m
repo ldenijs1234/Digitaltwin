@@ -40,6 +40,7 @@ function [cost, Belowbound] = cost_set(T_st, n)
     end
 end
 
+disp('Testing initial guesses...')
 costguess = zeros(1, width(Guesses));
 for i = 1:width(Guesses)                   % Determine cost per initial guess
     Guess = Guesses(:, i);
@@ -50,6 +51,7 @@ end
 T_st = Guesses(:, Guess_index);
 disp('Continuing with guess:')
 disp(Guess_index)
+T_st = Guess8;
 
 % while Belowbound == true
 %     disp('increase setpoint by 1')
@@ -113,6 +115,7 @@ for n = 2:iteration_amount
 end
 
 close(hWaitBar2)
+disp('Optimization done')
 
 run("SetModel")
 Setpoint = interp1(0:24, T_st(:, 1), t / 3600, 'linear', 'extrap');
@@ -133,12 +136,13 @@ plot(t/3600, bound_average, 'k--')
 plot(h24, T_st_save(:,1), 'r-')
 plot(t/3600, T(1,:), 'b-')
 plot(t/3600, OutsideTemperature, 'b--')
+plot(t/3600, simdaycost*10^2, 'y-')
 title("Bounds")
 xlabel("Time (h)")
 ylabel("Temperature (°C)")
-legend('Setpoint', 'Lower Bound', 'Upper Bound', 'Average Bound', 'First Iteration', 'Air Temperature', 'Outside Temperature')
+legend('Setpoint', 'Lower Bound', 'Upper Bound', 'Average Bound', 'First Iteration', 'Air Temperature', 'Outside Temperature', 'Energy cost *10^2')
 hold off    
 
-disp(['saved:', cost_save(end)/cost_save(1)])
-
+disp('saved:')
+disp(cost_save(end)/cost_save(1))
         

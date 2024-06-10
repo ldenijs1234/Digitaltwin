@@ -41,7 +41,8 @@ periodh = (point2 - point1) * 2;
 hourshift = (point2 + point1)/2  - 5/4* periodh ;
 period = 24/periodh * 2 * pi;
 Guess7 = 1 * sin(period * (h24-hourshift)/ 24) + Guess2;
+Guess8 = 0.5 * sin(period * (h24-hourshift)/ 24) + Guess2;
 
-Guesses = [Guess1, Guess2, Guess3, Guess4, Guess5, Guess6, Guess7];
+Guesses = [Guess1, Guess2, Guess3, Guess4, Guess5, Guess6, Guess7, Guess8];
 
 
