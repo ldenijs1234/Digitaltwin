@@ -4,29 +4,30 @@ SimEnd = length(t) ;
 run("SetInputs")
 run("SetParameters")
 
-sinefunction = 6 * sin(2 * pi * t/ 24);
-plot(t, sinefunction)
+Guess1 = Lowerbound(1:3600/dt:end)' + 2 ;
+Guess2 = meanline(1:3600/dt:end)' ; 
+h24 = [0:24]' ;
+Guess3 = sin(4*pi*(h24+2)/24) +  20 ;
+Guess4 = 0.25*sin(4*pi*(h24+2)/24) +  Guess1 ;
+
+Guesses = [Guess1, Guess2, Guess3, Guess4];
+
+hold on
+figure("WindowStyle", "docked");
+plot(h24, Guess1)
+plot(h24, Guess2)
+plot(h24, Guess3)
+hold off
 
 Cost_Derivative = diff(simdaycost)./diff(t);
+Windowwidth = 60;
+Timeforward = 60;
 
-window_size = 60;
 
-function [output_array, window] = weighted_average_with_hann_window(input_array, window_size)
-      
-    % Create a Hann window of the specified size
-    hann_window = hann(window_size);
-    
-    % Normalize the window to make sure it sums to 1
-    window = hann_window / sum(hann_window);
-    
-    % Initialize the result array
-    result_length = length(input_array) - window_size + 1;
-    output_array = zeros(1, result_length);
-    
-    % Compute the weighted average using the Hann window
-    for i = 1:result_length
-        output_array(i) = sum(input_array(i:i+window_size-1) .* window');
-    end
+for i = 1:length(simdaycost) - Windowwidth
+    windowavgnow(i) = sum(simdaycost(i:i+Windowwidth)) / windowwidth;
+    windowavgforward(i) = sum(simdaycost(i+Timeforward-Windowwidth/2:i+Timeforward+Windowwidth/2));
+
 end
 
-[weighted_average, hann_window] = weighted_average_with_hann_window(Cost_Derivative, window_size);
+

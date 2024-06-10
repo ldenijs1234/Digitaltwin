@@ -17,14 +17,15 @@ bound_average = (Lowerbound + Upperbound) / 2;
 
 
 % Initial setpoints
-T_st = Lowerbound(1:3600/dt:end)' + 2;
+h24 = [0:24]' ;
+T_st =  Guess4 ;
 
 
 % Initialize waitbar
 hWaitBar2 = waitbar(0, 'Please wait...');
-cost = inf * ones(size(T_st));
 TC_Count = 0;
 alfa = 0.1;
+
 % Number of iterations
 iteration_amount = 250;
 n = 1;
@@ -43,10 +44,18 @@ function [cost, Belowbound] = cost_set(T_st, n)
     if Belowbound == false
         cost =  sum(Energy_kWh .* simdaycost(1:end-1)) ;
     else
-        cost = 10;
+        cost = 1000;   % Arbitrary penaly cost for breaking the bound
     end
 end
 
+costguess = zeros(1, length(Guesses));
+for i = 1:length(Guesses)
+    Guess = Guesses(:, i);
+    costguess(i) = cost(Guess);
+end
+
+costmin, index = min(costguess) ;
+T_st = Guesses(:, index);
 
 
 % while Belowbound == true
@@ -118,11 +127,13 @@ plot(t/3600, Setpoint_end, 'g--')
 plot(t/3600, Lowerbound, 'r--') 
 plot(t/3600, Upperbound, 'c--')
 plot(t/3600, bound_average, 'm--')
+plot(h24, T_st_save(:,1))
 title("Bounds")
 xlabel("Time (h)")
 ylabel("Temperature (°C)")
 legend('Setpoint', 'Lower Bound', 'Upper Bound', 'Average B')
 hold off    
 
+disp(['saved:', cost_save(end)/cost_save(1)])
 close(hWaitBar2)
         
