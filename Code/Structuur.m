@@ -158,7 +158,7 @@ for i = 1:length(t) - 1
     T_WaterOut(i) = water_arrayOut(end) ; water_array = water_arrayOut ;
 
     [integral(i+1), heatingerror(i + 1), ControllerOutputWatt(i)] = PIController(GH ,T(1,i), Setpoint(i), dt, integral(i), heatingerror(i)) ;
-    [coolingerror(i), OpenWindowAngle(i), U_fog(i)] = WindowController(T(1,i), Upperbound(i));
+    [coolingerror(i), OpenWindowAngle(i), U_fog(i)] = WindowController(T(1,i), Upperbound(i) -2);
     
     T_WaterIn(i+1) = min(99,T_WaterOut(i) + ControllerOutputWatt(i) / (GH.p.Npipes*GH.p.m_flow * GH.p.cp_water)) ;
 
