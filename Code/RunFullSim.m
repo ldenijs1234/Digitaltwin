@@ -19,12 +19,8 @@ SimEnd = time_steps*SimCount ;              % Define interval end based on SimCo
 
 run("SetInputs")
 
-<<<<<<< Updated upstream
+%Setpoint = Lowerbound + 0.5 ;
 %Setpoint = interp1(0:24, T_st, t / 3600, 'linear', 'extrap') ;        % Can be set to different setpoints, or can be turned off and defined by an optimization
-=======
-Setpoint = Lowerbound + 0.5 ;
-% Setpoint = interp1(0:24, T_st, t / 3600, 'linear', 'extrap') ;        % Can be set to different setpoints, or can be turned off and defined by an optimization
->>>>>>> Stashed changes
 
 
 run("SetParameters")
