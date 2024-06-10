@@ -9,16 +9,15 @@ plot(t, sinefunction)
 
 Cost_Derivative = diff(simdaycost)./diff(t);
 
-function output_array = weighted_average_with_hann_window(input_array, window_size)
-    if nargin < 2
-        window_size = 60;
-    end
-    
+window_size = 60;
+
+function [output_array, window] = weighted_average_with_hann_window(input_array, window_size)
+      
     % Create a Hann window of the specified size
-    window = hann(window_size);
+    hann_window = hann(window_size);
     
     % Normalize the window to make sure it sums to 1
-    window = window / sum(window);
+    window = hann_window / sum(hann_window);
     
     % Initialize the result array
     result_length = length(input_array) - window_size + 1;
@@ -30,4 +29,4 @@ function output_array = weighted_average_with_hann_window(input_array, window_si
     end
 end
 
-weighted_average = weighted_average_with_hann_window(Cost_Derivative);
+[weighted_average, hann_window] = weighted_average_with_hann_window(Cost_Derivative, window_size);

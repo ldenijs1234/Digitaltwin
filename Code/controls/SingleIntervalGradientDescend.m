@@ -1,10 +1,13 @@
 run("SetModel")
-run("SetInputs")
+run("SetParameters")
 SimCount = 0;
 time_steps = simulation_time/dt+1 ;
 SimCount = SimCount + 1 ;                   % keep count on number of simulations done
 SimStart = time_steps*(SimCount-1) + 1 ;    % Define interval start based on SimCount
 SimEnd = time_steps*SimCount ;
+
+run("SetInputs")
+
 % Compute lower and upper bounds
 Lowerbound_total = bound(10, 15, 6, 10, 18, 22, dt, total_time / 24); % Setpoint temperature (°C)
 Upperbound_total = bound(20, 25, 6, 10, 18, 22, dt, total_time / 24); % Setpoint temperature (°C)
@@ -90,22 +93,6 @@ for n = 2:iteration_amount
             %new T_st function if T_st_test wasnt below bound
             costT_st_test =  sum(Energy_kWh .* simdaycost(1:end-1)) ;
             T_st_new(m) = max(T_st(m) - alfa * (costT_st_test - costT_st) / delta, Lowerbound((m-1) * 3600/dt + 1) + 0.5) ;
-        % else
-        %     %re-run with opposite delta 
-        %     T_st_test = T_st;
-        %     T_st_test(m) = T_st(m) - delta;
-
-        %     Setpoint = interp1(0:24, T_st_test, t / 3600, 'linear', 'extrap');
-            
-        %     run("Initialize")
-        %     BoundBreak = true;
-        %     run("RunFullSim")
-
-        %     if Belowbound == false
-        %         %new T_st function if T_st_test wasnt below bound
-        %         costT_st_test =  sum(Energy_kWh .* simdaycost(1:end-1)) ;
-        %         T_st_new(m) = max(T_st(m) - alfa * (costT_st_test - costT_st) / (-delta), Lowerbound(m * 3600/dt) + 0.5) ;
-            % end
 
         end
 
