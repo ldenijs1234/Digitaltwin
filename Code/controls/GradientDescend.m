@@ -16,7 +16,7 @@ bound_average = (Lowerbound + Upperbound) / 2;
 % Initialize waitbar
 hWaitBar2 = waitbar(0, 'Please wait...');
 TC_Count = 0;
-alfa = 0.3;
+alfa = 0.1;
 
 % Number of iterations
 iteration_amount = 300;
@@ -98,7 +98,7 @@ for n = 2:iteration_amount
 
     [cost_new, Belowbound] = cost_set(T_st_new, n);
 
-    if Belowbound == false %&& costnew < cost?
+    if Belowbound == false && cost_new < costT_st
         T_st = T_st_new;
         costT_st = cost_new;
     end

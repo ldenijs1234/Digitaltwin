@@ -34,7 +34,16 @@ Guess6 = Guess6(1:3600/dt:end)';
 
 h24 = [0:24]' ;
 avg_cost = mean(simdaycost) ;
-intersec = find(abs(simdaycost - avg_cost) <0.0001) ;
+tol = 0.001;
+for i = 1:10000
+    intersec = find(abs(simdaycost - avg_cost) <tol) ;
+    if length(intersec) == 4 || length(intersec) ==5
+        break
+    else
+        tol = tol/1.3 ;
+    end
+end
+
 point1 = round(intersec(2)/length(t) *24) ;
 point2 = round(intersec(3)/length(t) *24) ;
 periodh = (point2 - point1) * 2;
