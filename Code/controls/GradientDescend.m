@@ -9,24 +9,17 @@ Upperbound_total = bound(20, 25, 6, 10, 18, 22, dt, total_time / 24); % Setpoint
 % Extract bounds for the simulation period
 Lowerbound = Lowerbound_total(SimStart:SimEnd);
 Upperbound = Upperbound_total(SimStart:SimEnd);
-
-
-
-% Initialize setpoint
 bound_average = (Lowerbound + Upperbound) / 2;
 
-
-% Initial setpoints
-h24 = [0:24]' ;
 
 
 % Initialize waitbar
 hWaitBar2 = waitbar(0, 'Please wait...');
 TC_Count = 0;
-alfa = 0.3;
+alfa = 0.1;
 
 % Number of iterations
-iteration_amount = 30;
+iteration_amount = 300;
 n = 1;
 perturb_amount = 2;
 
@@ -47,14 +40,17 @@ function [cost, Belowbound] = cost_set(T_st, n)
     end
 end
 
-costguess = zeros(1, length(Guesses));
-for i = 1:length(Guesses)                   % Determine cost per initial guess
+disp('Testing initial guesses...')
+costguess = zeros(1, width(Guesses));
+for i = 1:width(Guesses)                   % Determine cost per initial guess
     Guess = Guesses(:, i);
-    costguess(i) = cost(Guess);
+    costguess(i) = cost_set(Guess, n);
 end
 
-costmin, index = min(costguess) ;           % Determine initial guess with lowest cost
-T_st = Guesses(:, index);
+[costmin, Guess_index] = min(costguess) ;           % Determine initial guess with lowest cost
+T_st = Guesses(:, Guess_index);
+disp('Continuing with guess:')
+disp(Guess_index)
 
 % while Belowbound == true
 %     disp('increase setpoint by 1')
@@ -78,6 +74,15 @@ T_st_save(:,1) = T_st;
 cost_save(1) = costT_st;
 
 for n = 2:iteration_amount
+
+    if n < iteration_amount *0.1
+        alfa = 0.3;
+    elseif n < iteration_amount * 0.5
+        alfa = 0.2;
+    else
+        alfa = 0.1;
+    end
+
     waitbar(n/iteration_amount, hWaitBar2, sprintf('Iteration %d/%d', n, iteration_amount))
     % delta =  0.01 *randi(5,25,1) - 0.03;
     delta = zeros(size(T_st));
@@ -93,7 +98,7 @@ for n = 2:iteration_amount
 
     [cost_new, Belowbound] = cost_set(T_st_new, n);
 
-    if Belowbound == false %&& costnew < cost?
+    if Belowbound == false && cost_new < costT_st
         T_st = T_st_new;
         costT_st = cost_new;
     end
@@ -118,6 +123,7 @@ for n = 2:iteration_amount
 end
 
 close(hWaitBar2)
+disp('Optimization done')
 
 run("SetModel")
 Setpoint = interp1(0:24, T_st(:, 1), t / 3600, 'linear', 'extrap');
@@ -138,12 +144,13 @@ plot(t/3600, bound_average, 'k--')
 plot(h24, T_st_save(:,1), 'r-')
 plot(t/3600, T(1,:), 'b-')
 plot(t/3600, OutsideTemperature, 'b--')
+plot(t/3600, simdaycost*10^2, 'y-')
 title("Bounds")
 xlabel("Time (h)")
 ylabel("Temperature (°C)")
-legend('Setpoint', 'Lower Bound', 'Upper Bound', 'Average Bound', 'First Iteration', 'Air Temperature', 'Outside Temperature')
+legend('Setpoint', 'Lower Bound', 'Upper Bound', 'Average Bound', 'First Iteration', 'Air Temperature', 'Outside Temperature', 'Energy cost *10^2')
 hold off    
 
-disp(['saved:', cost_save(end)/cost_save(1)])
-
+disp('saved:')
+disp(cost_save(end)/cost_save(1))
         

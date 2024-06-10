@@ -32,16 +32,26 @@ for i = 1:length(simdaycost) - (windowwidth + Timeforward)
 end
 Guess6 = Guess6(1:3600/dt:end)';
 
-h24 = [0:24] ;
+h24 = [0:24]' ;
 avg_cost = mean(simdaycost) ;
-intersec = find(abs(simdaycost - avg_cost) <0.0001) ;
+tol = 0.001;
+for i = 1:10000
+    intersec = find(abs(simdaycost - avg_cost) <tol) ;
+    if length(intersec) == 4 || length(intersec) ==5
+        break
+    else
+        tol = tol/1.3 ;
+    end
+end
+
 point1 = round(intersec(2)/length(t) *24) ;
 point2 = round(intersec(3)/length(t) *24) ;
 periodh = (point2 - point1) * 2;
 hourshift = (point2 + point1)/2  - 5/4* periodh ;
 period = 24/periodh * 2 * pi;
 Guess7 = 1 * sin(period * (h24-hourshift)/ 24) + Guess2;
+Guess8 = 0.5 * sin(period * (h24-hourshift)/ 24) + Guess2;
 
-Guesses = [Guess1, Guess2, Guess3, Guess4, Guess5, Guess6, Guess7];
+Guesses = [Guess1, Guess2, Guess3, Guess4, Guess5, Guess6, Guess7, Guess8];
 
 
