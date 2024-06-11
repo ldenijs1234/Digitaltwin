@@ -21,9 +21,9 @@ TC_Count = 0;
 alfa = 0.1;
 
 % Number of iterations
-iteration_amount = 100;
+iteration_amount = 250;
 n = 1;
-perturb_amount = 2;
+perturb_amount = 7;
 
 % Interpolate setpoints over time
 function [cost, Belowbound] = cost_set(T_st, n)
@@ -173,7 +173,8 @@ title("Initial Guesses")
 xlabel("Time (h)")
 ylabel("Temperature (°C)")
 legend('Guess 1', 'Guess 2', 'Guess 3', 'Guess 4', 'Guess 5', 'Guess 6', 'Guess 7', 'Guess 8', ...
-        'Guess 9', 'Guess 10', 'Guess 11', 'Guess 12', 'Guess 13', 'Guess 14', 'Guess 15', 'Guess 16')
+        'Guess 9', 'Guess 10', 'Guess 11', 'Guess 12', 'Guess 13', 'Guess 14', 'Guess 15', 'Guess 16' ...
+        , 'Guess 17', 'Guess 18', 'Guess 19', 'Guess 20', 'Guess 21', 'Guess 22', 'Guess 23', 'Guess 24','Guess 25')
 hold off
 
 savePath2 = fullfile(outputDir, [char(date) '_guesses.png']);
