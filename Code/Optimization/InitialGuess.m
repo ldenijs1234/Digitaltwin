@@ -67,7 +67,7 @@ Timeforward = 70;
 windowavgnow = zeros(1, length(simdaycost));
 windowavgforward = zeros(1, length(simdaycost));
 
-Guess15 = Lowerbound + 1.5;
+Guess15 = Lowerbound + 1;
 for i = 1:length(simdaycost) - (windowwidth + Timeforward)
     windowavgnow(i) = sum(simdaycost(i:i+windowwidth/3)) / (windowwidth / 3);
         windowavgforward(i) = sum(simdaycost(i+Timeforward:i+Timeforward+windowwidth)) / windowwidth;
@@ -78,7 +78,7 @@ for i = 1:length(simdaycost) - (windowwidth + Timeforward)
 end
 Guess15 = Guess15(1:3600/dt:end)';
 
-Guess16 = Lowerbound + 1.5;
+Guess16 = Lowerbound + 1;
 for i = 1:length(simdaycost) - (windowwidth + Timeforward)
     windowavgnow(i) = sum(simdaycost(i:i+windowwidth/3)) / (windowwidth / 3);
         windowavgforward(i) = sum(simdaycost(i+Timeforward:i+Timeforward+windowwidth)) / windowwidth;
@@ -95,7 +95,7 @@ windowavgnow = zeros(1, length(simdaycost));
 windowavgforward = zeros(1, length(simdaycost));
 
 
-Guess17 = Lowerbound + 1.5;
+Guess17 = Lowerbound + 1;
 for i = 1:length(simdaycost) - (windowwidth + Timeforward)
     windowavgnow(i) = sum(simdaycost(i:i+windowwidth/2)) / (windowwidth / 2);
         windowavgforward(i) = sum(simdaycost(i+Timeforward:i+Timeforward+windowwidth)) / windowwidth;
@@ -106,7 +106,7 @@ for i = 1:length(simdaycost) - (windowwidth + Timeforward)
 end
 Guess17 = Guess17(1:3600/dt:end)';
 
-Guess18 = Lowerbound + 1.5;
+Guess18 = Lowerbound + 1;
 for i = 1:length(simdaycost) - (windowwidth + Timeforward)
     windowavgnow(i) = sum(simdaycost(i:i+windowwidth/2)) / (windowwidth / 2);
         windowavgforward(i) = sum(simdaycost(i+Timeforward:i+Timeforward+windowwidth)) / windowwidth;
@@ -118,7 +118,7 @@ end
 Guess18 = Guess18(1:3600/dt:end)';
 
 
-Guess19 = Lowerbound + 1.5;
+Guess19 = Lowerbound + 1;
 for i = 1:length(simdaycost) - (windowwidth + Timeforward)
     windowavgnow(i) = sum(simdaycost(i:i+windowwidth/5)) / (windowwidth / 5);
         windowavgforward(i) = sum(simdaycost(i+Timeforward:i+Timeforward+windowwidth)) / windowwidth;
@@ -129,7 +129,7 @@ for i = 1:length(simdaycost) - (windowwidth + Timeforward)
 end
 Guess19 = Guess19(1:3600/dt:end)';
 
-Guess20 = Lowerbound + 1.5;
+Guess20 = Lowerbound + 1;
 for i = 1:length(simdaycost) - (windowwidth + Timeforward)
     windowavgnow(i) = sum(simdaycost(i:i+windowwidth/5)) / (windowwidth / 5);
         windowavgforward(i) = sum(simdaycost(i+Timeforward:i+Timeforward+windowwidth)) / windowwidth;
@@ -145,7 +145,7 @@ Timeforward = 40;
 windowavgnow = zeros(1, length(simdaycost));
 windowavgforward = zeros(1, length(simdaycost));
 
-Guess21 = Lowerbound + 1.5;
+Guess21 = Lowerbound + 1;
 for i = 1:length(simdaycost) - (windowwidth + Timeforward)
     windowavgnow(i) = sum(simdaycost(i:i+windowwidth/2)) / (windowwidth / 2);
         windowavgforward(i) = sum(simdaycost(i+Timeforward:i+Timeforward+windowwidth)) / windowwidth;
@@ -157,7 +157,7 @@ end
 Guess21 = Guess21(1:3600/dt:end)';
 
 
-Guess22 = Lowerbound + 1.5;
+Guess22 = Lowerbound + 1;
 for i = 1:length(simdaycost) - (windowwidth + Timeforward)
     windowavgnow(i) = sum(simdaycost(i:i+windowwidth/4)) / (windowwidth / 4);
         windowavgforward(i) = sum(simdaycost(i+Timeforward:i+Timeforward+windowwidth)) / windowwidth;
@@ -173,6 +173,9 @@ Timeforward = 55;
 windowavgnow = zeros(1, length(simdaycost));
 windowavgforward = zeros(1, length(simdaycost));
 
-Guesses = [Guess1, Guess2, Guess3, Guess4, Guess5, Guess6, Guess7, Guess8, Guess9, Guess10, Guess11, Guess12, Guess13, Guess14, Guess15, Guess16, Guess17, Guess18, Guess19, Guess20, Guess21, Guess22];
+Guesses = [
+    Guess1, Guess2, Guess3, Guess4, Guess5, Guess6, Guess7, Guess8, 
+    Guess9, Guess10, Guess11, Guess12, Guess13, Guess14, Guess15, Guess16, 
+    Guess17, Guess18, Guess19, Guess20, Guess21, Guess22];
 
 
