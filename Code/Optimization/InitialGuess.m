@@ -7,9 +7,9 @@ run("SetInputs")
 % Initiate multiple guesses to find the best starting point for gradient descend
 Guess1 = Lowerbound(1:3600/dt:end)' + 1;
 Guess2 = Lowerbound(1:3600/dt:end)' + 2;
-Guess3 = meanline(1:3600/dt:end)' ; 
-Guess4 = sin(15/4*pi*(h24+1)/24) +  20 ;
-Guess5 = 0.25*sin(4*pi*(h24+2)/24) +  Guess2 ;
+Guess3 = meanline(1:3600/dt:end)'; 
+Guess4 = 0.5*sin(15/4*pi*(h24+1)/24) + Guess2;
+Guess5 = 0.25*sin(4*pi*(h24+2)/24) + Guess2;
 
 
 % Educated guesses
@@ -62,10 +62,6 @@ Guess14 = 0.25 * sin(period * (h24-hourshift1)/ 24) + Guess1;
 norm = (simdaycost - mean(simdaycost)) / (max(abs(simdaycost - mean(simdaycost))));
 Guess15 = Guess1 - 0.5 * norm(1:3600/dt:end)';
 Guess16 = Guess1 - norm(1:3600/dt:end)';
-
-
-
-
 
 Guesses = [Guess1, Guess2, Guess3, Guess4, Guess5, Guess6, Guess7, Guess8, Guess9, Guess10, Guess11, Guess12, Guess13, Guess14, Guess15, Guess16];
 
