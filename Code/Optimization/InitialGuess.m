@@ -51,15 +51,23 @@ hourshift2 = (point2 + point1)/2  - 3/4* periodh ;
 hourshift3 = (point2 + point1)/2  - 1/2* periodh ;
 hourshift4 = (point2 + point1)/2  + 1/6* periodh ;
 period = 24/periodh * 2 * pi;
-Guess7 = 1 * sin(period * (h24-hourshift1)/ 24) + Guess2;
-Guess8 = 1 * sin(period * (h24-hourshift2)/ 24) + Guess2;
-Guess9 = 0.5 * sin(period * (h24-hourshift1)/ 24) + Guess2;
-Guess10 = 0.5 * sin(period * (h24-hourshift2)/ 24) + Guess2;
+Guess7 = 1 * sin(period * (h24-hourshift1)/ 24) + Guess1;
+Guess8 = 1 * sin(period * (h24-hourshift2)/ 24) + Guess1;
+Guess9 = 0.5 * sin(period * (h24-hourshift1)/ 24) + Guess1;
+Guess10 = 0.5 * sin(period * (h24-hourshift2)/ 24) + Guess1;
 Guess11 = 0.25 * sin(period * (h24-hourshift4)/ 24) + Guess1;
 Guess12 = 0.25 * sin(period * (h24-hourshift2)/ 24) + Guess1;
 Guess13 = 0.25 * sin(period * (h24-hourshift3)/ 24) + Guess1;
 Guess14 = 0.25 * sin(period * (h24-hourshift1)/ 24) + Guess1;
+norm = (simdaycost - mean(simdaycost)) / (max(abs(simdaycost - mean(simdaycost))));
+Guess15 = Guess1 - 0.5 * norm(1:3600/dt:end)';
+Guess16 = Guess1 - norm(1:3600/dt:end)';
 
-Guesses = [Guess1, Guess2, Guess3, Guess4, Guess5, Guess6, Guess7, Guess8, Guess9, Guess10, Guess11, Guess12, Guess13, Guess14];
+
+
+
+
+Guesses = [Guess1, Guess2, Guess3, Guess4, Guess5, Guess6, Guess7, Guess8, Guess9, Guess10, Guess11, Guess12, Guess13, Guess14, Guess15, Guess16];
+
 
 

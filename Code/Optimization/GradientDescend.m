@@ -196,3 +196,4 @@ saveas(gcf, savePath3);
 disp('saved:')
 disp(cost_save(end)/cost_save(1))
         
+disp(['Current Directory: ', pwd]);
