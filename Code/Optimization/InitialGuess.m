@@ -97,7 +97,7 @@ windowavgforward = zeros(1, length(simdaycost));
 
 Guess17 = Lowerbound + 1.5;
 for i = 1:length(simdaycost) - (windowwidth + Timeforward)
-    windowavgnow(i) = sum(simdaycost(i:i+windowwidth/3)) / (windowwidth / 2);
+    windowavgnow(i) = sum(simdaycost(i:i+windowwidth/2)) / (windowwidth / 2);
         windowavgforward(i) = sum(simdaycost(i+Timeforward:i+Timeforward+windowwidth)) / windowwidth;
     if windowavgforward(i) > 1.2 * windowavgnow(i)
         Guess17(i) = Guess17(i) + (windowavgforward(i) / windowavgnow(i) - 1) * 4.5;
@@ -108,7 +108,7 @@ Guess17 = Guess17(1:3600/dt:end)';
 
 Guess18 = Lowerbound + 1.5;
 for i = 1:length(simdaycost) - (windowwidth + Timeforward)
-    windowavgnow(i) = sum(simdaycost(i:i+windowwidth/3)) / (windowwidth / 2);
+    windowavgnow(i) = sum(simdaycost(i:i+windowwidth/2)) / (windowwidth / 2);
         windowavgforward(i) = sum(simdaycost(i+Timeforward:i+Timeforward+windowwidth)) / windowwidth;
     if windowavgforward(i) > 1.2 * windowavgnow(i)
         Guess18(i) = Guess18(i) + (windowavgforward(i) / windowavgnow(i) - 1) * 7;
@@ -120,7 +120,7 @@ Guess18 = Guess18(1:3600/dt:end)';
 
 Guess19 = Lowerbound + 1.5;
 for i = 1:length(simdaycost) - (windowwidth + Timeforward)
-    windowavgnow(i) = sum(simdaycost(i:i+windowwidth/3)) / (windowwidth / 5);
+    windowavgnow(i) = sum(simdaycost(i:i+windowwidth/5)) / (windowwidth / 5);
         windowavgforward(i) = sum(simdaycost(i+Timeforward:i+Timeforward+windowwidth)) / windowwidth;
     if windowavgforward(i) > 1.2 * windowavgnow(i)
         Guess19(i) = Guess19(i) + (windowavgforward(i) / windowavgnow(i) - 1) * 8.5;
@@ -131,7 +131,7 @@ Guess19 = Guess19(1:3600/dt:end)';
 
 Guess20 = Lowerbound + 1.5;
 for i = 1:length(simdaycost) - (windowwidth + Timeforward)
-    windowavgnow(i) = sum(simdaycost(i:i+windowwidth/3)) / (windowwidth / 5);
+    windowavgnow(i) = sum(simdaycost(i:i+windowwidth/5)) / (windowwidth / 5);
         windowavgforward(i) = sum(simdaycost(i+Timeforward:i+Timeforward+windowwidth)) / windowwidth;
     if windowavgforward(i) > 1.2 * windowavgnow(i)
         Guess20(i) = Guess20(i) + (windowavgforward(i) / windowavgnow(i) - 1) * 5;
@@ -147,7 +147,7 @@ windowavgforward = zeros(1, length(simdaycost));
 
 Guess21 = Lowerbound + 1.5;
 for i = 1:length(simdaycost) - (windowwidth + Timeforward)
-    windowavgnow(i) = sum(simdaycost(i:i+windowwidth/3)) / (windowwidth / 2);
+    windowavgnow(i) = sum(simdaycost(i:i+windowwidth/2)) / (windowwidth / 2);
         windowavgforward(i) = sum(simdaycost(i+Timeforward:i+Timeforward+windowwidth)) / windowwidth;
     if windowavgforward(i) > 1.2 * windowavgnow(i)
         Guess21(i) = Guess21(i) + (windowavgforward(i) / windowavgnow(i) - 1) * 8;
@@ -159,7 +159,7 @@ Guess21 = Guess21(1:3600/dt:end)';
 
 Guess22 = Lowerbound + 1.5;
 for i = 1:length(simdaycost) - (windowwidth + Timeforward)
-    windowavgnow(i) = sum(simdaycost(i:i+windowwidth/3)) / (windowwidth / 2);
+    windowavgnow(i) = sum(simdaycost(i:i+windowwidth/4)) / (windowwidth / 4);
         windowavgforward(i) = sum(simdaycost(i+Timeforward:i+Timeforward+windowwidth)) / windowwidth;
     if windowavgforward(i) > 1.2 * windowavgnow(i)
         Guess22(i) = Guess22(i) + (windowavgforward(i) / windowavgnow(i) - 1) * 8;
