@@ -11,7 +11,9 @@ Lowerbound = Lowerbound_total(SimStart:SimEnd);
 Upperbound = Upperbound_total(SimStart:SimEnd);
 bound_average = (Lowerbound + Upperbound) / 2;
 
-
+global date file_weather;
+date = '2024-02-24' ;                   % Date of the simulation 'yyyy-mm-dd'
+file_weather = '2024-02-24.csv';             % File name of the weather data CSV file 
 
 % Initialize waitbar
 hWaitBar2 = waitbar(0, 'Please wait...');
@@ -19,9 +21,9 @@ TC_Count = 0;
 alfa = 0.1;
 
 % Number of iterations
-iteration_amount = 2;
+iteration_amount = 50;
 n = 1;
-perturb_amount = 2;
+perturb_amount = 3;
 
 % Interpolate setpoints over time
 function [cost, Belowbound] = cost_set(T_st, n)
