@@ -1,5 +1,3 @@
-hWaitBar3 = waitbar(0, 'Please wait...');
-
 global file_weather date;
 dates = ["2024-01-01.csv", "2024-01-16.csv", "2024-01-24.csv"]; %"02-01.csv" "02-16.csv" "02-24.csv"]
     % "03-03.csv" "03-11.csv" "03-26.csv" "04-03.csv" "04-18.csv" "04-26.csv" ...
@@ -13,7 +11,7 @@ days = ["2024-01-01", "2024-01-16", "2024-01-24"]; % '2024-02-01' '2024-02-16' '
 
 results = "results.xlsx";
 disp(['Current Directory: ', pwd]);
-
+hWaitBar3 = waitbar(0, sprintf('File %d/%d', 0, length(dates)));
 for z = 1:length(dates)
     date = days(z);
     file_weather = dates(z);
