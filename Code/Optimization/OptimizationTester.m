@@ -1,10 +1,10 @@
 global file_weather date;
-dates = ["2023-10-29.csv", "2024-03-11.csv", "2024-04-18.csv"]; %"02-01.csv" "02-16.csv" "02-24.csv"]
+dates = ["2023-10-29.csv", "2024-03-11.csv", "2024-04-18.csv", "2024-02-01.csv"]; % "02-16.csv" "02-24.csv"]
     % "03-03.csv" "03-11.csv" "03-26.csv" "04-03.csv" "04-18.csv" "04-26.csv" ...
     % "05-04.csv" "05-19.csv" "05-27.csv" "06-04.csv" "06-12.csv" "06-20.csv" ...
     % "Delft.csv" "Delft21-5.csv" "Delft28-11.csv" "Delft30-5.csv" "WeerDelft2-5.csv"];
 
-days = ["2023-10-29", "2024-03-11", "2024-04-18"]; % '2024-02-01' '2024-02-16' '2024-02-24' ...
+days = ["2023-10-29", "2024-03-11", "2024-04-18", '2024-02-01']; % '2024-02-16' '2024-02-24' ...
     % '2024-03-03' '2024-03-11' '2024-03-26' '2024-04-03' '2024-04-18' '2024-04-26' ...
     % '2024-05-04' '2024-05-19' '2024-05-27' '2024-06-04' '2024-06-12' '2024-06-20' ...
     % 'Delft' 'Delft21-5' 'Delft28-11' 'Delft30-5' 'WeerDelft2-5'];
@@ -23,10 +23,10 @@ for z = 1:length(dates)
     max_cost(z) = max(cost_save);
     lowerboundcost(z) = costguess(1);
     percentage_improve(z) = (1 - (min_cost(z)/max_cost(z))) * 100;
-    
+    percentage_improve_lowerbound(z) = (1 - (min_cost(z)/lowerboundcost(z))) * 100;
      % Create a table for the current results
-     T = table(date, guess(z), min_cost(z), max_cost(z), lowerboundcost(z), percentage_improve(z), ...
-        'VariableNames', {'Date', 'Guess', 'MinCost', 'MaxCost', 'LowerboundCost', 'PercentageImprove'});
+     T = table(date, guess(z), min_cost(z), max_cost(z), lowerboundcost(z), percentage_improve(z), percentage_improve_lowerbound(z), ...
+        'VariableNames', {'Date', 'Guess', 'Cost after optimization', 'Cost at first guess', 'Lowerbound Cost', 'Improvement to first guess', 'Improvement to lowerbound'});
 
     % Append the table to the results.xlsx file
     if z == 1

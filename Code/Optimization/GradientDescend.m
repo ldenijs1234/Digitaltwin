@@ -172,7 +172,8 @@ plot(Guesses)
 title("Initial Guesses")
 xlabel("Time (h)")
 ylabel("Temperature (°C)")
-legend('Guess 1', 'Guess 2', 'Guess 3', 'Guess 4', 'Guess 5', 'Guess 6', 'Guess 7', 'Guess 8')
+legend('Guess 1', 'Guess 2', 'Guess 3', 'Guess 4', 'Guess 5', 'Guess 6', 'Guess 7', 'Guess 8', ...
+        'Guess 9', 'Guess 10', 'Guess 11', 'Guess 12', 'Guess 13', 'Guess 14', 'Guess 15', 'Guess 16')
 hold off
 
 savePath2 = fullfile(outputDir, [char(date) '_guesses.png']);
