@@ -23,7 +23,7 @@ alfa = 0.1;
 % Number of iterations
 iteration_amount = 50;
 n = 1;
-perturb_amount = ;
+perturb_amount = 15;
 
 % Interpolate setpoints over time
 function [cost, Belowbound] = cost_set(T_st, n)
@@ -196,3 +196,4 @@ saveas(gcf, savePath3);
 disp('saved:')
 disp(cost_save(end)/cost_save(1))
         
+disp(['Current Directory: ', pwd]);
