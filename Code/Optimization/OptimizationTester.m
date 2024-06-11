@@ -1,4 +1,4 @@
-run("InitialGuess")
+global file_weather date;
 dates = ["2024-01-01.csv", "2024-01-16.csv", "2024-01-24.csv"]; %"02-01.csv" "02-16.csv" "02-24.csv"]
     % "03-03.csv" "03-11.csv" "03-26.csv" "04-03.csv" "04-18.csv" "04-26.csv" ...
     % "05-04.csv" "05-19.csv" "05-27.csv" "06-04.csv" "06-12.csv" "06-20.csv" ...
@@ -13,10 +13,10 @@ results = "results.xlsx";
 disp(['Current Directory: ', pwd]);
 
 for z = 1:length(dates)
-    global file_weather date;
     date = days(z);
     file_weather = dates(z);
     display(file_weather);
+    run("InitialGuess");
     run("GradientDescend");
     guess(z) = Guess_index;
     min_cost(z) = min(cost_save);
