@@ -173,9 +173,8 @@ Timeforward = 55;
 windowavgnow = zeros(1, length(simdaycost));
 windowavgforward = zeros(1, length(simdaycost));
 
-Guesses = [
-    Guess1, Guess2, Guess3, Guess4, Guess5, Guess6, Guess7, Guess8, 
-    Guess9, Guess10, Guess11, Guess12, Guess13, Guess14, Guess15, Guess16, 
+Guesses = [Guess1, Guess2, Guess3, Guess4, Guess5, Guess6, Guess7, Guess8,... 
+    Guess9, Guess10, Guess11, Guess12, Guess13, Guess14, Guess15, Guess16,... 
     Guess17, Guess18, Guess19, Guess20, Guess21, Guess22];
 
 
