@@ -8,7 +8,7 @@ run("SetInputs")
 Guess1 = Lowerbound(1:3600/dt:end)' + 1;
 Guess2 = Lowerbound(1:3600/dt:end)' + 2;
 Guess3 = meanline(1:3600/dt:end)' ; 
-Guess4 = sin(15/4*pi*(h24+1)/24) +  20 ;
+Guess4 = 0.5*sin(15/4*pi*(h24+1)/24) + Guess2 ;
 Guess5 = 0.25*sin(4*pi*(h24+2)/24) +  Guess2 ;
 
 

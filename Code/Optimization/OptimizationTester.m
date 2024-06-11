@@ -23,10 +23,10 @@ for z = 1:length(dates)
     max_cost(z) = max(cost_save);
     lowerboundcost(z) = costguess(1);
     percentage_improve(z) = (1 - (min_cost(z)/max_cost(z))) * 100;
-    
+    percentage_improve_lowerbound(z) = (1 - (min_cost(z)/lowerboundcost(z))) * 100;
      % Create a table for the current results
-     T = table(date, guess(z), min_cost(z), max_cost(z), lowerboundcost(z), percentage_improve(z), ...
-        'VariableNames', {'Date', 'Guess', 'MinCost', 'MaxCost', 'LowerboundCost', 'PercentageImprove'});
+     T = table(date, guess(z), min_cost(z), max_cost(z), lowerboundcost(z), percentage_improve(z), percentage_improve_lowerbound(z), ...
+        'VariableNames', {'Date', 'Guess', 'Cost after optimization', 'Cost at first guess', 'Lowerbound Cost', 'Improvement to first guess', 'Improvement to lowerbound'});
 
     % Append the table to the results.xlsx file
     if z == 1
