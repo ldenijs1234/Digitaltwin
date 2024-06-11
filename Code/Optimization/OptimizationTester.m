@@ -1,3 +1,5 @@
+hWaitBar3 = waitbar(0, 'Please wait...');
+
 global file_weather date;
 dates = ["2024-01-01.csv", "2024-01-16.csv", "2024-01-24.csv"]; %"02-01.csv" "02-16.csv" "02-24.csv"]
     % "03-03.csv" "03-11.csv" "03-26.csv" "04-03.csv" "04-18.csv" "04-26.csv" ...
@@ -34,6 +36,9 @@ for z = 1:length(dates)
     else
         writetable(T, results, 'WriteMode', 'append', 'WriteVariableNames', false);
     end
+    waitbar(z/length(dates), hWaitBar3, sprintf('File %d/%d', z, length(dates)))
 end
-
+close(hWaitBar3)
 disp(['Current Directory: ', pwd]);
+
+
