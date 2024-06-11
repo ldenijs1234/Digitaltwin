@@ -47,3 +47,7 @@ To change the simulation time edit 'SetModel' line 4 to the desired simulation t
 
 Run 'plots' to show the different types of data displayed in graphs. These can include heat flows, humidity flows, relative humidity etc.
 
+## Optimize setpoint line
+In the optimization map contains files, that aim to reduce the cost while staying whitin the bounds by optimizing the heater setpoint line. 
+
+to run one of these files, make sure to to add all the files from all the folders to the matlab path. By running a file from the 'controls' folder and the 'Weather files + support functions' folder. Then the file can be run.
