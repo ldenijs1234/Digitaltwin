@@ -23,7 +23,7 @@ alfa = 0.1;
 % Number of iterations
 iteration_amount = 50;
 n = 1;
-perturb_amount = 3;
+perturb_amount = ;
 
 % Interpolate setpoints over time
 function [cost, Belowbound] = cost_set(T_st, n)
