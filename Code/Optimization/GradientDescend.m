@@ -12,8 +12,8 @@ Upperbound = Upperbound_total(SimStart:SimEnd);
 bound_average = (Lowerbound + Upperbound) / 2;
 
 global date file_weather;
-date = '2024-02-24' ;                   % Date of the simulation 'yyyy-mm-dd'
-file_weather = '2024-02-24.csv';             % File name of the weather data CSV file 
+%date = '2024-02-24' ;                   % Date of the simulation 'yyyy-mm-dd'
+%file_weather = '2024-02-24.csv';             % File name of the weather data CSV file 
 
 % Initialize waitbar
 hWaitBar2 = waitbar(0, 'Please wait...');

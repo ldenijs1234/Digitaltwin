@@ -3,7 +3,6 @@ SimStart = 1 ;
 SimEnd = length(t) ;
 h24 = [0:24]' ;
 run("SetInputs")
-run("SetParameters")
 
 % Initiate multiple guesses to find the best starting point for gradient descend
 Guess1 = Lowerbound(1:3600/dt:end)' + 1;
@@ -47,11 +46,14 @@ end
 point1 = round(intersec(2)/length(t) *24) ;
 point2 = round(intersec(3)/length(t) *24) ;
 periodh = (point2 - point1) * 2;
-hourshift = (point2 + point1)/2  - 5/4* periodh ;
+hourshift1 = (point2 + point1)/2  - 5/4* periodh ;
+hourshift2 = (point2 + point1)/2  - 3/4* periodh ;
 period = 24/periodh * 2 * pi;
-Guess7 = 1 * sin(period * (h24-hourshift)/ 24) + Guess2;
-Guess8 = 0.5 * sin(period * (h24-hourshift)/ 24) + Guess2;
+Guess7 = 1 * sin(period * (h24-hourshift1)/ 24) + Guess2;
+Guess8 = 1 * sin(period * (h24-hourshift2)/ 24) + Guess2;
+Guess9 = 0.5 * sin(period * (h24-hourshift1)/ 24) + Guess2;
+Guess10 = 0.5 * sin(period * (h24-hourshift2)/ 24) + Guess2;
 
-Guesses = [Guess1, Guess2, Guess3, Guess4, Guess5, Guess6, Guess7, Guess8];
+Guesses = [Guess1, Guess2, Guess3, Guess4, Guess5, Guess6, Guess7, Guess8, Guess9, Guess10];
 
 
