@@ -146,7 +146,7 @@ end
 
 hWaitBar = waitbar(0, 'Please wait...') ;
 
-simdaycost = 0.5 * ones(size(t)) ; simdaycost(round(1/3*length(t)): round(2/3* length(t))) = 0.02 ;
+%simdaycost = 0.5 * ones(size(t)) ; simdaycost(round(1/3*length(t)): round(2/3* length(t))) = 0.02 ;
 
 % For-loop containing euler-integration of states and inter-state dynamics:
 for i = 1:length(t) - 1

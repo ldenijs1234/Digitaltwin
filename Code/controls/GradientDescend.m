@@ -19,7 +19,7 @@ TC_Count = 0;
 alfa = 0.1;
 
 % Number of iterations
-iteration_amount = 300;
+iteration_amount = 10;
 n = 1;
 perturb_amount = 2;
 
