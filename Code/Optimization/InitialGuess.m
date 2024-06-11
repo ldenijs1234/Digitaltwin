@@ -62,8 +62,8 @@ Guess14 = 0.25 * sin(period * (h24-hourshift1)/ 24) + Guess1;
 norm = (simdaycost - mean(simdaycost)) / (max(abs(simdaycost - mean(simdaycost))));
 Guess15 = Guess1 - 0.5 * norm(1:3600/dt:end)';
 Guess16 = Guess1 - norm(1:3600/dt:end)';
-Guesses = [Guess1, Guess2, Guess3, Guess4, Guess5, Guess6, Guess7, Guess8, Guess9, Guess10, Guess11, Guess12, Guess13];
-=======
+
+
 
 
 
