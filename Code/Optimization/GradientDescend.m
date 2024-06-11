@@ -21,9 +21,9 @@ TC_Count = 0;
 alfa = 0.1;
 
 % Number of iterations
-iteration_amount = 50;
+iteration_amount = 100;
 n = 1;
-perturb_amount = 10;
+perturb_amount = 2;
 
 % Interpolate setpoints over time
 function [cost, Belowbound] = cost_set(T_st, n)
@@ -197,3 +197,6 @@ disp('saved:')
 disp(cost_save(end)/cost_save(1))
         
 disp(['Current Directory: ', pwd]);
+
+figure("WindowStyle", "docked");
+plot(cost_save)
