@@ -144,7 +144,7 @@ function VentilationRate = VentilationRatecalc(GH, T_air, WindSpeedkph, T_out, O
     VentilationRate = 0.5 * p.NumberOfWindows * (v_wind^2 + v_temp^2)^(0.5) ; % (kg s^-1)
 end
 
-hWaitBar = waitbar(0, 'Please wait...') ;
+%hWaitBar = waitbar(0, 'Please wait...') ;
 
 %simdaycost = 0.5 * ones(size(t)) ; simdaycost(round(1/3*length(t)): round(2/3* length(t))) = 0.02 ;
 
@@ -248,13 +248,13 @@ for i = 1:length(t) - 1
     RelHumidity(i+1) = min(100, VaporDens2rh(T(1,i+1), AddStates(1,i+1))) ; % Correction for calculation differences in functions
 
 
-    if rem(i*dt/360, 1) == 0 
-        waitbar(sqrt(i*dt / simulation_time), hWaitBar, sprintf('Progress: %d%%', round(sqrt(i*dt / simulation_time) * 100)));
-    end
+    % if rem(i*dt/360, 1) == 0 
+    %     waitbar(sqrt(i*dt / simulation_time), hWaitBar, sprintf('Progress: %d%%', round(sqrt(i*dt / simulation_time) * 100)));
+    % end
 
 end
 
-close(hWaitBar);
+% close(hWaitBar);
 
 % Plot temperatures:
 % figure("WindowStyle", "docked");

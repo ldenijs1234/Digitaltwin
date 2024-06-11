@@ -19,7 +19,7 @@ TC_Count = 0;
 alfa = 0.1;
 
 % Number of iterations
-iteration_amount = 10;
+iteration_amount = 2;
 n = 1;
 perturb_amount = 2;
 
@@ -133,6 +133,13 @@ run("Initialize")
 BoundBreak = true;
 run("RunFullSim")
 
+% Define the directory where you want to save the figures
+outputDir = fullfile(pwd,[char(date) '_figures']);
+
+% Create the directory if it does not exist
+if ~exist(outputDir, 'dir')
+    mkdir(outputDir);
+end
 
 Setpoint_end = interp1(0:24, T_st, t / 3600, 'linear', 'extrap');
 figure("WindowStyle", "docked");
@@ -144,12 +151,45 @@ plot(t/3600, bound_average, 'k--')
 plot(h24, T_st_save(:,1), 'r-')
 plot(t/3600, T(1,:), 'b-')
 plot(t/3600, OutsideTemperature, 'b--')
-plot(t/3600, simdaycost*10^2, 'y-')
+plot(t/3600, simdaycost*10^2, 'g-')
 title("Bounds")
 xlabel("Time (h)")
 ylabel("Temperature (°C)")
 legend('Setpoint', 'Lower Bound', 'Upper Bound', 'Average Bound', 'First Iteration', 'Air Temperature', 'Outside Temperature', 'Energy cost *10^2')
 hold off    
+
+% Construct the full path for saving the figure
+savePath1 = fullfile(outputDir, [char(date) '_temperature.png']);
+
+% Save the plot
+saveas(gcf, savePath1);
+
+figure("WindowStyle", "docked");
+hold on 
+plot(Guesses)
+title("Initial Guesses")
+xlabel("Time (h)")
+ylabel("Temperature (°C)")
+legend('Guess 1', 'Guess 2', 'Guess 3', 'Guess 4', 'Guess 5', 'Guess 6', 'Guess 7', 'Guess 8')
+hold off
+
+savePath2 = fullfile(outputDir, [char(date) '_guesses.png']);
+
+saveas(gcf, savePath2);
+
+figure("WindowStyle", "docked");
+hold on 
+plot(t(1:end-1)/3600, ControllerOutputWatt)
+plot(t/3600, heatingerror*10^4)
+title("Boiler Output and Error")
+xlabel("Time (h)")
+ylabel("Watt")
+legend('Boiler Output', 'Error *10^4')
+hold off
+
+savePath3 = fullfile(outputDir, [char(date) '_boiler_output.png']);
+
+saveas(gcf, savePath3);
 
 disp('saved:')
 disp(cost_save(end)/cost_save(1))
