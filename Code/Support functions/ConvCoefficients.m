@@ -1,4 +1,4 @@
-
+% humidity conversion from https://www.hatchability.com/Vaisala.pdf
 
     function [h_top, h_wall] = ConvCoefficients(GH, T_wall, T_out, Windspeed, H_out, C_out, W_angle, p)
     %inputs from outside this code block
