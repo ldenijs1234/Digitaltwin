@@ -206,5 +206,7 @@ ViewMatrix = [0,     0,      0,      0,      0,      0;
 
 ViewMatrix = ViewMatrix.';
 
-% Check: sum(ViewMatrix,2) = [0; ones(height(ViewMatrix) - 1, 1)] & AreaArrayRad .* ViewMatrix -...
-% (AreaArrayRad .* ViewMatrix)' = zeros(size(ViewMatrix))
+% Check: 
+% sum(ViewMatrix) = [0, ones(1, height(ViewMatrix) - 1)] & ...
+% AreaArrayRad' .* ViewMatrix - (AreaArrayRad' .* ViewMatrix)' = zeros(size(ViewMatrix))
+% might be not exactly zero due to rounding errors
