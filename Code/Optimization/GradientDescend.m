@@ -184,7 +184,7 @@ saveas(gcf, savePath2);
 figure("WindowStyle", "docked");
 hold on 
 plot(t(1:end-1)/3600, ControllerOutputWatt)
-plot(t/3600, heatingerror*10^4)
+plot(t(1:end-1)/3600, heatingerror*10^4)
 title("Boiler Output and Error")
 xlabel("Time (h)")
 ylabel("Watt")

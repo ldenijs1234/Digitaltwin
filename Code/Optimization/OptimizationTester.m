@@ -1,3 +1,5 @@
+% in SetInputs.m, put variables 'date' and 'file_weather' behind '%'
+
 global file_weather date;
 %dates = ["2023-10-14.csv", 
 %dates = ["2023-10-29.csv", "2023-11-06.csv", "2023-11-21.csv", "2023-11-28.csv",...

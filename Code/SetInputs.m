@@ -18,10 +18,11 @@ global file_weather date;
 % Weather and energy cost forecasts:
 
 % Set files and date 
-%file_weather = load(file_weatherr);
-%date = '2024-02-24' ;                   % Date of the simulation 'yyyy-mm-dd'
 file_energy = 'Netherlands.csv';        % File name of the energy cost CSV file
-%file_weather = '2024-02-24.csv';             % File name of the weather data CSV file 
+
+% put behind '%' in case of running OptimizationTester.m
+date = '2024-02-24' ;                   % Date of the simulation 'yyyy-mm-dd'
+file_weather = '2024-02-24.csv';             % File name of the weather data CSV file 
 
 [time_vec, OutsideTemperatureF, OutsideRelhumidityF, SolarRadiationF, WindspeedF, WinddirectionF, SealevelpressureF, CloudCoverF, DewPointF] = Weather2Arrays(file_weather, dt, total_time) ;
 [price_array_W6D, price_array_W5D, price_array_W4D, simdaycostD, day_averageD] = Energycost(file_energy, dt, total_time, date);
