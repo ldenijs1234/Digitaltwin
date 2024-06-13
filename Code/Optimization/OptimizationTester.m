@@ -1,4 +1,4 @@
-% in SetInputs.m, put variables 'date' and 'file_weather' behind '%'
+% in SetInputs.m line 2, set MultipleDates = true;
 
 global file_weather date;
 %dates = ["2023-10-14.csv", 

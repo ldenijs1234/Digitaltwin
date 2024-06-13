@@ -50,4 +50,11 @@ Run 'plots' to show the different types of data displayed in graphs. These can i
 ## Optimize setpoint line
 In the optimization map contains files, that aim to reduce the cost while staying whitin the bounds by optimizing the heater setpoint line. 
 
-to run one of these files, make sure to to add all the files from all the folders to the matlab path. By running a file from the 'controls' folder and the 'Weather files + support functions' folder. Then the file can be run.
+'InitialGuess' makes educated guesses of the optimal setpoint line
+
+'GradientDescend' optimizes the best InitialGuess.
+To run this, first run the 'IntialGuess' script and
+make sure to to add all the files from all the folders to the matlab path. By running a file from the 'controls' folder and the 'Weather files + support functions' folder.
+
+'OptimizationTester' tests the 'GradientDescend' file on multiple dates.
+To run this first set the variable 'MultipleDates' in 'SetInputs' line 2 to be true. Then make sure to to add all the files from all the folders to the matlab path. By running a file from the 'controls' folder and the 'Weather files + support functions' folder.
