@@ -23,7 +23,7 @@ global file_weather date;
 % Set files and date 
 file_energy = 'Netherlands.csv';        % File name of the energy cost CSV file
 
-if MultipleFiles == false
+if MultipleDates == false
     date = '2024-02-24' ;                   % Date of the simulation 'yyyy-mm-dd'
     file_weather = '2024-02-24.csv';             % File name of the weather data CSV file 
 end
