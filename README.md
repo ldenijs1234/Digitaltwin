@@ -1,4 +1,4 @@
-## Intro
+## Introduction
 This Digital Twin (DT) simulates Temperature, Humidity and CO2 of conditions in a Venlo type greenhouse. 
 The plant model used is a lettuce model from Van Henten, 2003. The DT can be scaled in size by adjusting the parameters
 for length, width and height of the greenhouse in 'SetParameters' line 24-26. The DT is controlled by heating input, window and fogging control. 
