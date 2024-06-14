@@ -1,4 +1,11 @@
+%set true in case you want to see live vizualization of development T_st
+Vizualize = false;
+
 run("SetModel")
+
+if Vizualize == true
+    h = figure;
+end
 
 SimStart =  1 ;    % Define interval start based on SimCount
 SimEnd = length(t) ;
@@ -41,6 +48,7 @@ function [cost, Belowbound] = cost_set(T_st, n)
         cost = 10000;   % Arbitrary penalty cost for breaking the bound
     end
 end
+
 
 disp('Testing initial guesses...')
 costguess = zeros(1, width(Guesses));
@@ -121,6 +129,17 @@ for n = 2:iteration_amount
     % ylabel("Temperature (°C)")
     % legend('Air', 'Cover', 'Walls', 'Floor', 'Plant', 'Heatpipe','Outside', 'Heating Line', 'Cooling Line')
     % hold off    
+     if Vizualize == true
+        cla
+        if n > 1 
+            plot(T_st_save(:,n-1), '--');
+            hold on
+            plot(T_st_save(:,n));
+            legend('new cost :')
+        else
+            plot(T_st_save(:,n));
+        end
+    end
 
 end
 
