@@ -34,9 +34,10 @@ First, make sure to to add all the files from all the folders to the matlab path
 
 To run the model, first run 'Initialize' to initialize the inside conditions in the Digital Twin. 
 
+ 
 Set up the date and filenames in 'SetInputs' The date is used to predict the energy price forecast for the day of the week. 
 The weather file should be hourly for 24 hours or hourly for X hours. X hours should be the same as total_time in 'SetModel' line 5. 
-This is because of the 'SimCount' which by default is set to 0 in 'RunFullSim'. T
+This is because of the 'SimCount' which by default is set to 0 in 'RunFullSim'. In 'SetInputs' set the variable 'MultipleDates' to be false.
 
 Weatherfiles are from: https://www.visualcrossing.com/
 
@@ -48,7 +49,7 @@ To change the simulation time edit 'SetModel' line 4 to the desired simulation t
 Run 'plots' to show the different types of data displayed in graphs. These can include heat flows, humidity flows, relative humidity etc.
 
 ## Optimize setpoint line
-In the optimization map contains files, that aim to reduce the cost while staying whitin the bounds by optimizing the heater setpoint line. 
+The optimization map contains files, that aim to reduce the cost while staying whitin the bounds by optimizing the heater setpoint line. 
 
 'InitialGuess' makes educated guesses of the optimal setpoint line
 
